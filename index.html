@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modern Freaks - Portfolio</title>
+  <title>Modern Freaks</title>
   <style>
     * {
       margin: 0;
@@ -11,14 +11,22 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --cyan: #6DB5C4;
+      --navy: #2D3853;
+      --red: #E3232C;
+      --white: #ffffff;
+      --gray: #898F9F;
+    }
+
     body {
       font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-      background: #ffffff;
-      color: #2D3853;
+      background: var(--white);
+      color: var(--navy);
       overflow-x: hidden;
     }
 
-    /* Header fixe */
+    /* Header */
     header {
       position: fixed;
       top: 0;
@@ -31,7 +39,7 @@
     }
 
     .header-inner {
-      max-width: 1500px;
+      max-width: 1600px;
       margin: 0 auto;
       padding: 30px 60px;
       display: flex;
@@ -39,7 +47,7 @@
       align-items: center;
     }
 
-    /* Logo FREAKS multicolore */
+    /* Logo FREAKS */
     .logo-wrapper {
       display: flex;
       align-items: flex-end;
@@ -48,7 +56,7 @@
 
     .logo {
       font-size: 56px;
-      font-weight: 900;
+      font-weight: 700;
       letter-spacing: -3.5px;
       text-transform: uppercase;
       cursor: pointer;
@@ -58,66 +66,68 @@
 
     .logo span {
       display: inline-block;
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .logo span:hover {
-      transform: translateY(-8px) rotate(-3deg);
+      transform: translateY(-12px) rotate(-5deg) scale(1.15);
     }
 
-    /* Couleurs exactes du logo original */
-    .logo .f { color: #6DB5C4; }
-    .logo .r { color: #2D3853; }
-    .logo .e { color: #E3232C; }
-    .logo .a { color: #2D3853; }
-    .logo .k { color: #6DB5C4; }
-    .logo .s { color: #E3232C; }
+    .logo .f { color: var(--cyan); }
+    .logo .r { color: var(--navy); }
+    .logo .e { color: var(--red); }
+    .logo .a { color: var(--navy); }
+    .logo .k { color: var(--cyan); }
+    .logo .s { color: var(--red); }
 
     .logo-sub {
       font-size: 12px;
       letter-spacing: 6px;
       text-transform: uppercase;
-      color: #898F9F;
+      color: var(--gray);
       font-weight: 300;
       margin-bottom: 14px;
     }
 
-    /* Navigation */
+    /* Navigation avec couleurs */
     nav {
       display: flex;
-      gap: 40px;
+      gap: 50px;
     }
 
     nav a {
-      color: #898F9F;
+      color: var(--gray);
       text-decoration: none;
       font-size: 14px;
-      font-weight: 500;
+      font-weight: 600;
       letter-spacing: 1px;
       text-transform: uppercase;
       transition: all 0.3s ease;
       position: relative;
-      padding-bottom: 5px;
+      padding: 8px 0;
     }
 
-    nav a::after {
+    nav a::before {
       content: '';
       position: absolute;
-      bottom: 0;
       left: 0;
+      bottom: 0;
       width: 0;
-      height: 2px;
-      background: #E3232C;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      height: 3px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
+
+    nav a[data-page="film"]::before { background: var(--cyan); }
+    nav a[data-page="music"]::before { background: var(--red); }
+    nav a[data-page="contact"]::before { background: var(--navy); }
 
     nav a:hover,
     nav a.active {
-      color: #2D3853;
+      color: var(--navy);
     }
 
-    nav a:hover::after,
-    nav a.active::after {
+    nav a:hover::before,
+    nav a.active::before {
       width: 100%;
     }
 
@@ -126,19 +136,20 @@
       display: none;
       min-height: 100vh;
       padding: 140px 60px 100px;
-      max-width: 1500px;
+      max-width: 1600px;
       margin: 0 auto;
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.5s ease;
     }
 
     .page-section.active {
       display: block;
-      animation: fadeIn 0.5s ease forwards;
+      animation: fadeIn 0.6s ease;
     }
 
     @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
       to {
         opacity: 1;
         transform: translateY(0);
@@ -149,64 +160,97 @@
       font-size: 12px;
       letter-spacing: 5px;
       text-transform: uppercase;
-      color: #898F9F;
+      color: var(--gray);
       margin-bottom: 60px;
       font-weight: 400;
     }
 
-    /* Grid vidéos masonry */
+    /* Grid vidéos avec couleurs */
     .video-grid {
-      column-count: 3;
-      column-gap: 30px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 35px;
     }
 
     .video-card {
       position: relative;
-      break-inside: avoid;
-      margin-bottom: 30px;
-      border-radius: 12px;
+      aspect-ratio: 16 / 9;
+      border-radius: 16px;
       overflow: hidden;
       cursor: pointer;
       background: #f5f5f5;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
-      transform: translateY(30px);
+      transform: scale(0.95);
     }
 
     .video-card.visible {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1);
+    }
+
+    /* Bordures colorées alternées */
+    .video-card:nth-child(3n+1) {
+      border: 3px solid transparent;
+    }
+    .video-card:nth-child(3n+1):hover {
+      border-color: var(--cyan);
+      box-shadow: 0 20px 60px rgba(109, 181, 196, 0.3);
+    }
+
+    .video-card:nth-child(3n+2) {
+      border: 3px solid transparent;
+    }
+    .video-card:nth-child(3n+2):hover {
+      border-color: var(--red);
+      box-shadow: 0 20px 60px rgba(227, 35, 44, 0.3);
+    }
+
+    .video-card:nth-child(3n+3) {
+      border: 3px solid transparent;
+    }
+    .video-card:nth-child(3n+3):hover {
+      border-color: var(--navy);
+      box-shadow: 0 20px 60px rgba(45, 56, 83, 0.3);
     }
 
     .video-card:hover {
-      transform: translateY(-10px);
-      box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.1),
-        0 0 0 1px rgba(227, 35, 44, 0.1);
+      transform: scale(1.02) translateY(-8px);
     }
 
+    .video-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.1);
+    }
+
+    /* Overlay avec gradient coloré */
     .video-card::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(45,56,83,0.9) 0%, transparent 65%);
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: 1;
     }
 
+    .video-card:nth-child(3n+1)::before {
+      background: linear-gradient(135deg, rgba(109, 181, 196, 0.9) 0%, transparent 60%);
+    }
+    .video-card:nth-child(3n+2)::before {
+      background: linear-gradient(135deg, rgba(227, 35, 44, 0.9) 0%, transparent 60%);
+    }
+    .video-card:nth-child(3n+3)::before {
+      background: linear-gradient(135deg, rgba(45, 56, 83, 0.9) 0%, transparent 60%);
+    }
+
     .video-card:hover::before {
       opacity: 1;
-    }
-
-    .video-thumbnail {
-      width: 100%;
-      display: block;
-      transition: transform 0.6s ease;
-    }
-
-    .video-card:hover .video-thumbnail {
-      transform: scale(1.08);
     }
 
     .play-btn {
@@ -214,8 +258,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 70px;
-      height: 70px;
+      width: 80px;
+      height: 80px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.95);
       display: flex;
@@ -223,22 +267,21 @@
       justify-content: center;
       z-index: 2;
       opacity: 0;
-      transition: all 0.4s ease;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .video-card:hover .play-btn {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1.1);
+      transform: translate(-50%, -50%) scale(1.2);
     }
 
     .play-btn::after {
       content: '';
       width: 0;
       height: 0;
-      border-left: 20px solid #2D3853;
-      border-top: 12px solid transparent;
-      border-bottom: 12px solid transparent;
+      border-left: 22px solid var(--navy);
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
       margin-left: 5px;
     }
 
@@ -250,7 +293,7 @@
       padding: 24px;
       z-index: 2;
       opacity: 0;
-      transform: translateY(15px);
+      transform: translateY(20px);
       transition: all 0.4s ease;
     }
 
@@ -260,7 +303,7 @@
     }
 
     .video-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       color: white;
       line-height: 1.4;
@@ -270,24 +313,27 @@
 
     .video-meta {
       font-size: 11px;
-      color: rgba(255, 255, 255, 0.8);
+      color: rgba(255, 255, 255, 0.9);
       letter-spacing: 1px;
     }
 
     /* Page Music */
     .music-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 40px;
+      grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+      gap: 30px;
     }
 
     .music-card {
-      background: #f8f8f8;
+      position: relative;
+      aspect-ratio: 16 / 9;
       border-radius: 16px;
-      padding: 40px;
-      transition: all 0.3s ease;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f5f5f5;
+      transition: all 0.4s ease;
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(30px);
     }
 
     .music-card.visible {
@@ -296,107 +342,172 @@
     }
 
     .music-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+      transform: translateY(-10px);
+      box-shadow: 0 25px 70px rgba(227, 35, 44, 0.25);
+      border: 3px solid var(--red);
     }
 
-    .music-card h3 {
-      font-size: 24px;
-      color: #2D3853;
-      margin-bottom: 12px;
+    .music-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
     }
 
-    .music-card p {
-      color: #898F9F;
-      line-height: 1.6;
-      margin-bottom: 20px;
+    .music-card:hover .music-thumbnail {
+      transform: scale(1.08);
     }
 
-    .music-btn {
-      display: inline-block;
-      padding: 12px 28px;
-      background: #E3232C;
+    .music-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(227, 35, 44, 0.85) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .music-card:hover::before {
+      opacity: 1;
+    }
+
+    .music-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+
+    .music-card:hover .music-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .music-title {
+      font-size: 18px;
+      font-weight: 700;
       color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
-    .music-btn:hover {
-      background: #2D3853;
-      transform: translateY(-2px);
+    .music-meta {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      letter-spacing: 1px;
     }
 
-    /* Page Contact */
-    .contact-content {
-      max-width: 700px;
+    /* Page Contact - Formulaire */
+    .contact-container {
+      max-width: 800px;
       margin: 0 auto;
-      text-align: center;
       opacity: 0;
       transform: translateY(30px);
       transition: all 0.6s ease;
     }
 
-    .contact-content.visible {
+    .contact-container.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
     .contact-title {
-      font-size: 48px;
+      font-size: 56px;
       font-weight: 900;
-      color: #2D3853;
+      color: var(--navy);
       margin-bottom: 20px;
       line-height: 1.2;
     }
 
     .contact-subtitle {
       font-size: 18px;
-      color: #898F9F;
-      margin-bottom: 50px;
+      color: var(--gray);
+      margin-bottom: 60px;
       line-height: 1.6;
     }
 
-    .contact-email {
-      display: inline-block;
-      font-size: 24px;
-      color: #E3232C;
-      text-decoration: none;
-      font-weight: 600;
-      margin-bottom: 40px;
+    .contact-form {
+      display: grid;
+      gap: 25px;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 18px 20px;
+      border: 2px solid #e5e5e5;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: inherit;
       transition: all 0.3s ease;
+      background: white;
     }
 
-    .contact-email:hover {
-      transform: translateY(-4px);
-      text-shadow: 0 8px 20px rgba(227, 35, 44, 0.2);
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--cyan);
+      box-shadow: 0 8px 30px rgba(109, 181, 196, 0.15);
     }
 
-    .social-links {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-      margin-top: 50px;
+    .form-group textarea {
+      resize: vertical;
+      min-height: 150px;
     }
 
-    .social-links a {
-      color: #898F9F;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
+    .form-group label {
+      position: absolute;
+      left: 20px;
+      top: 18px;
+      color: var(--gray);
+      font-size: 15px;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      background: white;
+      padding: 0 5px;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label {
+      top: -10px;
+      font-size: 12px;
+      color: var(--cyan);
+      font-weight: 600;
+    }
+
+    .submit-btn {
+      padding: 18px 50px;
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--red) 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
       letter-spacing: 1px;
       text-transform: uppercase;
-      transition: color 0.3s ease;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 10px 30px rgba(227, 35, 44, 0.2);
     }
 
-    .social-links a:hover {
-      color: #E3232C;
+    .submit-btn:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 20px 50px rgba(227, 35, 44, 0.3);
     }
 
-    /* Fullscreen Player */
+    /* Fullscreen */
     .fullscreen-player {
       display: none;
       position: fixed;
@@ -442,18 +553,15 @@
 
     .fullscreen-close:hover {
       background: white;
-      color: #2D3853;
+      color: var(--navy);
       transform: rotate(90deg);
     }
 
     /* Responsive */
     @media (max-width: 1200px) {
-      .video-grid {
-        column-count: 2;
-      }
-
+      .video-grid,
       .music-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
       }
     }
 
@@ -469,23 +577,20 @@
       }
 
       nav {
-        gap: 25px;
+        gap: 30px;
       }
 
       .page-section {
         padding: 130px 30px 80px;
       }
 
-      .video-grid {
-        column-count: 1;
+      .video-grid,
+      .music-grid {
+        grid-template-columns: 1fr;
       }
 
       .contact-title {
-        font-size: 36px;
-      }
-
-      .contact-email {
-        font-size: 20px;
+        font-size: 40px;
       }
     }
   </style>
@@ -516,41 +621,34 @@
   <!-- PAGE MUSIC -->
   <section id="music-page" class="page-section">
     <div class="section-title">Music & Sound Design</div>
-    <div class="music-grid">
-      <div class="music-card">
-        <h3>Compositions Originales</h3>
-        <p>Création de bandes originales pour films, séries et publicités. Du concept à la production finale.</p>
-        <a href="#" class="music-btn">Écouter</a>
-      </div>
-      <div class="music-card">
-        <h3>Sound Design</h3>
-        <p>Design sonore pour l'audiovisuel. Ambiances, effets et post-production audio.</p>
-        <a href="#" class="music-btn">Découvrir</a>
-      </div>
-      <div class="music-card">
-        <h3>Mix & Mastering</h3>
-        <p>Mixage et mastering professionnel pour vos projets musicaux et audiovisuels.</p>
-        <a href="#" class="music-btn">En savoir plus</a>
-      </div>
-      <div class="music-card">
-        <h3>Collaborations</h3>
-        <p>Travail avec des artistes et studios pour des projets créatifs uniques.</p>
-        <a href="#" class="music-btn">Portfolio</a>
-      </div>
-    </div>
+    <div class="music-grid" id="musicGrid"></div>
   </section>
 
   <!-- PAGE CONTACT -->
   <section id="contact-page" class="page-section">
-    <div class="contact-content">
-      <h1 class="contact-title">Let's Work Together</h1>
-      <p class="contact-subtitle">Vous avez un projet en tête ? Une collaboration à proposer ? N'hésitez pas à nous contacter.</p>
-      <a href="mailto:contact@modernfreaks.com" class="contact-email">contact@modernfreaks.com</a>
-      <div class="social-links">
-        <a href="#" target="_blank">Instagram</a>
-        <a href="#" target="_blank">Vimeo</a>
-        <a href="#" target="_blank">LinkedIn</a>
-      </div>
+    <div class="contact-container">
+      <h1 class="contact-title">Let's Create Together</h1>
+      <p class="contact-subtitle">Vous avez un projet en tête ? Parlons-en.</p>
+
+      <form class="contact-form" id="contactForm">
+        <div class="form-group">
+          <input type="text" id="name" placeholder=" " required>
+          <label for="name">Votre nom</label>
+        </div>
+        <div class="form-group">
+          <input type="email" id="email" placeholder=" " required>
+          <label for="email">Votre email</label>
+        </div>
+        <div class="form-group">
+          <input type="text" id="subject" placeholder=" " required>
+          <label for="subject">Sujet</label>
+        </div>
+        <div class="form-group">
+          <textarea id="message" placeholder=" " required></textarea>
+          <label for="message">Votre message</label>
+        </div>
+        <button type="submit" class="submit-btn">Envoyer</button>
+      </form>
     </div>
   </section>
 
@@ -626,11 +724,22 @@
       { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
     ];
 
-    const grid = document.getElementById('videoGrid');
+    // Vidéos musique (exemples - à remplacer par vraies vidéos)
+    const musicVideos = [
+      { id: "277878741", title: "PME Original Soundtrack" },
+      { id: "277878719", title: "Mélodie du ménage" },
+      { id: "390310795", title: "La Purée - Mister V" },
+      { id: "277879100", title: "Adidas - Get Ready" },
+      { id: "277878795", title: "Usain Bolt Soundtrack" },
+      { id: "277879120", title: "Moulinex World - Jam Block" }
+    ];
+
+    const videoGrid = document.getElementById('videoGrid');
+    const musicGrid = document.getElementById('musicGrid');
     const fullscreenPlayer = document.getElementById('fullscreenPlayer');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    // Générer les vidéos
+    // Générer vidéos Film
     videos.forEach((video, index) => {
       const card = document.createElement('div');
       card.className = 'video-card';
@@ -639,17 +748,31 @@
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
-          <div class="video-meta">Vimeo</div>
+          <div class="video-meta">Film</div>
         </div>
       `;
-
       card.addEventListener('click', () => openFullscreen(video.id));
-      grid.appendChild(card);
-
+      videoGrid.appendChild(card);
       setTimeout(() => card.classList.add('visible'), index * 40);
     });
 
-    // Navigation entre pages
+    // Générer vidéos Music
+    musicVideos.forEach((video, index) => {
+      const card = document.createElement('div');
+      card.className = 'music-card';
+      card.innerHTML = `
+        <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
+        <div class="play-btn"></div>
+        <div class="music-info">
+          <div class="music-title">${video.title}</div>
+          <div class="music-meta">Music</div>
+        </div>
+      `;
+      card.addEventListener('click', () => openFullscreen(video.id));
+      musicGrid.appendChild(card);
+    });
+
+    // Navigation
     const navLinks = document.querySelectorAll('nav a');
     const pages = document.querySelectorAll('.page-section');
 
@@ -666,15 +789,14 @@
           if (page.id === `${targetPage}-page`) {
             page.classList.add('active');
 
-            // Animations au changement de page
             if (targetPage === 'music') {
               document.querySelectorAll('.music-card').forEach((card, i) => {
-                setTimeout(() => card.classList.add('visible'), i * 100);
+                setTimeout(() => card.classList.add('visible'), i * 80);
               });
             }
             if (targetPage === 'contact') {
               setTimeout(() => {
-                document.querySelector('.contact-content').classList.add('visible');
+                document.querySelector('.contact-container').classList.add('visible');
               }, 100);
             }
           }
@@ -682,11 +804,17 @@
       });
     });
 
+    // Formulaire
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Message envoyé ! (formulaire demo)');
+      e.target.reset();
+    });
+
     function openFullscreen(videoId) {
       videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
       fullscreenPlayer.classList.add('active');
       document.body.style.overflow = 'hidden';
-
       if (fullscreenPlayer.requestFullscreen) {
         fullscreenPlayer.requestFullscreen().catch(() => {});
       }
@@ -696,7 +824,6 @@
       videoPlayer.src = '';
       fullscreenPlayer.classList.remove('active');
       document.body.style.overflow = '';
-
       if (document.fullscreenElement) document.exitFullscreen();
     }
 
