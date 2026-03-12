@@ -73,19 +73,72 @@
       transform: translateY(-12px) rotate(-5deg) scale(1.15);
     }
 
-    /* Animation wave sur les lettres du logo */
-    @keyframes logoWave {
-      0%, 100% {
-        transform: translateY(0) rotate(0deg);
-      }
-      50% {
-        transform: translateY(-15px) rotate(-8deg);
-      }
+    /* 10 animations différentes pour les lettres du logo */
+    @keyframes logoAnim1 {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-18px) rotate(-10deg) scale(1.15); }
     }
 
-    .logo span.animate {
-      animation: logoWave 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    @keyframes logoAnim2 {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(15deg); }
     }
+
+    @keyframes logoAnim3 {
+      0%, 100% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-20px) scale(1.2); }
+      60% { transform: translateY(-8px) scale(0.95); }
+    }
+
+    @keyframes logoAnim4 {
+      0%, 100% { transform: translateY(0) rotateX(0deg); }
+      50% { transform: translateY(-15px) rotateX(360deg); }
+    }
+
+    @keyframes logoAnim5 {
+      0%, 100% { transform: translateY(0) skewY(0deg); }
+      50% { transform: translateY(-14px) skewY(10deg); }
+    }
+
+    @keyframes logoAnim6 {
+      0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+      25% { transform: translateY(-10px) rotate(-5deg) scale(1.1); }
+      75% { transform: translateY(-16px) rotate(8deg) scale(1.05); }
+    }
+
+    @keyframes logoAnim7 {
+      0%, 100% { transform: translateY(0) rotateY(0deg); }
+      50% { transform: translateY(-12px) rotateY(180deg); }
+    }
+
+    @keyframes logoAnim8 {
+      0%, 100% { transform: translateY(0) scale(1) rotate(0deg); }
+      50% { transform: translateY(-22px) scale(0.9) rotate(20deg); }
+    }
+
+    @keyframes logoAnim9 {
+      0%, 100% { transform: translateY(0); }
+      20% { transform: translateY(-25px); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-18px); }
+      80% { transform: translateY(-6px); }
+    }
+
+    @keyframes logoAnim10 {
+      0%, 100% { transform: translateY(0) rotate(0deg) skewX(0deg); }
+      50% { transform: translateY(-16px) rotate(-12deg) skewX(-5deg); }
+    }
+
+    .logo span.animate-1 { animation: logoAnim1 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-2 { animation: logoAnim2 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-3 { animation: logoAnim3 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-4 { animation: logoAnim4 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-5 { animation: logoAnim5 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-6 { animation: logoAnim6 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-7 { animation: logoAnim7 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-8 { animation: logoAnim8 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-9 { animation: logoAnim9 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .logo span.animate-10 { animation: logoAnim10 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
     .logo .f { color: var(--cyan); }
     .logo .r { color: var(--navy); }
@@ -235,10 +288,64 @@
       transform: scale(1);
     }
 
-    /* Effet élégant au hover */
-    .video-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    /* 10 effets hover différents - assignés aléatoirement */
+    .video-card.hover-1:hover {
+      transform: translateY(-12px) scale(1.03) rotate(1deg);
+      box-shadow: 0 25px 70px rgba(109, 181, 196, 0.3);
+      z-index: 10;
+    }
+
+    .video-card.hover-2:hover {
+      transform: translateY(-8px) scale(1.05) rotate(-2deg);
+      box-shadow: 0 20px 60px rgba(227, 35, 44, 0.25);
+      z-index: 10;
+    }
+
+    .video-card.hover-3:hover {
+      transform: translateY(-10px) scale(1.04) skewY(1deg);
+      box-shadow: 0 22px 65px rgba(45, 56, 83, 0.3);
+      z-index: 10;
+    }
+
+    .video-card.hover-4:hover {
+      transform: translateY(-15px) scale(1.02) rotateX(3deg);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+      z-index: 10;
+    }
+
+    .video-card.hover-5:hover {
+      transform: translateY(-10px) scale(1.06);
+      box-shadow: 0 20px 70px rgba(109, 181, 196, 0.35);
+      z-index: 10;
+    }
+
+    .video-card.hover-6:hover {
+      transform: translateY(-12px) scale(1.04) rotate(2deg) perspective(500px);
+      box-shadow: 0 25px 75px rgba(227, 35, 44, 0.3);
+      z-index: 10;
+    }
+
+    .video-card.hover-7:hover {
+      transform: translateY(-8px) scale(1.05) rotateY(2deg);
+      box-shadow: 0 18px 60px rgba(45, 56, 83, 0.28);
+      z-index: 10;
+    }
+
+    .video-card.hover-8:hover {
+      transform: translateY(-14px) scale(1.03) skewX(-1deg);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.22);
+      z-index: 10;
+    }
+
+    .video-card.hover-9:hover {
+      transform: translateY(-10px) scale(1.05) rotate(-1deg);
+      box-shadow: 0 22px 68px rgba(109, 181, 196, 0.32);
+      z-index: 10;
+    }
+
+    .video-card.hover-10:hover {
+      transform: translateY(-16px) scale(1.02) perspective(800px) rotateX(-2deg);
+      box-shadow: 0 30px 85px rgba(227, 35, 44, 0.28);
       z-index: 10;
     }
 
@@ -249,31 +356,27 @@
     /* Video card expanded - mode cinéma CLEAN & ÉLÉGANT */
     .video-card.playing {
       grid-column: 1 / -1;
-      max-width: 1400px;
-      width: 90%;
+      max-width: 1200px;
+      width: 85%;
       margin: 40px auto;
       aspect-ratio: 16 / 9;
       z-index: 100;
       cursor: default;
       border-radius: 20px;
-      animation: videoExpand 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: center;
       position: relative;
       box-shadow:
         0 0 0 1px rgba(0, 0, 0, 0.08),
         0 40px 100px rgba(0, 0, 0, 0.25),
         0 20px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    @keyframes videoExpand {
-      0% {
-        transform: scale(0.85);
-        opacity: 0;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
+    .video-card.playing.animating-open {
+      animation: none;
+    }
+
+    .video-card.playing.animating-close {
+      animation: none;
     }
 
     .video-card.playing .video-thumbnail {
@@ -501,35 +604,35 @@
     .music-card .close-btn {
       display: none;
       position: absolute;
-      top: -22px;
-      right: -22px;
-      width: 56px;
-      height: 56px;
+      top: -24px;
+      right: -24px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: var(--navy);
-      border: 3px solid white;
+      border: 4px solid white;
       color: white;
-      font-size: 32px;
+      font-size: 34px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 1001;
+      z-index: 10000;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
       font-weight: 400;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
 
     .music-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
       opacity: 0;
-      transform: scale(0.7);
+      transform: scale(0.5);
     }
 
     .music-card .close-btn:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      transform: scale(1.15) rotate(90deg);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
       background: var(--red);
     }
 
@@ -696,30 +799,30 @@
     .video-card .close-btn {
       display: none;
       position: absolute;
-      top: -22px;
-      right: -22px;
-      width: 56px;
-      height: 56px;
+      top: -24px;
+      right: -24px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: var(--navy);
-      border: 3px solid white;
+      border: 4px solid white;
       color: white;
-      font-size: 32px;
+      font-size: 34px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 1001;
+      z-index: 10000;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
       font-weight: 400;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     }
 
     .video-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
+      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
       opacity: 0;
-      transform: scale(0.7);
+      transform: scale(0.5);
     }
 
     @keyframes closeButtonAppear {
@@ -730,8 +833,8 @@
     }
 
     .video-card .close-btn:hover {
-      transform: scale(1.1) rotate(90deg);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      transform: scale(1.15) rotate(90deg);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
       background: var(--red);
     }
 
@@ -931,7 +1034,8 @@
     // Générer vidéos Film
     videos.forEach((video, index) => {
       const card = document.createElement('div');
-      card.className = 'video-card';
+      const hoverClass = `hover-${Math.floor(Math.random() * 10) + 1}`;
+      card.className = `video-card ${hoverClass}`;
       card.dataset.videoId = video.id;
       card.innerHTML = `
         <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
@@ -993,12 +1097,13 @@
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
-        // Animation wave des lettres du logo
+        // Animation variée des lettres du logo
         const logoLetters = document.querySelectorAll('.logo span');
         logoLetters.forEach((letter, index) => {
+          const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
           setTimeout(() => {
-            letter.classList.add('animate');
-            setTimeout(() => letter.classList.remove('animate'), 600);
+            letter.classList.add(animClass);
+            setTimeout(() => letter.classList.remove(animClass), 600);
           }, index * 60);
         });
 
@@ -1043,31 +1148,100 @@
     function playVideo(card, title) {
       // Stop toute autre vidéo en cours
       document.querySelectorAll('.video-card.playing, .music-card.playing').forEach(c => {
-        c.classList.remove('playing');
+        c.classList.remove('playing', 'animating-open', 'animating-close');
         c.querySelector('iframe').src = '';
       });
+
+      // Capture position initiale pour hero animation
+      const initialRect = card.getBoundingClientRect();
+      const initialX = initialRect.left;
+      const initialY = initialRect.top;
+      const initialWidth = initialRect.width;
+      const initialHeight = initialRect.height;
 
       // Lance cette vidéo
       const videoId = card.dataset.videoId;
       const iframe = card.querySelector('iframe');
       iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
-      card.classList.add('playing');
+      card.classList.add('playing', 'animating-open');
       document.body.classList.add('video-playing');
+
+      // Calcule la position finale
+      requestAnimationFrame(() => {
+        const finalRect = card.getBoundingClientRect();
+        const finalX = finalRect.left;
+        const finalY = finalRect.top;
+        const finalWidth = finalRect.width;
+        const finalHeight = finalRect.height;
+
+        // Calcule les deltas
+        const deltaX = initialX - finalX;
+        const deltaY = initialY - finalY;
+        const scaleX = initialWidth / finalWidth;
+        const scaleY = initialHeight / finalHeight;
+
+        // Démarre de la position initiale
+        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
+        card.style.opacity = '1';
+
+        // Anime vers la position finale
+        requestAnimationFrame(() => {
+          card.style.transform = 'translate(0, 0) scale(1, 1)';
+        });
+
+        // Nettoie après l'animation
+        setTimeout(() => {
+          card.classList.remove('animating-open');
+          card.style.transform = '';
+        }, 500);
+      });
 
       // Met à jour l'URL avec le slug
       const slug = createSlug(title);
       window.location.hash = slug;
 
-      // Scroll vers la vidéo
+      // Scroll vers la vidéo après un délai
       setTimeout(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 100);
+      }, 600);
     }
 
     function stopVideo(card) {
+      // Capture position actuelle
+      const currentRect = card.getBoundingClientRect();
+
+      // Retire l'état playing pour calculer la position de retour
       card.classList.remove('playing');
-      card.querySelector('iframe').src = '';
-      document.body.classList.remove('video-playing');
+      card.classList.add('animating-close');
+
+      requestAnimationFrame(() => {
+        const targetRect = card.getBoundingClientRect();
+        const deltaX = currentRect.left - targetRect.left;
+        const deltaY = currentRect.top - targetRect.top;
+        const scaleX = currentRect.width / targetRect.width;
+        const scaleY = currentRect.height / targetRect.height;
+
+        // Remet playing temporairement pour l'animation
+        card.classList.add('playing');
+
+        // Démarre de la position actuelle
+        card.style.transform = 'translate(0, 0) scale(1, 1)';
+
+        // Anime vers la position de retour
+        requestAnimationFrame(() => {
+          card.style.transform = `translate(${-deltaX}px, ${-deltaY}px) scale(${1/scaleX}, ${1/scaleY})`;
+          card.style.opacity = '1';
+        });
+
+        // Nettoie après l'animation
+        setTimeout(() => {
+          card.classList.remove('playing', 'animating-close');
+          card.querySelector('iframe').src = '';
+          card.style.transform = '';
+          card.style.opacity = '';
+          document.body.classList.remove('video-playing');
+        }, 500);
+      });
 
       // Retire le hash de l'URL
       history.replaceState(null, null, ' ');
