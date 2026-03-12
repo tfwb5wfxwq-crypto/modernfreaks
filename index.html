@@ -47,18 +47,19 @@
     }
 
     .logo {
-      font-size: 42px;
-      font-weight: 900;
-      letter-spacing: -2px;
+      font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 1px;
       color: var(--black);
-      text-transform: uppercase;
+      text-transform: none;
       cursor: pointer;
       position: relative;
       transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .logo::before {
-      content: 'FREAKS';
+      content: 'modern freaks';
       position: absolute;
       top: 0;
       left: 0;
@@ -69,14 +70,6 @@
 
     .logo:hover::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-    }
-
-    .logo span {
-      font-weight: 300;
-      font-size: 14px;
-      letter-spacing: 4px;
-      margin-left: 8px;
-      opacity: 0.5;
     }
 
     /* Navigation */
@@ -364,10 +357,7 @@
 <body>
   <header>
     <div class="header-inner">
-      <div class="logo">
-        FREAKS
-        <span>MODERN</span>
-      </div>
+      <div class="logo">modern freaks</div>
       <nav>
         <a href="#film" class="active">Film</a>
         <a href="#music">Music</a>
