@@ -1232,6 +1232,15 @@
       // Capture position initiale de la miniature
       const startRect = card.getBoundingClientRect();
 
+      // Crée un placeholder invisible pour garder la place dans la grille
+      const placeholder = document.createElement('div');
+      placeholder.className = 'video-placeholder';
+      placeholder.style.width = startRect.width + 'px';
+      placeholder.style.height = startRect.height + 'px';
+      placeholder.style.visibility = 'hidden';
+      card.parentNode.insertBefore(placeholder, card);
+      card._placeholder = placeholder;
+
       // Calcule position finale (centrée, 85% largeur viewport, max 1200px)
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
@@ -1281,32 +1290,25 @@
 
     function stopVideo(card) {
       const iframe = card.querySelector('iframe');
+      const placeholder = card._placeholder;
 
       // Position actuelle (expanded)
       const currentRect = card.getBoundingClientRect();
 
-      // Retire l'état playing pour calculer position de retour
+      // Position de retour (placeholder qui a gardé la place)
+      const targetRect = placeholder ? placeholder.getBoundingClientRect() : card.getBoundingClientRect();
+
+      // Retire l'état playing
       card.classList.remove('playing');
       document.body.classList.remove('video-playing');
 
-      // Calcule position de retour (position originale dans la grille)
-      // On doit temporairement remettre position relative pour calculer
-      const tempPosition = card.style.position;
-      card.style.position = 'relative';
-      card.style.left = '';
-      card.style.top = '';
-      card.style.width = '';
-      card.style.height = '';
-
-      const targetRect = card.getBoundingClientRect();
-
-      // Remet en fixed à la position actuelle pour l'animation
+      // Garde la carte en fixed pour l'animation de retour
+      card.style.transition = 'none';
       card.style.position = 'fixed';
       card.style.left = currentRect.left + 'px';
       card.style.top = currentRect.top + 'px';
       card.style.width = currentRect.width + 'px';
       card.style.height = currentRect.height + 'px';
-      card.style.transition = 'none';
 
       // Anime vers la position de retour
       requestAnimationFrame(() => {
@@ -1328,6 +1330,12 @@
         card.style.height = '';
         card.style.margin = '';
         card.style.transition = '';
+
+        // Retire le placeholder
+        if (placeholder && placeholder.parentNode) {
+          placeholder.parentNode.removeChild(placeholder);
+          card._placeholder = null;
+        }
       }, 500);
 
       // Retire le hash
