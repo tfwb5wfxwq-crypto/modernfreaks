@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Freaks - Horizontal Scroll</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #2D3853;
+      --white: #fafafa;
+      --red: #E3232C;
+      --gray: #898F9F;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    body.grabbing {
+      cursor: grabbing;
+    }
+
+    /* Header fixe */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 40px 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(45,56,83,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(20px);
+    }
+
+    .logo {
+      font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      color: var(--white);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.4s ease;
+    }
+
+    .logo::before {
+      content: 'modern freaks';
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: var(--red);
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo:hover::before {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    nav {
+      display: flex;
+      gap: 40px;
+    }
+
+    nav a {
+      color: rgba(255, 255, 255, 0.6);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--red);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: white;
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 100%;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .scroll-hint::before,
+    .scroll-hint::after {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* Container horizontal */
+    .horizontal-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      padding: 0 60px;
+      transition: transform 0.1s ease-out;
+      will-change: transform;
+    }
+
+    /* Video Cards */
+    .video-card {
+      position: relative;
+      height: 70vh;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .video-card:hover {
+      transform: scale(1.05) translateY(-10px);
+      box-shadow:
+        0 30px 80px rgba(0, 0, 0, 0.6),
+        0 0 0 2px rgba(227, 35, 44, 0.3);
+      z-index: 100;
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(45,56,83,0.9) 0%, transparent 50%);
+      opacity: 0.6;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .video-card:hover::before {
+      opacity: 1;
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.6s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.1);
+    }
+
+    /* Play Button */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.9);
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.8;
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 28px solid white;
+      border-top: 16px solid transparent;
+      border-bottom: 16px solid transparent;
+      margin-left: 6px;
+    }
+
+    .video-card:hover .play-btn {
+      transform: translate(-50%, -50%) scale(1.15);
+      background: var(--red);
+      border-color: var(--red);
+      box-shadow: 0 20px 60px rgba(227, 35, 44, 0.6);
+      opacity: 1;
+    }
+
+    /* Video Info */
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 32px;
+      z-index: 2;
+      transform: translateY(15px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .video-card:hover .video-info {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .video-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8);
+      line-height: 1.3;
+    }
+
+    .video-meta {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 1px;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--red);
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* Fullscreen Player */
+    .fullscreen-player {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fullscreen-player.active {
+      display: flex;
+    }
+
+    .fullscreen-player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 28px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .fullscreen-close:hover {
+      background: white;
+      color: var(--black);
+      transform: scale(1.1) rotate(90deg);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header {
+        padding: 20px;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .logo {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      .horizontal-container {
+        padding: 0 20px;
+        gap: 20px;
+      }
+
+      .video-card {
+        height: 60vh;
+      }
+
+      .scroll-hint {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">modern freaks</div>
+    <nav>
+      <a href="#film" class="active">Film</a>
+      <a href="#music">Music</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <div class="scroll-hint">
+    Scroll horizontally to explore
+  </div>
+
+  <div class="progress-bar" id="progressBar"></div>
+
+  <div class="horizontal-container" id="horizontalContainer">
+    <!-- Videos will be inserted here -->
+  </div>
+
+  <!-- Fullscreen Player -->
+  <div class="fullscreen-player" id="fullscreenPlayer">
+    <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
+    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const videos = [
+      { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
+      { id: "1125480221", title: "Bodins_Le desert" },
+      { id: "1125484591", title: "Yacht_Gene" },
+      { id: "1092497480", title: "Les Infaillibles_Générique_FREAKS" },
+      { id: "1092500213", title: "Les Infaillibles_Mechant#1_GOOD" },
+      { id: "1092500102", title: "Les Infaillibles_Les toits_Good" },
+      { id: "906000696", title: "Generique Uderzo Freaks" },
+      { id: "905968626", title: "BDE_ROCK#2" },
+      { id: "905973318", title: "BDE_TEUF#1" },
+      { id: "905969175", title: "BDE_MYFRIENDS" },
+      { id: "905969277", title: "BDE_BDABDE" },
+      { id: "905966719", title: "BDE_SANGRECALIENTE" },
+      { id: "790376671", title: "Video 13" },
+      { id: "790378664", title: "1Mec7Z9Gog0Jxyh1S8Nvzsu9827Lpq" },
+      { id: "790378306", title: "Mivcj8Yz88258E2M74Jwskotggxshe" },
+      { id: "790390287", title: "Video 16" },
+      { id: "790392010", title: "Ta6Eddtsjphrog4Hv1Divr46Iwo5B2" },
+      { id: "636258595", title: "Yumtefu31Omgd5My2S0Alty1I2Ro12" },
+      { id: "636284708", title: "JTVMNP - Extrait 1.mp4" },
+      { id: "636286285", title: "JTVMNP - Extrait 2.mp4" },
+      { id: "906060661", title: "Les Disparus du Fleuve (2022) #2" },
+      { id: "636287938", title: "JTVMNP - Extrait 4.mp4" },
+      { id: "636287161", title: "JTVMNP - Extrait 3.mp4" },
+      { id: "636342480", title: "Klcsgpfvqz4Axl8868Bvo901Atkx9B" },
+      { id: "790445038", title: "DivorceClub_Clip.mov" },
+      { id: "790446169", title: "DivorceClub_ClubScene.mov" },
+      { id: "408873994", title: "PREGEN_1" },
+      { id: "408873499", title: "HUBER POOP" },
+      { id: "790446249", title: "DivorceClub_GtoRide" },
+      { id: "790457293", title: "DivorceClub_GtoRide2.mov" },
+      { id: "790446325", title: "DivorceClub_Ikea" },
+      { id: "277878741", title: "pme_qtp" },
+      { id: "277878719", title: "melodiedumenagefreaksmid" },
+      { id: "390310795", title: "la_puree_misterv_ludovik" },
+      { id: "396704418", title: "LETALISMAN_EXTRAIT2" },
+      { id: "396703214", title: "LETALISMAN_EXTRAIT1" },
+      { id: "396690796", title: "GOODLUCKMRGORSKY_1" },
+      { id: "396692043", title: "GOODLUCKMRGORSKY_4" },
+      { id: "277879100", title: "Adidas - Get ready" },
+      { id: "277614450", title: "Le Manoir - The end of Sam" },
+      { id: "277614461", title: "Le Manoir - La salle des trophées" },
+      { id: "277614422", title: "Le Manoir -Final fight" },
+      { id: "277614432", title: "Le Manoir - La collection" },
+      { id: "277879133", title: "Targets_Fall_Fashion_Show" },
+      { id: "277878755", title: "starck" },
+      { id: "277858419", title: "Vive la France - La mode" },
+      { id: "277858423", title: "Vive la France - La plage" },
+      { id: "277858411", title: "Vive la France - Générique" },
+      { id: "277878795", title: "USAIN_BOLT_EX1_qtp" },
+      { id: "277858851", title: "APP_EX11 bis_qtp" },
+      { id: "277858848", title: "APP_EX8_qtp" },
+      { id: "277858836", title: "APP_EX3_qtp" },
+      { id: "277856448", title: "Fatal - Canapi" },
+      { id: "277628464", title: "Fatal - Generique" },
+      { id: "277856461", title: "Fatal - Restaurant" },
+      { id: "277856472", title: "Fatal - My friends" },
+      { id: "277858430", title: "Sul Mare - Theme" },
+      { id: "277858438", title: "Sul Mare - Underwater" },
+      { id: "277878623", title: "stephanie" },
+      { id: "277878628", title: "LE DBQT_2_880" },
+      { id: "277878668", title: "Freaks_Cesar2014" },
+      { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
+    ];
+
+    const container = document.getElementById('horizontalContainer');
+    const progressBar = document.getElementById('progressBar');
+    const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    let currentX = 0;
+    let targetX = 0;
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+
+    // Générer les cards
+    videos.forEach((video) => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
+        <div class="play-btn"></div>
+        <div class="video-info">
+          <div class="video-title">${video.title}</div>
+          <div class="video-meta">Vimeo · ${video.id}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        if (!isDragging) {
+          openFullscreen(video.id);
+        }
+      });
+
+      container.appendChild(card);
+    });
+
+    // Scroll avec molette (vertical → horizontal)
+    window.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      targetX -= e.deltaY * 2;
+      const maxScroll = -(container.scrollWidth - window.innerWidth);
+      targetX = Math.max(maxScroll, Math.min(0, targetX));
+    }, { passive: false });
+
+    // Drag avec souris
+    container.addEventListener('mousedown', (e) => {
+      isDragging = true;
+      startX = e.pageX;
+      scrollLeft = targetX;
+      document.body.classList.add('grabbing');
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      const x = e.pageX;
+      const walk = (x - startX) * 2;
+      targetX = scrollLeft + walk;
+      const maxScroll = -(container.scrollWidth - window.innerWidth);
+      targetX = Math.max(maxScroll, Math.min(0, targetX));
+    });
+
+    window.addEventListener('mouseup', () => {
+      isDragging = false;
+      document.body.classList.remove('grabbing');
+    });
+
+    // Touch pour mobile
+    let touchStart = 0;
+    container.addEventListener('touchstart', (e) => {
+      touchStart = e.touches[0].clientX;
+      scrollLeft = targetX;
+    });
+
+    container.addEventListener('touchmove', (e) => {
+      const touchX = e.touches[0].clientX;
+      const walk = (touchX - touchStart) * 2;
+      targetX = scrollLeft + walk;
+      const maxScroll = -(container.scrollWidth - window.innerWidth);
+      targetX = Math.max(maxScroll, Math.min(0, targetX));
+    });
+
+    // Animation loop avec inertie
+    function animate() {
+      currentX += (targetX - currentX) * 0.1; // Inertie fluide
+      container.style.transform = `translateX(${currentX}px)`;
+
+      // Progress bar
+      const maxScroll = container.scrollWidth - window.innerWidth;
+      const progress = Math.abs(currentX) / maxScroll * 100;
+      progressBar.style.width = `${progress}%`;
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    function openFullscreen(videoId) {
+      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+      fullscreenPlayer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (fullscreenPlayer.requestFullscreen) {
+        fullscreenPlayer.requestFullscreen().catch(() => {});
+      } else if (fullscreenPlayer.webkitRequestFullscreen) {
+        fullscreenPlayer.webkitRequestFullscreen();
+      }
+    }
+
+    function closeFullscreen() {
+      videoPlayer.src = '';
+      fullscreenPlayer.classList.remove('active');
+      document.body.style.overflow = '';
+
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFullscreen();
+      if (e.key === 'ArrowRight') targetX -= 300;
+      if (e.key === 'ArrowLeft') targetX += 300;
+    });
+
+    fullscreenPlayer.addEventListener('click', (e) => {
+      if (e.target === fullscreenPlayer) closeFullscreen();
+    });
+  </script>
+</body>
+</html>
