@@ -421,11 +421,15 @@
     }
 
     .video-card iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       display: none;
       width: 100%;
       height: 100%;
       border: none;
       border-radius: 20px;
+      z-index: 2;
     }
 
     /* Loader élégant pendant chargement vidéo */
@@ -651,11 +655,15 @@
     }
 
     .music-card iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
       display: none;
       width: 100%;
       height: 100%;
       border: none;
       border-radius: 20px;
+      z-index: 2;
     }
 
     .music-card .close-btn {
@@ -1272,15 +1280,23 @@
 
         // Lance la vidéo
         setTimeout(() => {
-          iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+          iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0`;
+
+          // Fallback si onload ne se déclenche pas
+          const loadTimeout = setTimeout(() => {
+            card.classList.remove('loading');
+            card.classList.add('loaded');
+          }, 3000);
+
           iframe.onload = () => {
+            clearTimeout(loadTimeout);
             // Quand l'iframe est chargée, fade de la miniature vers la vidéo
             setTimeout(() => {
               card.classList.remove('loading');
               card.classList.add('loaded');
-            }, 300);
+            }, 400);
           };
-        }, 250);
+        }, 300);
       });
 
       // Met à jour l'URL
@@ -1309,33 +1325,45 @@
       card.style.top = currentRect.top + 'px';
       card.style.width = currentRect.width + 'px';
       card.style.height = currentRect.height + 'px';
+      card.style.zIndex = '10000';
 
-      // Anime vers la position de retour
+      // Anime vers la position de retour avec fade smooth
       requestAnimationFrame(() => {
-        card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
-        card.style.left = targetRect.left + 'px';
-        card.style.top = targetRect.top + 'px';
-        card.style.width = targetRect.width + 'px';
-        card.style.height = targetRect.height + 'px';
+        requestAnimationFrame(() => {
+          card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+          card.style.left = targetRect.left + 'px';
+          card.style.top = targetRect.top + 'px';
+          card.style.width = targetRect.width + 'px';
+          card.style.height = targetRect.height + 'px';
+          card.style.opacity = '1';
+        });
       });
 
       // Nettoie après l'animation
       setTimeout(() => {
-        iframe.src = '';
-        card.classList.remove('loaded', 'loading');
+        // Passe en relative au dernier moment pour éviter la saccade
+        card.style.transition = 'none';
         card.style.position = '';
         card.style.left = '';
         card.style.top = '';
         card.style.width = '';
         card.style.height = '';
         card.style.margin = '';
-        card.style.transition = '';
+        card.style.zIndex = '';
+        card.style.opacity = '';
 
-        // Retire le placeholder
-        if (placeholder && placeholder.parentNode) {
-          placeholder.parentNode.removeChild(placeholder);
-          card._placeholder = null;
-        }
+        // Nettoie l'iframe après
+        setTimeout(() => {
+          iframe.src = '';
+          card.classList.remove('loaded', 'loading');
+          card.style.transition = '';
+
+          // Retire le placeholder
+          if (placeholder && placeholder.parentNode) {
+            placeholder.parentNode.removeChild(placeholder);
+            card._placeholder = null;
+          }
+        }, 50);
       }, 500);
 
       // Retire le hash
