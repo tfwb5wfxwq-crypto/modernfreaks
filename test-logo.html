@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Freaks - Logo Test</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafafa;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    .logo-container {
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 120px;
+      font-weight: 900;
+      letter-spacing: -4px;
+      text-transform: uppercase;
+      display: inline-block;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .logo span {
+      display: inline-block;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Couleurs originales */
+    .logo span:nth-child(1) { color: #6DB5C4; } /* F - Cyan */
+    .logo span:nth-child(2) { color: #2D3853; } /* R - Bleu marine */
+    .logo span:nth-child(3) { color: #E3232C; } /* E - Rouge */
+    .logo span:nth-child(4) { color: #2D3853; } /* A - Bleu marine */
+    .logo span:nth-child(5) { color: #6DB5C4; } /* K - Cyan */
+    .logo span:nth-child(6) { color: #E3232C; } /* S - Rouge */
+
+    /* Hover sur le logo = rotation des couleurs */
+    .logo:hover span:nth-child(1) { color: #E3232C; }
+    .logo:hover span:nth-child(2) { color: #6DB5C4; }
+    .logo:hover span:nth-child(3) { color: #2D3853; }
+    .logo:hover span:nth-child(4) { color: #E3232C; }
+    .logo:hover span:nth-child(5) { color: #2D3853; }
+    .logo:hover span:nth-child(6) { color: #6DB5C4; }
+
+    /* Hover sur chaque lettre individuellement */
+    .logo span:hover {
+      transform: translateY(-10px) scale(1.15) rotate(-5deg);
+      text-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      font-size: 16px;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: #898F9F;
+      font-weight: 300;
+    }
+
+    .info {
+      margin-top: 60px;
+      font-size: 14px;
+      color: #898F9F;
+      max-width: 600px;
+    }
+
+    .colors {
+      margin-top: 40px;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .color-box {
+      text-align: center;
+    }
+
+    .color-swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .color-label {
+      font-size: 12px;
+      color: #898F9F;
+      font-weight: 600;
+    }
+
+    .color-code {
+      font-size: 11px;
+      color: #898F9F;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <div class="logo" id="logo">
+      <span>F</span><span>R</span><span>E</span><span>A</span><span>K</span><span>S</span>
+    </div>
+    <div class="subtitle">Modern</div>
+
+    <div class="info">
+      <strong>Animation :</strong> Hover sur le logo = rotation des couleurs | Hover sur chaque lettre = bounce individuel
+    </div>
+
+    <div class="colors">
+      <div class="color-box">
+        <div class="color-swatch" style="background: #6DB5C4;"></div>
+        <div class="color-label">Cyan</div>
+        <div class="color-code">#6DB5C4</div>
+      </div>
+      <div class="color-box">
+        <div class="color-swatch" style="background: #2D3853;"></div>
+        <div class="color-label">Bleu Marine</div>
+        <div class="color-code">#2D3853</div>
+      </div>
+      <div class="color-box">
+        <div class="color-swatch" style="background: #E3232C;"></div>
+        <div class="color-label">Rouge</div>
+        <div class="color-code">#E3232C</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Animation optionnelle : couleurs qui changent aléatoirement au clic
+    const logo = document.getElementById('logo');
+    const letters = logo.querySelectorAll('span');
+    const colors = ['#6DB5C4', '#2D3853', '#E3232C'];
+
+    logo.addEventListener('click', () => {
+      letters.forEach(letter => {
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        letter.style.color = randomColor;
+      });
+    });
+  </script>
+</body>
+</html>
