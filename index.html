@@ -226,11 +226,23 @@
       transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
       transform: scale(0.95);
+      transform-style: preserve-3d;
+      perspective: 1000px;
     }
 
     .video-card.visible {
       opacity: 1;
       transform: scale(1);
+    }
+
+    /* Effet WHAHOU au hover - 3D Tilt + Glow */
+    .video-card:hover {
+      transform: scale(1.08) translateZ(20px);
+      z-index: 10;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.15);
     }
 
     /* Video card expanded - mode cinéma ULTRA STYLÉ */
@@ -430,13 +442,16 @@
       transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    /* Bordures colorées alternées - style iPhone */
+    /* Bordures et glow WHAHOU colorés selon vidéo */
     .video-card:nth-child(3n+1) {
       border: 2px solid transparent;
     }
     .video-card:nth-child(3n+1):hover {
       border-color: var(--cyan);
-      box-shadow: 0 8px 24px rgba(109, 181, 196, 0.15);
+      box-shadow:
+        0 0 0 3px rgba(109, 181, 196, 0.3),
+        0 20px 60px rgba(109, 181, 196, 0.5),
+        0 0 80px rgba(109, 181, 196, 0.3);
     }
 
     .video-card:nth-child(3n+2) {
@@ -444,7 +459,10 @@
     }
     .video-card:nth-child(3n+2):hover {
       border-color: var(--red);
-      box-shadow: 0 8px 24px rgba(227, 35, 44, 0.15);
+      box-shadow:
+        0 0 0 3px rgba(227, 35, 44, 0.3),
+        0 20px 60px rgba(227, 35, 44, 0.5),
+        0 0 80px rgba(227, 35, 44, 0.3);
     }
 
     .video-card:nth-child(3n+3) {
@@ -452,22 +470,17 @@
     }
     .video-card:nth-child(3n+3):hover {
       border-color: var(--navy);
-      box-shadow: 0 8px 24px rgba(45, 56, 83, 0.15);
-    }
-
-    .video-card:hover {
-      transform: scale(1.01);
+      box-shadow:
+        0 0 0 3px rgba(45, 56, 83, 0.3),
+        0 20px 60px rgba(45, 56, 83, 0.5),
+        0 0 80px rgba(45, 56, 83, 0.3);
     }
 
     .video-thumbnail {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: transform 0.6s ease;
-    }
-
-    .video-card:hover .video-thumbnail {
-      transform: scale(1.05);
+      transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* Overlay avec gradient coloré */
@@ -823,49 +836,32 @@
     }
 
     /* Player avec animation stylée */
-    /* Boutons sur vidéo en lecture - ultra stylés */
-    .video-card .close-btn,
-    .video-card .share-btn {
+    /* Bouton close sur vidéo en lecture - ultra stylé */
+    .video-card .close-btn {
       display: none;
       position: absolute;
       top: -18px;
+      right: -18px;
       width: 48px;
       height: 48px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.98);
       border: 2px solid rgba(0, 0, 0, 0.06);
       color: var(--navy);
-      font-size: 20px;
+      font-size: 26px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
       z-index: 1000;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       line-height: 1;
-      font-weight: 600;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .video-card .close-btn {
-      right: -18px;
-      font-size: 26px;
       font-weight: 300;
-    }
-
-    .video-card .share-btn {
-      right: 45px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     }
 
     .video-card.playing .close-btn {
       display: flex;
       animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
-      opacity: 0;
-      transform: scale(0.5) rotate(-90deg);
-    }
-
-    .video-card.playing .share-btn {
-      display: flex;
-      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
       opacity: 0;
       transform: scale(0.5) rotate(-90deg);
     }
@@ -882,36 +878,6 @@
       box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
       background: var(--navy);
       color: white;
-    }
-
-    .video-card .share-btn:hover {
-      transform: scale(1.15);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      background: var(--cyan);
-      color: white;
-    }
-
-    /* Toast pour le partage */
-    .share-toast {
-      position: fixed;
-      bottom: 30px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: var(--navy);
-      color: white;
-      padding: 16px 28px;
-      border-radius: 50px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      z-index: 10000;
-      opacity: 0;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .share-toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
     }
 
     /* Animation des vidéos quand player ouvert */
@@ -1116,7 +1082,6 @@
         <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button class="close-btn">×</button>
-        <button class="share-btn">🔗</button>
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
@@ -1124,15 +1089,11 @@
         </div>
       `;
 
-      card.querySelector('.video-thumbnail').addEventListener('click', () => playVideo(card));
-      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card));
+      card.querySelector('.video-thumbnail').addEventListener('click', () => playVideo(card, video.title));
+      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card, video.title));
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
-      });
-      card.querySelector('.share-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        shareVideo(video.id, video.title);
       });
 
       videoGrid.appendChild(card);
@@ -1148,7 +1109,6 @@
         <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button class="close-btn">×</button>
-        <button class="share-btn">🔗</button>
         <div class="play-btn"></div>
         <div class="music-info">
           <div class="music-title">${video.title}</div>
@@ -1156,15 +1116,11 @@
         </div>
       `;
 
-      card.querySelector('.music-thumbnail').addEventListener('click', () => playVideo(card));
-      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card));
+      card.querySelector('.music-thumbnail').addEventListener('click', () => playVideo(card, video.title));
+      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card, video.title));
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
-      });
-      card.querySelector('.share-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        shareVideo(video.id, video.title);
       });
 
       musicGrid.appendChild(card);
@@ -1218,7 +1174,18 @@
       e.target.reset();
     });
 
-    function playVideo(card) {
+    // Créer un slug à partir du titre
+    function createSlug(title) {
+      return title
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '') // Retire les accents
+        .replace(/[^a-z0-9\s-]/g, '') // Garde seulement lettres, chiffres, espaces et tirets
+        .trim()
+        .replace(/\s+/g, '-'); // Remplace espaces par tirets
+    }
+
+    function playVideo(card, title) {
       // Stop toute autre vidéo en cours
       document.querySelectorAll('.video-card.playing, .music-card.playing').forEach(c => {
         c.classList.remove('playing');
@@ -1232,6 +1199,10 @@
       card.classList.add('playing');
       document.body.classList.add('video-playing');
 
+      // Met à jour l'URL avec le slug
+      const slug = createSlug(title);
+      window.location.hash = slug;
+
       // Scroll vers la vidéo
       setTimeout(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1242,34 +1213,9 @@
       card.classList.remove('playing');
       card.querySelector('iframe').src = '';
       document.body.classList.remove('video-playing');
-    }
 
-    function shareVideo(videoId, title) {
-      const vimeoUrl = `https://vimeo.com/${videoId}`;
-
-      // Copier dans le clipboard
-      navigator.clipboard.writeText(vimeoUrl).then(() => {
-        showShareToast('Lien copié!');
-      }).catch(() => {
-        showShareToast('Lien: ' + vimeoUrl);
-      });
-    }
-
-    function showShareToast(message) {
-      // Créer le toast s'il n'existe pas
-      let toast = document.querySelector('.share-toast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.className = 'share-toast';
-        document.body.appendChild(toast);
-      }
-
-      toast.textContent = message;
-      toast.classList.add('show');
-
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2500);
+      // Retire le hash de l'URL
+      history.replaceState(null, null, ' ');
     }
 
     // Escape pour fermer la vidéo
@@ -1277,6 +1223,36 @@
       if (e.key === 'Escape') {
         const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
         if (playingCard) stopVideo(playingCard);
+      }
+    });
+
+    // Auto-play vidéo si hash présent dans l'URL au chargement
+    window.addEventListener('load', () => {
+      const hash = window.location.hash.slice(1); // Retire le #
+      if (hash) {
+        // Cherche la vidéo correspondant au slug
+        const allVideos = [...videos, ...musicVideos];
+        const matchedVideo = allVideos.find(v => createSlug(v.title) === hash);
+
+        if (matchedVideo) {
+          // Trouve la carte correspondante
+          const card = document.querySelector(`[data-video-id="${matchedVideo.id}"]`);
+          if (card) {
+            // Si c'est une vidéo music, switch vers la page music d'abord
+            if (musicVideos.some(v => v.id === matchedVideo.id)) {
+              const musicLink = document.querySelector('nav a[data-page="music"]');
+              if (musicLink) musicLink.click();
+              setTimeout(() => {
+                playVideo(card, matchedVideo.title);
+              }, 300);
+            } else {
+              // C'est une vidéo film, joue direct
+              setTimeout(() => {
+                playVideo(card, matchedVideo.title);
+              }, 300);
+            }
+          }
+        }
       }
     });
   </script>
