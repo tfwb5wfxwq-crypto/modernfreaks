@@ -1,0 +1,9 @@
+# Archive files
+index-old.html
+images-urls.txt
+vimeo-ids.txt
+RECAP.txt
+
+# OS files
+.DS_Store
+*.log

@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Freaks</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #fafafa;
+      --red: #ff0000;
+      --gray: #666;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* Header & Logo */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -2px;
+      color: var(--black);
+      text-transform: uppercase;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo::before {
+      content: 'FREAKS';
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: var(--red);
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo:hover::before {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .logo span {
+      font-weight: 300;
+      font-size: 14px;
+      letter-spacing: 4px;
+      margin-left: 8px;
+      opacity: 0.5;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      gap: 40px;
+    }
+
+    nav a {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--red);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--black);
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 100%;
+    }
+
+    nav a.active {
+      color: var(--black);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 140px 40px 80px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 60px;
+      font-weight: 500;
+    }
+
+    /* Video Grid */
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 40px;
+    }
+
+    .video-card {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f0f0f0;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .video-card:hover::before {
+      opacity: 1;
+    }
+
+    .video-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 0, 0, 0.1);
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.95);
+      transition: all 0.4s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      filter: brightness(1) blur(0px);
+      transform: scale(1.05);
+    }
+
+    /* Play Button */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 20px solid var(--black);
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      margin-left: 4px;
+    }
+
+    .video-card:hover .play-btn {
+      background: var(--red);
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 12px 40px rgba(255, 0, 0, 0.4);
+    }
+
+    .video-card:hover .play-btn::after {
+      border-left-color: white;
+    }
+
+    /* Video Info */
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 2;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .video-card:hover .video-info {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .video-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .video-meta {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 1px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .video-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .logo {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      main {
+        padding: 120px 20px 60px;
+      }
+
+      .video-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading .video-thumbnail {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* Modal pour lecture vidéo */
+    .video-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .video-modal.active {
+      display: flex;
+    }
+
+    .video-modal iframe {
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 16 / 9;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: white;
+      color: black;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        FREAKS
+        <span>MODERN</span>
+      </div>
+      <nav>
+        <a href="#film" class="active">Film</a>
+        <a href="#music">Music</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-title">Selected Works</div>
+
+    <div class="video-grid" id="videoGrid">
+      <!-- Videos will be inserted here by JavaScript -->
+    </div>
+  </main>
+
+  <!-- Video Modal -->
+  <div class="video-modal" id="videoModal">
+    <button class="close-modal" onclick="closeModal()">×</button>
+    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    // Liste des 62 vidéos Vimeo
+    const videos = [
+      { id: '1092497480', title: 'Project 01' },
+      { id: '1092500102', title: 'Project 02' },
+      { id: '1092500213', title: 'Project 03' },
+      { id: '1125470403', title: 'Project 04' },
+      { id: '1125480221', title: 'Project 05' },
+      { id: '1125484591', title: 'Project 06' },
+      { id: '277614422', title: 'Project 07' },
+      { id: '277614432', title: 'Project 08' },
+      { id: '277614450', title: 'Project 09' },
+      { id: '277614461', title: 'Project 10' },
+      { id: '277628464', title: 'Project 11' },
+      { id: '277856448', title: 'Project 12' },
+      { id: '277856461', title: 'Project 13' },
+      { id: '277856472', title: 'Project 14' },
+      { id: '277858411', title: 'Project 15' },
+      { id: '277858419', title: 'Project 16' },
+      { id: '277858423', title: 'Project 17' },
+      { id: '277858430', title: 'Project 18' },
+      { id: '277858438', title: 'Project 19' },
+      { id: '277858836', title: 'Project 20' },
+      { id: '277858848', title: 'Project 21' },
+      { id: '277858851', title: 'Project 22' },
+      { id: '277878623', title: 'Project 23' },
+      { id: '277878628', title: 'Project 24' },
+      { id: '277878668', title: 'Project 25' },
+      { id: '277878719', title: 'Project 26' },
+      { id: '277878741', title: 'Project 27' },
+      { id: '277878755', title: 'Project 28' },
+      { id: '277878795', title: 'Project 29' },
+      { id: '277879100', title: 'Project 30' },
+      { id: '277879120', title: 'Project 31' },
+      { id: '277879133', title: 'Project 32' },
+      { id: '390310795', title: 'Project 33' },
+      { id: '396690796', title: 'Project 34' },
+      { id: '396692043', title: 'Project 35' },
+      { id: '396703214', title: 'Project 36' },
+      { id: '396704418', title: 'Project 37' },
+      { id: '408873499', title: 'Project 38' },
+      { id: '408873994', title: 'Project 39' },
+      { id: '636258595', title: 'Project 40' },
+      { id: '636284708', title: 'Project 41' },
+      { id: '636286285', title: 'Project 42' },
+      { id: '636287161', title: 'Project 43' },
+      { id: '636287938', title: 'Project 44' },
+      { id: '636342480', title: 'Project 45' },
+      { id: '790376671', title: 'Project 46' },
+      { id: '790378306', title: 'Project 47' },
+      { id: '790378664', title: 'Project 48' },
+      { id: '790390287', title: 'Project 49' },
+      { id: '790392010', title: 'Project 50' },
+      { id: '790445038', title: 'Project 51' },
+      { id: '790446169', title: 'Project 52' },
+      { id: '790446249', title: 'Project 53' },
+      { id: '790446325', title: 'Project 54' },
+      { id: '790457293', title: 'Project 55' },
+      { id: '905966719', title: 'Project 56' },
+      { id: '905968626', title: 'Project 57' },
+      { id: '905969175', title: 'Project 58' },
+      { id: '905969277', title: 'Project 59' },
+      { id: '905973318', title: 'Project 60' },
+      { id: '906000696', title: 'Project 61' },
+      { id: '906060661', title: 'Project 62' }
+    ];
+
+    const videoGrid = document.getElementById('videoGrid');
+    const videoModal = document.getElementById('videoModal');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    // Générer les cards
+    videos.forEach(video => {
+      const card = document.createElement('div');
+      card.className = 'video-card loading';
+      card.innerHTML = `
+        <img class="video-thumbnail" src="https://vumbnail.com/${video.id}.jpg" alt="${video.title}" loading="lazy">
+        <div class="play-btn"></div>
+        <div class="video-info">
+          <div class="video-title">${video.title}</div>
+          <div class="video-meta">Vimeo · ${video.id}</div>
+        </div>
+      `;
+      
+      card.addEventListener('click', () => {
+        openModal(video.id);
+      });
+
+      // Remove loading class when image loads
+      const img = card.querySelector('img');
+      img.addEventListener('load', () => {
+        card.classList.remove('loading');
+      });
+
+      videoGrid.appendChild(card);
+    });
+
+    function openModal(videoId) {
+      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+      videoModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      videoPlayer.src = '';
+      videoModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Close on click outside
+    videoModal.addEventListener('click', (e) => {
+      if (e.target === videoModal) closeModal();
+    });
+  </script>
+</body>
+</html>
