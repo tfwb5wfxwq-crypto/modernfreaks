@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Freaks</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #2D3853;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 35px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Logo multicolore simple */
+    .logo {
+      font-size: 52px;
+      font-weight: 900;
+      letter-spacing: -3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      gap: 2px;
+    }
+
+    .logo span {
+      transition: all 0.3s ease;
+    }
+
+    .logo span:hover {
+      transform: translateY(-4px);
+    }
+
+    .logo .f { color: #6DB5C4; }
+    .logo .r { color: #2D3853; }
+    .logo .e { color: #E3232C; }
+    .logo .a { color: #2D3853; }
+    .logo .k { color: #6DB5C4; }
+    .logo .s { color: #E3232C; }
+
+    .logo-sub {
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: #898F9F;
+      font-weight: 400;
+      margin-left: 12px;
+      align-self: flex-end;
+      margin-bottom: 10px;
+    }
+
+    nav {
+      display: flex;
+      gap: 35px;
+    }
+
+    nav a {
+      color: #898F9F;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #E3232C;
+      transition: width 0.2s ease;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: #2D3853;
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 100%;
+    }
+
+    /* Main */
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 150px 50px 100px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #898F9F;
+      margin-bottom: 50px;
+      font-weight: 500;
+    }
+
+    /* Masonry Grid fluide */
+    .masonry-grid {
+      column-count: 3;
+      column-gap: 25px;
+    }
+
+    .video-card {
+      position: relative;
+      break-inside: avoid;
+      margin-bottom: 25px;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f8f8f8;
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .video-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-card:hover {
+      transform: translateY(-6px);
+      box-shadow:
+        0 16px 48px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(227, 35, 44, 0.08);
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(45,56,83,0.85) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    .video-card:hover::before {
+      opacity: 1;
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.05);
+    }
+
+    /* Play Button minimal */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .video-card:hover .play-btn {
+      opacity: 1;
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 16px solid #2D3853;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      margin-left: 4px;
+    }
+
+    /* Info minimal */
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .video-card:hover .video-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: white;
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .video-meta {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+      letter-spacing: 0.5px;
+    }
+
+    /* Fullscreen */
+    .fullscreen-player {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(45, 56, 83, 0.98);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .fullscreen-player.active {
+      display: flex;
+    }
+
+    .fullscreen-player iframe {
+      width: 90%;
+      max-width: 1400px;
+      aspect-ratio: 16 / 9;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 40px 120px rgba(0, 0, 0, 0.4);
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      z-index: 10000;
+    }
+
+    .fullscreen-close:hover {
+      background: white;
+      color: #2D3853;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .masonry-grid {
+        column-count: 2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 20px;
+        padding: 25px 30px;
+      }
+
+      .logo {
+        font-size: 38px;
+      }
+
+      nav {
+        gap: 25px;
+      }
+
+      main {
+        padding: 130px 30px 80px;
+      }
+
+      .masonry-grid {
+        column-count: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div style="display: flex; align-items: flex-end;">
+        <div class="logo">
+          <span class="f">F</span><span class="r">R</span><span class="e">E</span><span class="a">A</span><span class="k">K</span><span class="s">S</span>
+        </div>
+        <div class="logo-sub">Modern</div>
+      </div>
+      <nav>
+        <a href="#film" class="active">Film</a>
+        <a href="#music">Music</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-title">Selected Works</div>
+
+    <div class="masonry-grid" id="masonryGrid">
+      <!-- Videos will be inserted here -->
+    </div>
+  </main>
+
+  <div class="fullscreen-player" id="fullscreenPlayer">
+    <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
+    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const videos = [
+      { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
+      { id: "1125480221", title: "Bodins_Le desert" },
+      { id: "1125484591", title: "Yacht_Gene" },
+      { id: "1092497480", title: "Les Infaillibles_Générique_FREAKS" },
+      { id: "1092500213", title: "Les Infaillibles_Mechant#1_GOOD" },
+      { id: "1092500102", title: "Les Infaillibles_Les toits_Good" },
+      { id: "906000696", title: "Generique Uderzo Freaks" },
+      { id: "905968626", title: "BDE_ROCK#2" },
+      { id: "905973318", title: "BDE_TEUF#1" },
+      { id: "905969175", title: "BDE_MYFRIENDS" },
+      { id: "905969277", title: "BDE_BDABDE" },
+      { id: "905966719", title: "BDE_SANGRECALIENTE" },
+      { id: "790376671", title: "Video 13" },
+      { id: "790378664", title: "1Mec7Z9Gog0Jxyh1S8Nvzsu9827Lpq" },
+      { id: "790378306", title: "Mivcj8Yz88258E2M74Jwskotggxshe" },
+      { id: "790390287", title: "Video 16" },
+      { id: "790392010", title: "Ta6Eddtsjphrog4Hv1Divr46Iwo5B2" },
+      { id: "636258595", title: "Yumtefu31Omgd5My2S0Alty1I2Ro12" },
+      { id: "636284708", title: "JTVMNP - Extrait 1.mp4" },
+      { id: "636286285", title: "JTVMNP - Extrait 2.mp4" },
+      { id: "906060661", title: "Les Disparus du Fleuve (2022) #2" },
+      { id: "636287938", title: "JTVMNP - Extrait 4.mp4" },
+      { id: "636287161", title: "JTVMNP - Extrait 3.mp4" },
+      { id: "636342480", title: "Klcsgpfvqz4Axl8868Bvo901Atkx9B" },
+      { id: "790445038", title: "DivorceClub_Clip.mov" },
+      { id: "790446169", title: "DivorceClub_ClubScene.mov" },
+      { id: "408873994", title: "PREGEN_1" },
+      { id: "408873499", title: "HUBER POOP" },
+      { id: "790446249", title: "DivorceClub_GtoRide" },
+      { id: "790457293", title: "DivorceClub_GtoRide2.mov" },
+      { id: "790446325", title: "DivorceClub_Ikea" },
+      { id: "277878741", title: "pme_qtp" },
+      { id: "277878719", title: "melodiedumenagefreaksmid" },
+      { id: "390310795", title: "la_puree_misterv_ludovik" },
+      { id: "396704418", title: "LETALISMAN_EXTRAIT2" },
+      { id: "396703214", title: "LETALISMAN_EXTRAIT1" },
+      { id: "396690796", title: "GOODLUCKMRGORSKY_1" },
+      { id: "396692043", title: "GOODLUCKMRGORSKY_4" },
+      { id: "277879100", title: "Adidas - Get ready" },
+      { id: "277614450", title: "Le Manoir - The end of Sam" },
+      { id: "277614461", title: "Le Manoir - La salle des trophées" },
+      { id: "277614422", title: "Le Manoir -Final fight" },
+      { id: "277614432", title: "Le Manoir - La collection" },
+      { id: "277879133", title: "Targets_Fall_Fashion_Show" },
+      { id: "277878755", title: "starck" },
+      { id: "277858419", title: "Vive la France - La mode" },
+      { id: "277858423", title: "Vive la France - La plage" },
+      { id: "277858411", title: "Vive la France - Générique" },
+      { id: "277878795", title: "USAIN_BOLT_EX1_qtp" },
+      { id: "277858851", title: "APP_EX11 bis_qtp" },
+      { id: "277858848", title: "APP_EX8_qtp" },
+      { id: "277858836", title: "APP_EX3_qtp" },
+      { id: "277856448", title: "Fatal - Canapi" },
+      { id: "277628464", title: "Fatal - Generique" },
+      { id: "277856461", title: "Fatal - Restaurant" },
+      { id: "277856472", title: "Fatal - My friends" },
+      { id: "277858430", title: "Sul Mare - Theme" },
+      { id: "277858438", title: "Sul Mare - Underwater" },
+      { id: "277878623", title: "stephanie" },
+      { id: "277878628", title: "LE DBQT_2_880" },
+      { id: "277878668", title: "Freaks_Cesar2014" },
+      { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
+    ];
+
+    const grid = document.getElementById('masonryGrid');
+    const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    videos.forEach((video, index) => {
+      const card = document.createElement('div');
+      card.className = 'video-card';
+      card.innerHTML = `
+        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
+        <div class="play-btn"></div>
+        <div class="video-info">
+          <div class="video-title">${video.title}</div>
+          <div class="video-meta">Vimeo</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        openFullscreen(video.id);
+      });
+
+      grid.appendChild(card);
+
+      // Animation stagger
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, index * 30);
+    });
+
+    function openFullscreen(videoId) {
+      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+      fullscreenPlayer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (fullscreenPlayer.requestFullscreen) {
+        fullscreenPlayer.requestFullscreen().catch(() => {});
+      }
+    }
+
+    function closeFullscreen() {
+      videoPlayer.src = '';
+      fullscreenPlayer.classList.remove('active');
+      document.body.style.overflow = '';
+
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFullscreen();
+    });
+
+    fullscreenPlayer.addEventListener('click', (e) => {
+      if (e.target === fullscreenPlayer) closeFullscreen();
+    });
+  </script>
+</body>
+</html>
