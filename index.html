@@ -368,32 +368,21 @@
 
     /* Video card expanded - mode cinéma CLEAN & ÉLÉGANT */
     .video-card.playing {
-      grid-column: 1 / -1;
-      max-width: 1200px;
-      width: 85%;
-      margin: 40px auto;
-      aspect-ratio: 16 / 9;
-      z-index: 100;
+      position: fixed !important;
+      z-index: 10000;
       cursor: default;
       border-radius: 20px;
-      position: relative;
       box-shadow:
         0 0 0 1px rgba(0, 0, 0, 0.08),
         0 40px 100px rgba(0, 0, 0, 0.25),
         0 20px 40px rgba(0, 0, 0, 0.15);
+      transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     /* Animation ultra fluide GPU-accelerated */
     .video-card {
-      will-change: transform, opacity;
-      transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-                  opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-                  box-shadow 0.4s ease;
-    }
-
-    .video-card.hero-animating {
-      transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
-                  opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1);
+      will-change: transform;
+      transition: all 0.5s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     /* Anti-scintillement sur les éléments internes */
@@ -1213,115 +1202,110 @@
       // Stop toute autre vidéo en cours
       document.querySelectorAll('.video-card.playing, .music-card.playing').forEach(c => {
         if (c !== card) {
-          c.classList.remove('playing', 'hero-animating');
-          c.querySelector('iframe').src = '';
-          c.style.transform = '';
-          c.style.transformOrigin = '';
+          stopVideo(c);
         }
       });
 
-      // FLIP: First - Capture position initiale
-      const first = card.getBoundingClientRect();
-
-      // Lance cette vidéo et backdrop
       const videoId = card.dataset.videoId;
       const iframe = card.querySelector('iframe');
-      card.classList.add('playing');
+
+      // Capture position initiale de la miniature
+      const startRect = card.getBoundingClientRect();
+
+      // Calcule position finale (centrée, 85% largeur viewport, max 1200px)
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      const maxWidth = Math.min(viewportWidth * 0.85, 1200);
+      const finalHeight = maxWidth * (9 / 16);
+      const finalLeft = (viewportWidth - maxWidth) / 2;
+      const finalTop = (viewportHeight - finalHeight) / 2;
+
+      // Positionne la carte en fixed à sa position actuelle (invisible au user)
+      card.style.position = 'fixed';
+      card.style.left = startRect.left + 'px';
+      card.style.top = startRect.top + 'px';
+      card.style.width = startRect.width + 'px';
+      card.style.height = startRect.height + 'px';
+      card.style.margin = '0';
+      card.style.transition = 'none';
+
+      // Active l'état playing et backdrop
+      card.classList.add('playing', 'loading');
       document.body.classList.add('video-playing');
 
-      // FLIP: Last - Position finale après ajout de .playing
+      // Anime vers la position finale
       requestAnimationFrame(() => {
-        const last = card.getBoundingClientRect();
+        card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+        card.style.left = finalLeft + 'px';
+        card.style.top = finalTop + 'px';
+        card.style.width = maxWidth + 'px';
+        card.style.height = finalHeight + 'px';
 
-        // FLIP: Invert - Calcule la transformation inverse
-        const deltaX = first.left - last.left;
-        const deltaY = first.top - last.top;
-        const scaleX = first.width / last.width;
-        const scaleY = first.height / last.height;
-
-        // Positionne instantanément à la position de départ (sans transition)
-        card.style.transition = 'none';
-        card.style.transformOrigin = '0 0';
-        card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
-
-        // FLIP: Play - Active la transition et anime vers position finale
-        requestAnimationFrame(() => {
-          card.classList.add('hero-animating', 'loading');
-          card.style.transform = 'translate(0, 0) scale(1, 1)';
-
-          // Lance la vidéo après un court délai pour smooth loading
-          setTimeout(() => {
-            iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
-
-            // Retire le loader quand l'iframe est chargé
-            iframe.onload = () => {
-              setTimeout(() => {
-                card.classList.remove('loading');
-              }, 500);
-            };
-          }, 200);
-        });
-
-        // Nettoie après l'animation
+        // Lance la vidéo
         setTimeout(() => {
-          card.style.transition = '';
-          card.style.transform = '';
-          card.style.transformOrigin = '';
-          card.classList.remove('hero-animating');
-        }, 450);
+          iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+          iframe.onload = () => {
+            setTimeout(() => card.classList.remove('loading'), 500);
+          };
+        }, 200);
       });
 
-      // Met à jour l'URL avec le slug
+      // Met à jour l'URL
       const slug = createSlug(title);
       window.location.hash = slug;
-
-      // Scroll vers la vidéo
-      setTimeout(() => {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 500);
     }
 
     function stopVideo(card) {
-      // FLIP: First - Position actuelle (expanded)
-      const first = card.getBoundingClientRect();
+      const iframe = card.querySelector('iframe');
 
-      // Retire .playing pour obtenir position finale
+      // Position actuelle (expanded)
+      const currentRect = card.getBoundingClientRect();
+
+      // Retire l'état playing pour calculer position de retour
       card.classList.remove('playing');
+      document.body.classList.remove('video-playing');
 
-      // FLIP: Last - Position finale après retrait de .playing
+      // Calcule position de retour (position originale dans la grille)
+      // On doit temporairement remettre position relative pour calculer
+      const tempPosition = card.style.position;
+      card.style.position = 'relative';
+      card.style.left = '';
+      card.style.top = '';
+      card.style.width = '';
+      card.style.height = '';
+
+      const targetRect = card.getBoundingClientRect();
+
+      // Remet en fixed à la position actuelle pour l'animation
+      card.style.position = 'fixed';
+      card.style.left = currentRect.left + 'px';
+      card.style.top = currentRect.top + 'px';
+      card.style.width = currentRect.width + 'px';
+      card.style.height = currentRect.height + 'px';
+      card.style.transition = 'none';
+
+      // Anime vers la position de retour
       requestAnimationFrame(() => {
-        const last = card.getBoundingClientRect();
-
-        // FLIP: Invert - Calcule transformation pour revenir
-        const deltaX = first.left - last.left;
-        const deltaY = first.top - last.top;
-        const scaleX = first.width / last.width;
-        const scaleY = first.height / last.height;
-
-        // Remet .playing temporairement pour l'animation
-        card.classList.add('playing');
-        card.style.transition = 'none';
-        card.style.transformOrigin = '0 0';
-        card.style.transform = 'translate(0, 0) scale(1, 1)';
-
-        // FLIP: Play - Anime vers position compacte
-        requestAnimationFrame(() => {
-          card.classList.add('hero-animating');
-          card.style.transform = `translate(${-deltaX}px, ${-deltaY}px) scale(${1/scaleX}, ${1/scaleY})`;
-        });
-
-        // Nettoie après l'animation
-        setTimeout(() => {
-          card.classList.remove('playing', 'hero-animating');
-          card.querySelector('iframe').src = '';
-          card.style.transition = '';
-          card.style.transform = '';
-          card.style.transformOrigin = '';
-          document.body.classList.remove('video-playing');
-        }, 450);
+        card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+        card.style.left = targetRect.left + 'px';
+        card.style.top = targetRect.top + 'px';
+        card.style.width = targetRect.width + 'px';
+        card.style.height = targetRect.height + 'px';
       });
 
-      // Retire le hash de l'URL
+      // Nettoie après l'animation
+      setTimeout(() => {
+        iframe.src = '';
+        card.style.position = '';
+        card.style.left = '';
+        card.style.top = '';
+        card.style.width = '';
+        card.style.height = '';
+        card.style.margin = '';
+        card.style.transition = '';
+      }, 500);
+
+      // Retire le hash
       history.replaceState(null, null, ' ');
     }
 
