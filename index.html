@@ -146,7 +146,6 @@
     nav a:hover {
       color: var(--white);
       background: rgba(0, 0, 0, 0.05);
-      transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
@@ -232,6 +231,42 @@
     .video-card.visible {
       opacity: 1;
       transform: scale(1);
+    }
+
+    /* Video card expanded - prend toute la largeur */
+    .video-card.playing {
+      grid-column: 1 / -1;
+      aspect-ratio: 16 / 9;
+      z-index: 100;
+      cursor: default;
+    }
+
+    .video-card.playing .video-thumbnail {
+      display: none;
+    }
+
+    .video-card.playing .play-btn,
+    .video-card.playing .video-info {
+      display: none;
+    }
+
+    .video-card.playing iframe {
+      display: block;
+    }
+
+    .video-card iframe {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 16px;
+    }
+
+    /* Autres vidéos quand une est en lecture */
+    body.video-playing .video-card:not(.playing) {
+      opacity: 0.4;
+      transform: scale(0.95);
+      filter: blur(3px);
     }
 
     /* Bordures colorées alternées - style iPhone */
@@ -392,6 +427,74 @@
       border: 2px solid var(--red);
     }
 
+    /* Music card expanded */
+    .music-card.playing {
+      grid-column: 1 / -1;
+      aspect-ratio: 16 / 9;
+      z-index: 100;
+      cursor: default;
+    }
+
+    .music-card.playing .music-thumbnail {
+      display: none;
+    }
+
+    .music-card.playing .play-btn,
+    .music-card.playing .music-info {
+      display: none;
+    }
+
+    .music-card.playing iframe {
+      display: block;
+    }
+
+    .music-card iframe {
+      display: none;
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 16px;
+    }
+
+    .music-card .close-btn {
+      display: none;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: var(--navy);
+      font-size: 24px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      line-height: 1;
+      font-weight: 300;
+    }
+
+    .music-card.playing .close-btn {
+      display: flex;
+      animation: fadeInBtn 0.4s ease 0.3s forwards;
+      opacity: 0;
+    }
+
+    .music-card .close-btn:hover {
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* Autres vidéos quand une music est en lecture */
+    body.video-playing .music-card:not(.playing) {
+      opacity: 0.4;
+      transform: scale(0.95);
+      filter: blur(3px);
+    }
+
     .music-thumbnail {
       width: 100%;
       height: 100%;
@@ -448,9 +551,9 @@
       letter-spacing: 1px;
     }
 
-    /* Page Contact - Formulaire */
+    /* Page Contact - Formulaire compact */
     .contact-container {
-      max-width: 800px;
+      max-width: 600px;
       margin: 0 auto;
       opacity: 0;
       transform: translateY(30px);
@@ -463,23 +566,29 @@
     }
 
     .contact-title {
-      font-size: 56px;
-      font-weight: 900;
+      font-size: 36px;
+      font-weight: 700;
       color: var(--navy);
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       line-height: 1.2;
     }
 
     .contact-subtitle {
-      font-size: 18px;
+      font-size: 15px;
       color: var(--gray);
-      margin-bottom: 60px;
-      line-height: 1.6;
+      margin-bottom: 35px;
+      line-height: 1.5;
     }
 
     .contact-form {
       display: grid;
-      gap: 25px;
+      gap: 14px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
     }
 
     .form-group {
@@ -489,145 +598,89 @@
     .form-group input,
     .form-group textarea {
       width: 100%;
-      padding: 18px 20px;
-      border: 2px solid #e5e5e5;
-      border-radius: 12px;
-      font-size: 15px;
+      padding: 13px 16px;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      font-size: 14px;
       font-family: inherit;
       transition: all 0.3s ease;
-      background: white;
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--gray);
+      opacity: 0.6;
     }
 
     .form-group input:focus,
     .form-group textarea:focus {
       outline: none;
       border-color: var(--cyan);
-      box-shadow: 0 8px 30px rgba(109, 181, 196, 0.15);
+      background: white;
+      box-shadow: 0 4px 20px rgba(109, 181, 196, 0.1);
     }
 
     .form-group textarea {
       resize: vertical;
-      min-height: 150px;
-    }
-
-    .form-group label {
-      position: absolute;
-      left: 20px;
-      top: 18px;
-      color: var(--gray);
-      font-size: 15px;
-      transition: all 0.3s ease;
-      pointer-events: none;
-      background: white;
-      padding: 0 5px;
-    }
-
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label,
-    .form-group textarea:focus + label,
-    .form-group textarea:not(:placeholder-shown) + label {
-      top: -10px;
-      font-size: 12px;
-      color: var(--cyan);
-      font-weight: 600;
+      min-height: 110px;
     }
 
     .submit-btn {
-      padding: 18px 50px;
+      padding: 14px 38px;
       background: linear-gradient(135deg, var(--cyan) 0%, var(--red) 100%);
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      box-shadow: 0 10px 30px rgba(227, 35, 44, 0.2);
+      transition: all 0.3s ease;
+      justify-self: start;
     }
 
     .submit-btn:hover {
-      transform: translateY(-4px) scale(1.02);
-      box-shadow: 0 20px 50px rgba(227, 35, 44, 0.3);
+      box-shadow: 0 8px 25px rgba(109, 181, 196, 0.3);
     }
 
     /* Player avec animation stylée */
-    .fullscreen-player {
+    /* Bouton close sur vidéo en lecture */
+    .video-card .close-btn {
       display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(45, 56, 83, 0.96);
-      z-index: 9999;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(20px);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-
-    .fullscreen-player.active {
-      display: flex;
-      animation: fadeInPlayer 0.5s ease forwards;
-    }
-
-    @keyframes fadeInPlayer {
-      to {
-        opacity: 1;
-      }
-    }
-
-    .fullscreen-player iframe {
-      width: 90%;
-      max-width: 1600px;
-      aspect-ratio: 16 / 9;
-      border: none;
-      border-radius: 16px;
-      box-shadow: 0 50px 150px rgba(0, 0, 0, 0.6);
-      transform: scale(0.9);
-      opacity: 0;
-      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
-    }
-
-    @keyframes popIn {
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    .fullscreen-close {
       position: absolute;
-      top: 40px;
-      right: 40px;
-      width: 50px;
-      height: 50px;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: white;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: var(--navy);
       font-size: 24px;
       cursor: pointer;
-      display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1000;
       transition: all 0.3s ease;
-      z-index: 10000;
+      line-height: 1;
+      font-weight: 300;
+    }
+
+    .video-card.playing .close-btn {
+      display: flex;
+      animation: fadeInBtn 0.4s ease 0.3s forwards;
       opacity: 0;
-      animation: fadeInClose 0.4s ease 0.3s forwards;
     }
 
-    @keyframes fadeInClose {
-      to {
-        opacity: 1;
-      }
+    @keyframes fadeInBtn {
+      to { opacity: 1; }
     }
 
-    .fullscreen-close:hover {
-      background: white;
-      color: var(--navy);
-      transform: scale(1.1) rotate(90deg);
+    .video-card .close-btn:hover {
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 
     /* Animation des vidéos quand player ouvert */
@@ -713,32 +766,25 @@
       <p class="contact-subtitle">Vous avez un projet en tête ? Parlons-en.</p>
 
       <form class="contact-form" id="contactForm">
-        <div class="form-group">
-          <input type="text" id="name" placeholder=" " required>
-          <label for="name">Votre nom</label>
+        <div class="form-row">
+          <div class="form-group">
+            <input type="text" id="name" placeholder="Votre nom" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Votre email" required>
+          </div>
         </div>
         <div class="form-group">
-          <input type="email" id="email" placeholder=" " required>
-          <label for="email">Votre email</label>
+          <input type="text" id="subject" placeholder="Sujet" required>
         </div>
         <div class="form-group">
-          <input type="text" id="subject" placeholder=" " required>
-          <label for="subject">Sujet</label>
-        </div>
-        <div class="form-group">
-          <textarea id="message" placeholder=" " required></textarea>
-          <label for="message">Votre message</label>
+          <textarea id="message" placeholder="Votre message" required></textarea>
         </div>
         <button type="submit" class="submit-btn">Envoyer</button>
       </form>
     </div>
   </section>
 
-  <!-- Fullscreen Player -->
-  <div class="fullscreen-player" id="fullscreenPlayer">
-    <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
-    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
-  </div>
 
   <script>
     const videos = [
@@ -825,15 +871,25 @@
     videos.forEach((video, index) => {
       const card = document.createElement('div');
       card.className = 'video-card';
+      card.dataset.videoId = video.id;
       card.innerHTML = `
         <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
+        <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <button class="close-btn">×</button>
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
           <div class="video-meta">Film</div>
         </div>
       `;
-      card.addEventListener('click', () => openFullscreen(video.id));
+
+      card.querySelector('.video-thumbnail').addEventListener('click', () => playVideo(card));
+      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card));
+      card.querySelector('.close-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        stopVideo(card);
+      });
+
       videoGrid.appendChild(card);
       setTimeout(() => card.classList.add('visible'), index * 40);
     });
@@ -842,15 +898,25 @@
     musicVideos.forEach((video, index) => {
       const card = document.createElement('div');
       card.className = 'music-card';
+      card.dataset.videoId = video.id;
       card.innerHTML = `
         <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
+        <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <button class="close-btn">×</button>
         <div class="play-btn"></div>
         <div class="music-info">
           <div class="music-title">${video.title}</div>
           <div class="music-meta">Music</div>
         </div>
       `;
-      card.addEventListener('click', () => openFullscreen(video.id));
+
+      card.querySelector('.music-thumbnail').addEventListener('click', () => playVideo(card));
+      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card));
+      card.querySelector('.close-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        stopVideo(card);
+      });
+
       musicGrid.appendChild(card);
     });
 
@@ -902,30 +968,38 @@
       e.target.reset();
     });
 
-    function openFullscreen(videoId) {
-      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
-      fullscreenPlayer.classList.add('active');
-      document.body.classList.add('player-open');
-      document.body.style.overflow = 'hidden';
-      if (fullscreenPlayer.requestFullscreen) {
-        fullscreenPlayer.requestFullscreen().catch(() => {});
-      }
+    function playVideo(card) {
+      // Stop toute autre vidéo en cours
+      document.querySelectorAll('.video-card.playing, .music-card.playing').forEach(c => {
+        c.classList.remove('playing');
+        c.querySelector('iframe').src = '';
+      });
+
+      // Lance cette vidéo
+      const videoId = card.dataset.videoId;
+      const iframe = card.querySelector('iframe');
+      iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+      card.classList.add('playing');
+      document.body.classList.add('video-playing');
+
+      // Scroll vers la vidéo
+      setTimeout(() => {
+        card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     }
 
-    function closeFullscreen() {
-      videoPlayer.src = '';
-      fullscreenPlayer.classList.remove('active');
-      document.body.classList.remove('player-open');
-      document.body.style.overflow = '';
-      if (document.fullscreenElement) document.exitFullscreen();
+    function stopVideo(card) {
+      card.classList.remove('playing');
+      card.querySelector('iframe').src = '';
+      document.body.classList.remove('video-playing');
     }
 
+    // Escape pour fermer la vidéo
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeFullscreen();
-    });
-
-    fullscreenPlayer.addEventListener('click', (e) => {
-      if (e.target === fullscreenPlayer) closeFullscreen();
+      if (e.key === 'Escape') {
+        const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
+        if (playingCard) stopVideo(playingCard);
+      }
     });
   </script>
 </body>
