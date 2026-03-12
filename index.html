@@ -368,15 +368,19 @@
         0 0 0 1px rgba(0, 0, 0, 0.08),
         0 40px 100px rgba(0, 0, 0, 0.25),
         0 20px 40px rgba(0, 0, 0, 0.15);
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .video-card.playing.animating-open {
-      animation: none;
+    /* Animation ultra fluide GPU-accelerated */
+    .video-card {
+      will-change: transform, opacity;
+      transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+                  opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+                  box-shadow 0.3s ease;
     }
 
-    .video-card.playing.animating-close {
-      animation: none;
+    .video-card.hero-animating {
+      transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1),
+                  opacity 0.45s cubic-bezier(0.32, 0.72, 0, 1);
     }
 
     .video-card.playing .video-thumbnail {
@@ -1160,99 +1164,106 @@
     function playVideo(card, title) {
       // Stop toute autre vidéo en cours
       document.querySelectorAll('.video-card.playing, .music-card.playing').forEach(c => {
-        c.classList.remove('playing', 'animating-open', 'animating-close');
-        c.querySelector('iframe').src = '';
+        if (c !== card) {
+          c.classList.remove('playing', 'hero-animating');
+          c.querySelector('iframe').src = '';
+          c.style.transform = '';
+          c.style.transformOrigin = '';
+        }
       });
 
-      // Capture position initiale pour hero animation
-      const initialRect = card.getBoundingClientRect();
-      const initialX = initialRect.left;
-      const initialY = initialRect.top;
-      const initialWidth = initialRect.width;
-      const initialHeight = initialRect.height;
+      // FLIP: First - Capture position initiale
+      const first = card.getBoundingClientRect();
 
-      // Lance cette vidéo
+      // Lance cette vidéo et backdrop
       const videoId = card.dataset.videoId;
       const iframe = card.querySelector('iframe');
-      iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
-      card.classList.add('playing', 'animating-open');
+      card.classList.add('playing');
       document.body.classList.add('video-playing');
 
-      // Calcule la position finale
+      // FLIP: Last - Position finale après ajout de .playing
       requestAnimationFrame(() => {
-        const finalRect = card.getBoundingClientRect();
-        const finalX = finalRect.left;
-        const finalY = finalRect.top;
-        const finalWidth = finalRect.width;
-        const finalHeight = finalRect.height;
+        const last = card.getBoundingClientRect();
 
-        // Calcule les deltas
-        const deltaX = initialX - finalX;
-        const deltaY = initialY - finalY;
-        const scaleX = initialWidth / finalWidth;
-        const scaleY = initialHeight / finalHeight;
+        // FLIP: Invert - Calcule la transformation inverse
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top;
+        const scaleX = first.width / last.width;
+        const scaleY = first.height / last.height;
 
-        // Démarre de la position initiale
+        // Positionne instantanément à la position de départ (sans transition)
+        card.style.transition = 'none';
+        card.style.transformOrigin = '0 0';
         card.style.transform = `translate(${deltaX}px, ${deltaY}px) scale(${scaleX}, ${scaleY})`;
-        card.style.opacity = '1';
 
-        // Anime vers la position finale
+        // FLIP: Play - Active la transition et anime vers position finale
         requestAnimationFrame(() => {
+          card.classList.add('hero-animating');
           card.style.transform = 'translate(0, 0) scale(1, 1)';
+
+          // Lance la vidéo après un court délai pour smooth loading
+          setTimeout(() => {
+            iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+          }, 200);
         });
 
         // Nettoie après l'animation
         setTimeout(() => {
-          card.classList.remove('animating-open');
+          card.style.transition = '';
           card.style.transform = '';
-        }, 500);
+          card.style.transformOrigin = '';
+          card.classList.remove('hero-animating');
+        }, 450);
       });
 
       // Met à jour l'URL avec le slug
       const slug = createSlug(title);
       window.location.hash = slug;
 
-      // Scroll vers la vidéo après un délai
+      // Scroll vers la vidéo
       setTimeout(() => {
         card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 600);
+      }, 500);
     }
 
     function stopVideo(card) {
-      // Capture position actuelle
-      const currentRect = card.getBoundingClientRect();
+      // FLIP: First - Position actuelle (expanded)
+      const first = card.getBoundingClientRect();
 
-      // Retire l'état playing pour calculer la position de retour
+      // Retire .playing pour obtenir position finale
       card.classList.remove('playing');
-      card.classList.add('animating-close');
 
+      // FLIP: Last - Position finale après retrait de .playing
       requestAnimationFrame(() => {
-        const targetRect = card.getBoundingClientRect();
-        const deltaX = currentRect.left - targetRect.left;
-        const deltaY = currentRect.top - targetRect.top;
-        const scaleX = currentRect.width / targetRect.width;
-        const scaleY = currentRect.height / targetRect.height;
+        const last = card.getBoundingClientRect();
 
-        // Remet playing temporairement pour l'animation
+        // FLIP: Invert - Calcule transformation pour revenir
+        const deltaX = first.left - last.left;
+        const deltaY = first.top - last.top;
+        const scaleX = first.width / last.width;
+        const scaleY = first.height / last.height;
+
+        // Remet .playing temporairement pour l'animation
         card.classList.add('playing');
-
-        // Démarre de la position actuelle
+        card.style.transition = 'none';
+        card.style.transformOrigin = '0 0';
         card.style.transform = 'translate(0, 0) scale(1, 1)';
 
-        // Anime vers la position de retour
+        // FLIP: Play - Anime vers position compacte
         requestAnimationFrame(() => {
+          card.classList.add('hero-animating');
           card.style.transform = `translate(${-deltaX}px, ${-deltaY}px) scale(${1/scaleX}, ${1/scaleY})`;
-          card.style.opacity = '1';
         });
 
         // Nettoie après l'animation
         setTimeout(() => {
-          card.classList.remove('playing', 'animating-close');
+          card.classList.remove('playing', 'hero-animating');
           card.querySelector('iframe').src = '';
+          card.style.transition = '';
           card.style.transform = '';
-          card.style.opacity = '';
+          card.style.transformOrigin = '';
           document.body.classList.remove('video-playing');
-        }, 500);
+        }, 450);
       });
 
       // Retire le hash de l'URL
