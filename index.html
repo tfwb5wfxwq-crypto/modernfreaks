@@ -12,10 +12,10 @@
     }
 
     :root {
-      --black: #0a0a0a;
+      --black: #2D3853;
       --white: #fafafa;
-      --red: #ff0000;
-      --gray: #666;
+      --red: #E3232C;
+      --gray: #898F9F;
     }
 
     body {
@@ -157,7 +157,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.8));
+      background: linear-gradient(to bottom, transparent 50%, rgba(45,56,83,0.8));
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: 1;
@@ -170,8 +170,8 @@
     .video-card:hover {
       transform: translateY(-8px) scale(1.02);
       box-shadow:
-        0 20px 60px rgba(0, 0, 0, 0.15),
-        0 0 0 1px rgba(255, 0, 0, 0.1);
+        0 20px 60px rgba(45, 56, 83, 0.15),
+        0 0 0 1px rgba(227, 35, 44, 0.1);
     }
 
     .video-thumbnail {
@@ -218,7 +218,7 @@
     .video-card:hover .play-btn {
       background: var(--red);
       transform: translate(-50%, -50%) scale(1.15);
-      box-shadow: 0 12px 40px rgba(255, 0, 0, 0.4);
+      box-shadow: 0 12px 40px rgba(227, 35, 44, 0.4);
     }
 
     .video-card:hover .play-btn::after {
@@ -299,7 +299,7 @@
 
     .fullscreen-close:hover {
       background: white;
-      color: black;
+      color: var(--black);
       transform: scale(1.1);
     }
 
@@ -381,83 +381,83 @@
   </div>
 
   <script>
-    // Liste des 62 vidéos Vimeo (ordre original respecté)
+    // Données des vidéos avec vrais titres et images locales
     const videos = [
-      { id: '1092497480', title: 'Project 01' },
-      { id: '1092500102', title: 'Project 02' },
-      { id: '1092500213', title: 'Project 03' },
-      { id: '1125470403', title: 'Project 04' },
-      { id: '1125480221', title: 'Project 05' },
-      { id: '1125484591', title: 'Project 06' },
-      { id: '277614422', title: 'Project 07' },
-      { id: '277614432', title: 'Project 08' },
-      { id: '277614450', title: 'Project 09' },
-      { id: '277614461', title: 'Project 10' },
-      { id: '277628464', title: 'Project 11' },
-      { id: '277856448', title: 'Project 12' },
-      { id: '277856461', title: 'Project 13' },
-      { id: '277856472', title: 'Project 14' },
-      { id: '277858411', title: 'Project 15' },
-      { id: '277858419', title: 'Project 16' },
-      { id: '277858423', title: 'Project 17' },
-      { id: '277858430', title: 'Project 18' },
-      { id: '277858438', title: 'Project 19' },
-      { id: '277858836', title: 'Project 20' },
-      { id: '277858848', title: 'Project 21' },
-      { id: '277858851', title: 'Project 22' },
-      { id: '277878623', title: 'Project 23' },
-      { id: '277878628', title: 'Project 24' },
-      { id: '277878668', title: 'Project 25' },
-      { id: '277878719', title: 'Project 26' },
-      { id: '277878741', title: 'Project 27' },
-      { id: '277878755', title: 'Project 28' },
-      { id: '277878795', title: 'Project 29' },
-      { id: '277879100', title: 'Project 30' },
-      { id: '277879120', title: 'Project 31' },
-      { id: '277879133', title: 'Project 32' },
-      { id: '390310795', title: 'Project 33' },
-      { id: '396690796', title: 'Project 34' },
-      { id: '396692043', title: 'Project 35' },
-      { id: '396703214', title: 'Project 36' },
-      { id: '396704418', title: 'Project 37' },
-      { id: '408873499', title: 'Project 38' },
-      { id: '408873994', title: 'Project 39' },
-      { id: '636258595', title: 'Project 40' },
-      { id: '636284708', title: 'Project 41' },
-      { id: '636286285', title: 'Project 42' },
-      { id: '636287161', title: 'Project 43' },
-      { id: '636287938', title: 'Project 44' },
-      { id: '636342480', title: 'Project 45' },
-      { id: '790376671', title: 'Project 46' },
-      { id: '790378306', title: 'Project 47' },
-      { id: '790378664', title: 'Project 48' },
-      { id: '790390287', title: 'Project 49' },
-      { id: '790392010', title: 'Project 50' },
-      { id: '790445038', title: 'Project 51' },
-      { id: '790446169', title: 'Project 52' },
-      { id: '790446249', title: 'Project 53' },
-      { id: '790446325', title: 'Project 54' },
-      { id: '790457293', title: 'Project 55' },
-      { id: '905966719', title: 'Project 56' },
-      { id: '905968626', title: 'Project 57' },
-      { id: '905969175', title: 'Project 58' },
-      { id: '905969277', title: 'Project 59' },
-      { id: '905973318', title: 'Project 60' },
-      { id: '906000696', title: 'Project 61' },
-      { id: '906060661', title: 'Project 62' }
+      { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
+      { id: "1125480221", title: "Bodins_Le desert" },
+      { id: "1125484591", title: "Yacht_Gene" },
+      { id: "1092497480", title: "Les Infaillibles_Générique_FREAKS" },
+      { id: "1092500213", title: "Les Infaillibles_Mechant#1_GOOD" },
+      { id: "1092500102", title: "Les Infaillibles_Les toits_Good" },
+      { id: "906000696", title: "Generique Uderzo Freaks" },
+      { id: "905968626", title: "BDE_ROCK#2" },
+      { id: "905973318", title: "BDE_TEUF#1" },
+      { id: "905969175", title: "BDE_MYFRIENDS" },
+      { id: "905969277", title: "BDE_BDABDE" },
+      { id: "905966719", title: "BDE_SANGRECALIENTE" },
+      { id: "790376671", title: "Video 13" },
+      { id: "790378664", title: "1Mec7Z9Gog0Jxyh1S8Nvzsu9827Lpq" },
+      { id: "790378306", title: "Mivcj8Yz88258E2M74Jwskotggxshe" },
+      { id: "790390287", title: "Video 16" },
+      { id: "790392010", title: "Ta6Eddtsjphrog4Hv1Divr46Iwo5B2" },
+      { id: "636258595", title: "Yumtefu31Omgd5My2S0Alty1I2Ro12" },
+      { id: "636284708", title: "JTVMNP - Extrait 1.mp4" },
+      { id: "636286285", title: "JTVMNP - Extrait 2.mp4" },
+      { id: "906060661", title: "Les Disparus du Fleuve (2022) #2" },
+      { id: "636287938", title: "JTVMNP - Extrait 4.mp4" },
+      { id: "636287161", title: "JTVMNP - Extrait 3.mp4" },
+      { id: "636342480", title: "Klcsgpfvqz4Axl8868Bvo901Atkx9B" },
+      { id: "790445038", title: "DivorceClub_Clip.mov" },
+      { id: "790446169", title: "DivorceClub_ClubScene.mov" },
+      { id: "408873994", title: "PREGEN_1" },
+      { id: "408873499", title: "HUBER POOP" },
+      { id: "790446249", title: "DivorceClub_GtoRide" },
+      { id: "790457293", title: "DivorceClub_GtoRide2.mov" },
+      { id: "790446325", title: "DivorceClub_Ikea" },
+      { id: "277878741", title: "pme_qtp" },
+      { id: "277878719", title: "melodiedumenagefreaksmid" },
+      { id: "390310795", title: "la_puree_misterv_ludovik" },
+      { id: "396704418", title: "LETALISMAN_EXTRAIT2" },
+      { id: "396703214", title: "LETALISMAN_EXTRAIT1" },
+      { id: "396690796", title: "GOODLUCKMRGORSKY_1" },
+      { id: "396692043", title: "GOODLUCKMRGORSKY_4" },
+      { id: "277879100", title: "Adidas - Get ready" },
+      { id: "277614450", title: "Le Manoir - The end of Sam" },
+      { id: "277614461", title: "Le Manoir - La salle des trophées" },
+      { id: "277614422", title: "Le Manoir -Final fight" },
+      { id: "277614432", title: "Le Manoir - La collection" },
+      { id: "277879133", title: "Targets_Fall_Fashion_Show" },
+      { id: "277878755", title: "starck" },
+      { id: "277858419", title: "Vive la France - La mode" },
+      { id: "277858423", title: "Vive la France - La plage" },
+      { id: "277858411", title: "Vive la France - Générique" },
+      { id: "277878795", title: "USAIN_BOLT_EX1_qtp" },
+      { id: "277858851", title: "APP_EX11 bis_qtp" },
+      { id: "277858848", title: "APP_EX8_qtp" },
+      { id: "277858836", title: "APP_EX3_qtp" },
+      { id: "277856448", title: "Fatal - Canapi" },
+      { id: "277628464", title: "Fatal - Generique" },
+      { id: "277856461", title: "Fatal - Restaurant" },
+      { id: "277856472", title: "Fatal - My friends" },
+      { id: "277858430", title: "Sul Mare - Theme" },
+      { id: "277858438", title: "Sul Mare - Underwater" },
+      { id: "277878623", title: "stephanie" },
+      { id: "277878628", title: "LE DBQT_2_880" },
+      { id: "277878668", title: "Freaks_Cesar2014" },
+      { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
     ];
 
     const videoGrid = document.getElementById('videoGrid');
     const fullscreenPlayer = document.getElementById('fullscreenPlayer');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    // Générer les cards (ordre respecté)
+    // Générer les cards (ordre respecté du site original)
     videos.forEach((video, index) => {
       const card = document.createElement('div');
       card.className = 'video-card loading';
       card.setAttribute('data-index', index);
       card.innerHTML = `
-        <img class="video-thumbnail" src="https://vumbnail.com/${video.id}.jpg" alt="${video.title}" loading="lazy">
+        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}" loading="lazy">
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
