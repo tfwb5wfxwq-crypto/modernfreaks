@@ -73,6 +73,20 @@
       transform: translateY(-12px) rotate(-5deg) scale(1.15);
     }
 
+    /* Animation wave sur les lettres du logo */
+    @keyframes logoWave {
+      0%, 100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-15px) rotate(-8deg);
+      }
+    }
+
+    .logo span.animate {
+      animation: logoWave 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
     .logo .f { color: var(--cyan); }
     .logo .r { color: var(--navy); }
     .logo .e { color: var(--red); }
@@ -92,43 +106,74 @@
     /* Navigation avec couleurs */
     nav {
       display: flex;
-      gap: 50px;
+      gap: 15px;
     }
 
     nav a {
       color: var(--gray);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      transition: all 0.3s ease;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      padding: 8px 0;
+      padding: 12px 28px;
+      border-radius: 30px;
+      background: rgba(0, 0, 0, 0.03);
+      overflow: hidden;
     }
 
     nav a::before {
       content: '';
       position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0;
-      height: 3px;
-      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: -1;
     }
 
-    nav a[data-page="film"]::before { background: var(--cyan); }
-    nav a[data-page="music"]::before { background: var(--red); }
-    nav a[data-page="contact"]::before { background: var(--navy); }
+    nav a[data-page="film"]::before {
+      background: linear-gradient(135deg, var(--cyan), rgba(109, 181, 196, 0.6));
+    }
+    nav a[data-page="music"]::before {
+      background: linear-gradient(135deg, var(--red), rgba(227, 35, 44, 0.6));
+    }
+    nav a[data-page="contact"]::before {
+      background: linear-gradient(135deg, var(--navy), rgba(45, 56, 83, 0.6));
+    }
 
-    nav a:hover,
+    nav a:hover {
+      color: var(--white);
+      background: rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    nav a:hover::before {
+      opacity: 1;
+    }
+
     nav a.active {
-      color: var(--navy);
+      color: var(--white);
+      background: transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
 
-    nav a:hover::before,
     nav a.active::before {
-      width: 100%;
+      opacity: 1;
+    }
+
+    nav a.active[data-page="film"] {
+      box-shadow: 0 4px 20px rgba(109, 181, 196, 0.4);
+    }
+
+    nav a.active[data-page="music"] {
+      box-shadow: 0 4px 20px rgba(227, 35, 44, 0.4);
+    }
+
+    nav a.active[data-page="contact"] {
+      box-shadow: 0 4px 20px rgba(45, 56, 83, 0.4);
     }
 
     /* Sections */
@@ -507,20 +552,29 @@
       box-shadow: 0 20px 50px rgba(227, 35, 44, 0.3);
     }
 
-    /* Fullscreen */
+    /* Player avec animation stylée */
     .fullscreen-player {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(45, 56, 83, 0.98);
+      background: rgba(45, 56, 83, 0.96);
       z-index: 9999;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(15px);
+      backdrop-filter: blur(20px);
+      opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
     .fullscreen-player.active {
       display: flex;
+      animation: fadeInPlayer 0.5s ease forwards;
+    }
+
+    @keyframes fadeInPlayer {
+      to {
+        opacity: 1;
+      }
     }
 
     .fullscreen-player iframe {
@@ -528,8 +582,18 @@
       max-width: 1600px;
       aspect-ratio: 16 / 9;
       border: none;
-      border-radius: 12px;
-      box-shadow: 0 50px 150px rgba(0, 0, 0, 0.5);
+      border-radius: 16px;
+      box-shadow: 0 50px 150px rgba(0, 0, 0, 0.6);
+      transform: scale(0.9);
+      opacity: 0;
+      animation: popIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s forwards;
+    }
+
+    @keyframes popIn {
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
     .fullscreen-close {
@@ -539,8 +603,9 @@
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       color: white;
       font-size: 24px;
       cursor: pointer;
@@ -549,12 +614,29 @@
       justify-content: center;
       transition: all 0.3s ease;
       z-index: 10000;
+      opacity: 0;
+      animation: fadeInClose 0.4s ease 0.3s forwards;
+    }
+
+    @keyframes fadeInClose {
+      to {
+        opacity: 1;
+      }
     }
 
     .fullscreen-close:hover {
       background: white;
       color: var(--navy);
-      transform: rotate(90deg);
+      transform: scale(1.1) rotate(90deg);
+    }
+
+    /* Animation des vidéos quand player ouvert */
+    body.player-open .video-card,
+    body.player-open .music-card {
+      opacity: 0.3;
+      transform: scale(0.95);
+      filter: blur(2px);
+      transition: all 0.5s ease;
     }
 
     /* Responsive */
@@ -784,6 +866,15 @@
         navLinks.forEach(l => l.classList.remove('active'));
         link.classList.add('active');
 
+        // Animation wave des lettres du logo
+        const logoLetters = document.querySelectorAll('.logo span');
+        logoLetters.forEach((letter, index) => {
+          setTimeout(() => {
+            letter.classList.add('animate');
+            setTimeout(() => letter.classList.remove('animate'), 600);
+          }, index * 60);
+        });
+
         pages.forEach(page => {
           page.classList.remove('active');
           if (page.id === `${targetPage}-page`) {
@@ -814,6 +905,7 @@
     function openFullscreen(videoId) {
       videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
       fullscreenPlayer.classList.add('active');
+      document.body.classList.add('player-open');
       document.body.style.overflow = 'hidden';
       if (fullscreenPlayer.requestFullscreen) {
         fullscreenPlayer.requestFullscreen().catch(() => {});
@@ -823,6 +915,7 @@
     function closeFullscreen() {
       videoPlayer.src = '';
       fullscreenPlayer.classList.remove('active');
+      document.body.classList.remove('player-open');
       document.body.style.overflow = '';
       if (document.fullscreenElement) document.exitFullscreen();
     }
