@@ -279,68 +279,91 @@
     }
 
     /* 10 effets hover différents - assignés aléatoirement */
-    .video-card.hover-1:hover {
+    /* Désactive hover si vidéo en lecture */
+    .video-card.playing:hover {
+      transform: none !important;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 40px 100px rgba(0, 0, 0, 0.25),
+        0 20px 40px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .video-card.hover-1:hover:not(.playing) {
       transform: translateY(-12px) scale(1.03) rotate(1deg);
       box-shadow: 0 25px 70px rgba(109, 181, 196, 0.3);
       z-index: 10;
     }
 
-    .video-card.hover-2:hover {
+    .video-card.hover-2:hover:not(.playing) {
       transform: translateY(-8px) scale(1.05) rotate(-2deg);
       box-shadow: 0 20px 60px rgba(227, 35, 44, 0.25);
       z-index: 10;
     }
 
-    .video-card.hover-3:hover {
+    .video-card.hover-3:hover:not(.playing) {
       transform: translateY(-10px) scale(1.04) skewY(1deg);
       box-shadow: 0 22px 65px rgba(45, 56, 83, 0.3);
       z-index: 10;
     }
 
-    .video-card.hover-4:hover {
+    .video-card.hover-4:hover:not(.playing) {
       transform: translateY(-15px) scale(1.02) rotateX(3deg);
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
       z-index: 10;
     }
 
-    .video-card.hover-5:hover {
+    .video-card.hover-5:hover:not(.playing) {
       transform: translateY(-10px) scale(1.06);
       box-shadow: 0 20px 70px rgba(109, 181, 196, 0.35);
       z-index: 10;
     }
 
-    .video-card.hover-6:hover {
+    .video-card.hover-6:hover:not(.playing) {
       transform: translateY(-12px) scale(1.04) rotate(2deg) perspective(500px);
       box-shadow: 0 25px 75px rgba(227, 35, 44, 0.3);
       z-index: 10;
     }
 
-    .video-card.hover-7:hover {
+    .video-card.hover-7:hover:not(.playing) {
       transform: translateY(-8px) scale(1.05) rotateY(2deg);
       box-shadow: 0 18px 60px rgba(45, 56, 83, 0.28);
       z-index: 10;
     }
 
-    .video-card.hover-8:hover {
+    .video-card.hover-8:hover:not(.playing) {
       transform: translateY(-14px) scale(1.03) skewX(-1deg);
       box-shadow: 0 28px 75px rgba(0, 0, 0, 0.22);
       z-index: 10;
     }
 
-    .video-card.hover-9:hover {
+    .video-card.hover-9:hover:not(.playing) {
       transform: translateY(-10px) scale(1.05) rotate(-1deg);
       box-shadow: 0 22px 68px rgba(109, 181, 196, 0.32);
       z-index: 10;
     }
 
-    .video-card.hover-10:hover {
+    .video-card.hover-10:hover:not(.playing) {
       transform: translateY(-16px) scale(1.02) perspective(800px) rotateX(-2deg);
       box-shadow: 0 30px 85px rgba(227, 35, 44, 0.28);
       z-index: 10;
     }
 
-    .video-card:hover .video-thumbnail {
+    .video-card:hover:not(.playing) .video-thumbnail {
       transform: scale(1.05);
+    }
+
+    /* Désactive tous les effets internes quand vidéo en lecture */
+    .video-card.playing:hover .video-thumbnail {
+      transform: none;
+    }
+
+    .video-card.playing:hover::before {
+      opacity: 0 !important;
+    }
+
+    .video-card.playing:hover .play-btn,
+    .video-card.playing:hover .video-info {
+      opacity: 0 !important;
     }
 
     /* Video card expanded - mode cinéma CLEAN & ÉLÉGANT */
@@ -629,23 +652,24 @@
     .music-card .close-btn {
       display: none;
       position: absolute;
-      top: -24px;
-      right: -24px;
-      width: 60px;
-      height: 60px;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: var(--navy);
-      border: 4px solid white;
-      color: white;
-      font-size: 34px;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: var(--navy);
+      font-size: 28px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 10001;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
-      font-weight: 400;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      font-weight: 300;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .music-card.playing .close-btn {
@@ -824,23 +848,24 @@
     .video-card .close-btn {
       display: none;
       position: absolute;
-      top: -24px;
-      right: -24px;
-      width: 60px;
-      height: 60px;
+      top: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: var(--navy);
-      border: 4px solid white;
-      color: white;
-      font-size: 34px;
+      background: rgba(255, 255, 255, 0.95);
+      border: none;
+      color: var(--navy);
+      font-size: 28px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 10000;
+      z-index: 10001;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
-      font-weight: 400;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      font-weight: 300;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
     }
 
     .video-card.playing .close-btn {
