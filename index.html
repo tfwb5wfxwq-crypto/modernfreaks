@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modern Freaks</title>
+  <title>Modern Freaks - Portfolio</title>
   <style>
     * {
       margin: 0;
@@ -11,65 +11,75 @@
       box-sizing: border-box;
     }
 
-    :root {
-      --black: #2D3853;
-      --white: #fafafa;
-      --red: #E3232C;
-      --gray: #898F9F;
-    }
-
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
-      background: var(--white);
-      color: var(--black);
+      font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: #ffffff;
+      color: #2D3853;
       overflow-x: hidden;
     }
 
-    /* Header & Logo */
+    /* Header fixe */
     header {
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      background: rgba(250, 250, 250, 0.95);
-      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px);
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .header-inner {
-      max-width: 1400px;
+      max-width: 1500px;
       margin: 0 auto;
-      padding: 30px 40px;
+      padding: 30px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
+    /* Logo FREAKS multicolore */
+    .logo-wrapper {
+      display: flex;
+      align-items: flex-end;
+      gap: 15px;
+    }
+
     .logo {
-      font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
-      font-size: 48px;
-      font-weight: 300;
-      letter-spacing: 1px;
-      color: var(--black);
-      text-transform: none;
+      font-size: 56px;
+      font-weight: 900;
+      letter-spacing: -3.5px;
+      text-transform: uppercase;
       cursor: pointer;
-      position: relative;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      display: flex;
     }
 
-    .logo::before {
-      content: 'modern freaks';
-      position: absolute;
-      top: 0;
-      left: 0;
-      color: var(--red);
-      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
-      transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    .logo span {
+      display: inline-block;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .logo:hover::before {
-      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    .logo span:hover {
+      transform: translateY(-8px) rotate(-3deg);
+    }
+
+    /* Couleurs exactes du logo original */
+    .logo .f { color: #6DB5C4; }
+    .logo .r { color: #2D3853; }
+    .logo .e { color: #E3232C; }
+    .logo .a { color: #2D3853; }
+    .logo .k { color: #6DB5C4; }
+    .logo .s { color: #E3232C; }
+
+    .logo-sub {
+      font-size: 12px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #898F9F;
+      font-weight: 300;
+      margin-bottom: 14px;
     }
 
     /* Navigation */
@@ -79,29 +89,31 @@
     }
 
     nav a {
-      color: var(--gray);
+      color: #898F9F;
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 1px;
       text-transform: uppercase;
+      transition: all 0.3s ease;
       position: relative;
-      transition: color 0.3s ease;
+      padding-bottom: 5px;
     }
 
     nav a::after {
       content: '';
       position: absolute;
-      bottom: -5px;
+      bottom: 0;
       left: 0;
       width: 0;
       height: 2px;
-      background: var(--red);
-      transition: width 0.3s ease;
+      background: #E3232C;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    nav a:hover {
-      color: var(--black);
+    nav a:hover,
+    nav a.active {
+      color: #2D3853;
     }
 
     nav a:hover::after,
@@ -109,55 +121,75 @@
       width: 100%;
     }
 
-    nav a.active {
-      color: var(--black);
+    /* Sections */
+    .page-section {
+      display: none;
+      min-height: 100vh;
+      padding: 140px 60px 100px;
+      max-width: 1500px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
     }
 
-    /* Main Content */
-    main {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 140px 40px 80px;
+    .page-section.active {
+      display: block;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .section-title {
-      font-size: 14px;
-      letter-spacing: 3px;
+      font-size: 12px;
+      letter-spacing: 5px;
       text-transform: uppercase;
-      color: var(--gray);
+      color: #898F9F;
       margin-bottom: 60px;
-      font-weight: 500;
+      font-weight: 400;
     }
 
-    /* Video Grid */
+    /* Grid vidéos masonry */
     .video-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 40px;
+      column-count: 3;
+      column-gap: 30px;
     }
 
     .video-card {
       position: relative;
-      aspect-ratio: 16 / 9;
+      break-inside: avoid;
+      margin-bottom: 30px;
       border-radius: 12px;
       overflow: hidden;
       cursor: pointer;
-      background: #f0f0f0;
+      background: #f5f5f5;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       opacity: 0;
-      transform: translateY(30px) scale(0.95);
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(30px);
     }
 
     .video-card.visible {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(0);
+    }
+
+    .video-card:hover {
+      transform: translateY(-10px);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.1),
+        0 0 0 1px rgba(227, 35, 44, 0.1);
     }
 
     .video-card::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(to bottom, transparent 50%, rgba(45,56,83,0.8));
+      background: linear-gradient(to top, rgba(45,56,83,0.9) 0%, transparent 65%);
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: 1;
@@ -167,27 +199,16 @@
       opacity: 1;
     }
 
-    .video-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow:
-        0 20px 60px rgba(45, 56, 83, 0.15),
-        0 0 0 1px rgba(227, 35, 44, 0.1);
-    }
-
     .video-thumbnail {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.95);
-      transition: all 0.4s ease;
+      display: block;
+      transition: transform 0.6s ease;
     }
 
     .video-card:hover .video-thumbnail {
-      filter: brightness(1) blur(0px);
-      transform: scale(1.05);
+      transform: scale(1.08);
     }
 
-    /* Play Button */
     .play-btn {
       position: absolute;
       top: 50%;
@@ -201,70 +222,190 @@
       align-items: center;
       justify-content: center;
       z-index: 2;
-      transition: all 0.3s ease;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-card:hover .play-btn {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1.1);
     }
 
     .play-btn::after {
       content: '';
       width: 0;
       height: 0;
-      border-left: 20px solid var(--black);
+      border-left: 20px solid #2D3853;
       border-top: 12px solid transparent;
       border-bottom: 12px solid transparent;
-      margin-left: 4px;
+      margin-left: 5px;
     }
 
-    .video-card:hover .play-btn {
-      background: var(--red);
-      transform: translate(-50%, -50%) scale(1.15);
-      box-shadow: 0 12px 40px rgba(227, 35, 44, 0.4);
-    }
-
-    .video-card:hover .play-btn::after {
-      border-left-color: white;
-    }
-
-    /* Video Info */
     .video-info {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 20px;
+      padding: 24px;
       z-index: 2;
-      transform: translateY(20px);
       opacity: 0;
+      transform: translateY(15px);
       transition: all 0.4s ease;
     }
 
     .video-card:hover .video-info {
-      transform: translateY(0);
       opacity: 1;
+      transform: translateY(0);
     }
 
     .video-title {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: 700;
       color: white;
-      margin-bottom: 4px;
+      line-height: 1.4;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
     }
 
     .video-meta {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.8);
       letter-spacing: 1px;
     }
 
-    /* Fullscreen Video Player */
+    /* Page Music */
+    .music-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+    }
+
+    .music-card {
+      background: #f8f8f8;
+      border-radius: 16px;
+      padding: 40px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .music-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .music-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+    }
+
+    .music-card h3 {
+      font-size: 24px;
+      color: #2D3853;
+      margin-bottom: 12px;
+    }
+
+    .music-card p {
+      color: #898F9F;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .music-btn {
+      display: inline-block;
+      padding: 12px 28px;
+      background: #E3232C;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+
+    .music-btn:hover {
+      background: #2D3853;
+      transform: translateY(-2px);
+    }
+
+    /* Page Contact */
+    .contact-content {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.6s ease;
+    }
+
+    .contact-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .contact-title {
+      font-size: 48px;
+      font-weight: 900;
+      color: #2D3853;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+
+    .contact-subtitle {
+      font-size: 18px;
+      color: #898F9F;
+      margin-bottom: 50px;
+      line-height: 1.6;
+    }
+
+    .contact-email {
+      display: inline-block;
+      font-size: 24px;
+      color: #E3232C;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 40px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-email:hover {
+      transform: translateY(-4px);
+      text-shadow: 0 8px 20px rgba(227, 35, 44, 0.2);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .social-links a {
+      color: #898F9F;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: #E3232C;
+    }
+
+    /* Fullscreen Player */
     .fullscreen-player {
       display: none;
       position: fixed;
       inset: 0;
-      background: var(--black);
+      background: rgba(45, 56, 83, 0.98);
       z-index: 9999;
       align-items: center;
       justify-content: center;
+      backdrop-filter: blur(15px);
     }
 
     .fullscreen-player.active {
@@ -272,20 +413,22 @@
     }
 
     .fullscreen-player iframe {
-      width: 100%;
-      height: 100%;
+      width: 90%;
+      max-width: 1600px;
+      aspect-ratio: 16 / 9;
       border: none;
+      border-radius: 12px;
+      box-shadow: 0 50px 150px rgba(0, 0, 0, 0.5);
     }
 
     .fullscreen-close {
       position: absolute;
-      top: 30px;
-      right: 30px;
+      top: 40px;
+      right: 40px;
       width: 50px;
       height: 50px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: white;
       font-size: 24px;
@@ -299,89 +442,125 @@
 
     .fullscreen-close:hover {
       background: white;
-      color: var(--black);
-      transform: scale(1.1);
+      color: #2D3853;
+      transform: rotate(90deg);
     }
 
     /* Responsive */
     @media (max-width: 1200px) {
       .video-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 30px;
+        column-count: 2;
+      }
+
+      .music-grid {
+        grid-template-columns: 1fr;
       }
     }
 
     @media (max-width: 768px) {
       .header-inner {
         flex-direction: column;
-        gap: 20px;
-        padding: 20px;
+        gap: 25px;
+        padding: 25px 30px;
       }
 
       .logo {
-        font-size: 32px;
+        font-size: 42px;
       }
 
       nav {
-        gap: 20px;
+        gap: 25px;
       }
 
-      main {
-        padding: 120px 20px 60px;
+      .page-section {
+        padding: 130px 30px 80px;
       }
 
       .video-grid {
-        grid-template-columns: 1fr;
-        gap: 24px;
+        column-count: 1;
       }
 
-      .fullscreen-close {
-        top: 20px;
-        right: 20px;
-        width: 44px;
-        height: 44px;
+      .contact-title {
+        font-size: 36px;
       }
-    }
 
-    /* Loading animation */
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-
-    .loading .video-thumbnail {
-      animation: pulse 1.5s ease-in-out infinite;
+      .contact-email {
+        font-size: 20px;
+      }
     }
   </style>
 </head>
 <body>
   <header>
     <div class="header-inner">
-      <div class="logo">modern freaks</div>
+      <div class="logo-wrapper">
+        <div class="logo">
+          <span class="f">F</span><span class="r">R</span><span class="e">E</span><span class="a">A</span><span class="k">K</span><span class="s">S</span>
+        </div>
+        <div class="logo-sub">Modern</div>
+      </div>
       <nav>
-        <a href="#film" class="active">Film</a>
-        <a href="#music">Music</a>
-        <a href="#contact">Contact</a>
+        <a href="#film" class="active" data-page="film">Film</a>
+        <a href="#music" data-page="music">Music</a>
+        <a href="#contact" data-page="contact">Contact</a>
       </nav>
     </div>
   </header>
 
-  <main>
+  <!-- PAGE FILM -->
+  <section id="film-page" class="page-section active">
     <div class="section-title">Selected Works</div>
+    <div class="video-grid" id="videoGrid"></div>
+  </section>
 
-    <div class="video-grid" id="videoGrid">
-      <!-- Videos will be inserted here by JavaScript -->
+  <!-- PAGE MUSIC -->
+  <section id="music-page" class="page-section">
+    <div class="section-title">Music & Sound Design</div>
+    <div class="music-grid">
+      <div class="music-card">
+        <h3>Compositions Originales</h3>
+        <p>Création de bandes originales pour films, séries et publicités. Du concept à la production finale.</p>
+        <a href="#" class="music-btn">Écouter</a>
+      </div>
+      <div class="music-card">
+        <h3>Sound Design</h3>
+        <p>Design sonore pour l'audiovisuel. Ambiances, effets et post-production audio.</p>
+        <a href="#" class="music-btn">Découvrir</a>
+      </div>
+      <div class="music-card">
+        <h3>Mix & Mastering</h3>
+        <p>Mixage et mastering professionnel pour vos projets musicaux et audiovisuels.</p>
+        <a href="#" class="music-btn">En savoir plus</a>
+      </div>
+      <div class="music-card">
+        <h3>Collaborations</h3>
+        <p>Travail avec des artistes et studios pour des projets créatifs uniques.</p>
+        <a href="#" class="music-btn">Portfolio</a>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- Fullscreen Video Player -->
+  <!-- PAGE CONTACT -->
+  <section id="contact-page" class="page-section">
+    <div class="contact-content">
+      <h1 class="contact-title">Let's Work Together</h1>
+      <p class="contact-subtitle">Vous avez un projet en tête ? Une collaboration à proposer ? N'hésitez pas à nous contacter.</p>
+      <a href="mailto:contact@modernfreaks.com" class="contact-email">contact@modernfreaks.com</a>
+      <div class="social-links">
+        <a href="#" target="_blank">Instagram</a>
+        <a href="#" target="_blank">Vimeo</a>
+        <a href="#" target="_blank">LinkedIn</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fullscreen Player -->
   <div class="fullscreen-player" id="fullscreenPlayer">
     <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
     <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
   </div>
 
   <script>
-    // Données des vidéos avec vrais titres et images locales
     const videos = [
       { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
       { id: "1125480221", title: "Bodins_Le desert" },
@@ -447,64 +626,60 @@
       { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
     ];
 
-    const videoGrid = document.getElementById('videoGrid');
+    const grid = document.getElementById('videoGrid');
     const fullscreenPlayer = document.getElementById('fullscreenPlayer');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    // Générer les cards (ordre respecté du site original)
+    // Générer les vidéos
     videos.forEach((video, index) => {
       const card = document.createElement('div');
-      card.className = 'video-card loading';
-      card.setAttribute('data-index', index);
+      card.className = 'video-card';
       card.innerHTML = `
-        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}" loading="lazy">
+        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
-          <div class="video-meta">Vimeo · ${video.id}</div>
+          <div class="video-meta">Vimeo</div>
         </div>
       `;
 
-      card.addEventListener('click', () => {
-        openFullscreen(video.id);
-      });
+      card.addEventListener('click', () => openFullscreen(video.id));
+      grid.appendChild(card);
 
-      // Remove loading class when image loads
-      const img = card.querySelector('img');
-      img.addEventListener('load', () => {
-        card.classList.remove('loading');
-      });
-
-      videoGrid.appendChild(card);
+      setTimeout(() => card.classList.add('visible'), index * 40);
     });
 
-    // Intersection Observer pour animations au scroll
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
+    // Navigation entre pages
+    const navLinks = document.querySelectorAll('nav a');
+    const pages = document.querySelectorAll('.page-section');
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, index) => {
-        if (entry.isIntersecting) {
-          const card = entry.target;
-          const cardIndex = parseInt(card.getAttribute('data-index'));
-          // Stagger delay basé sur l'index de la carte
-          const delay = (cardIndex % 9) * 80; // 80ms entre chaque carte (par groupe de 9)
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetPage = link.dataset.page;
 
-          setTimeout(() => {
-            card.classList.add('visible');
-          }, delay);
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
 
-          observer.unobserve(card);
-        }
+        pages.forEach(page => {
+          page.classList.remove('active');
+          if (page.id === `${targetPage}-page`) {
+            page.classList.add('active');
+
+            // Animations au changement de page
+            if (targetPage === 'music') {
+              document.querySelectorAll('.music-card').forEach((card, i) => {
+                setTimeout(() => card.classList.add('visible'), i * 100);
+              });
+            }
+            if (targetPage === 'contact') {
+              setTimeout(() => {
+                document.querySelector('.contact-content').classList.add('visible');
+              }, 100);
+            }
+          }
+        });
       });
-    }, observerOptions);
-
-    // Observer toutes les cartes
-    document.querySelectorAll('.video-card').forEach(card => {
-      observer.observe(card);
     });
 
     function openFullscreen(videoId) {
@@ -512,15 +687,8 @@
       fullscreenPlayer.classList.add('active');
       document.body.style.overflow = 'hidden';
 
-      // Tenter le vrai fullscreen natif
       if (fullscreenPlayer.requestFullscreen) {
-        fullscreenPlayer.requestFullscreen().catch(() => {
-          // Si ça échoue, on reste en fullscreen CSS
-        });
-      } else if (fullscreenPlayer.webkitRequestFullscreen) {
-        fullscreenPlayer.webkitRequestFullscreen();
-      } else if (fullscreenPlayer.msRequestFullscreen) {
-        fullscreenPlayer.msRequestFullscreen();
+        fullscreenPlayer.requestFullscreen().catch(() => {});
       }
     }
 
@@ -529,33 +697,15 @@
       fullscreenPlayer.classList.remove('active');
       document.body.style.overflow = '';
 
-      // Quitter le fullscreen natif si actif
-      if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-        }
-      }
+      if (document.fullscreenElement) document.exitFullscreen();
     }
 
-    // Close on Escape key
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeFullscreen();
     });
 
-    // Close on click outside
     fullscreenPlayer.addEventListener('click', (e) => {
       if (e.target === fullscreenPlayer) closeFullscreen();
-    });
-
-    // Détecter quand on quitte le fullscreen natif
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        closeFullscreen();
-      }
     });
   </script>
 </body>
