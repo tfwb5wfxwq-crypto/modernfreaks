@@ -189,33 +189,33 @@
       transform: scale(1);
     }
 
-    /* Bordures colorées alternées */
+    /* Bordures colorées alternées - style iPhone */
     .video-card:nth-child(3n+1) {
-      border: 3px solid transparent;
+      border: 2px solid transparent;
     }
     .video-card:nth-child(3n+1):hover {
       border-color: var(--cyan);
-      box-shadow: 0 20px 60px rgba(109, 181, 196, 0.3);
+      box-shadow: 0 8px 24px rgba(109, 181, 196, 0.15);
     }
 
     .video-card:nth-child(3n+2) {
-      border: 3px solid transparent;
+      border: 2px solid transparent;
     }
     .video-card:nth-child(3n+2):hover {
       border-color: var(--red);
-      box-shadow: 0 20px 60px rgba(227, 35, 44, 0.3);
+      box-shadow: 0 8px 24px rgba(227, 35, 44, 0.15);
     }
 
     .video-card:nth-child(3n+3) {
-      border: 3px solid transparent;
+      border: 2px solid transparent;
     }
     .video-card:nth-child(3n+3):hover {
       border-color: var(--navy);
-      box-shadow: 0 20px 60px rgba(45, 56, 83, 0.3);
+      box-shadow: 0 8px 24px rgba(45, 56, 83, 0.15);
     }
 
     .video-card:hover {
-      transform: scale(1.02) translateY(-8px);
+      transform: scale(1.01);
     }
 
     .video-thumbnail {
@@ -226,7 +226,7 @@
     }
 
     .video-card:hover .video-thumbnail {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
 
     /* Overlay avec gradient coloré */
@@ -272,7 +272,7 @@
 
     .video-card:hover .play-btn {
       opacity: 1;
-      transform: translate(-50%, -50%) scale(1.2);
+      transform: translate(-50%, -50%) scale(1.05);
     }
 
     .play-btn::after {
@@ -342,9 +342,9 @@
     }
 
     .music-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 25px 70px rgba(227, 35, 44, 0.25);
-      border: 3px solid var(--red);
+      transform: scale(1.01);
+      box-shadow: 0 8px 24px rgba(227, 35, 44, 0.15);
+      border: 2px solid var(--red);
     }
 
     .music-thumbnail {
@@ -355,7 +355,7 @@
     }
 
     .music-card:hover .music-thumbnail {
-      transform: scale(1.08);
+      transform: scale(1.05);
     }
 
     .music-card::before {
