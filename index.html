@@ -156,10 +156,16 @@
       margin-bottom: 14px;
     }
 
-    /* Navigation avec couleurs */
+    /* Navigation PREMIUM */
     nav {
       display: flex;
-      gap: 15px;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      padding: 6px;
+      border-radius: 16px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
     }
 
     nav a {
@@ -167,65 +173,62 @@
       text-decoration: none;
       font-size: 13px;
       font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      letter-spacing: 0.5px;
+      text-transform: capitalize;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
-      padding: 12px 28px;
-      border-radius: 30px;
-      background: rgba(0, 0, 0, 0.03);
+      padding: 10px 24px;
+      border-radius: 11px;
+      background: transparent;
       overflow: hidden;
     }
 
-    nav a::before {
+    nav a::after {
       content: '';
       position: absolute;
-      inset: 0;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: currentColor;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(-50%);
       opacity: 0;
-      transition: opacity 0.4s ease;
-      z-index: -1;
-    }
-
-    nav a[data-page="film"]::before {
-      background: linear-gradient(135deg, var(--cyan), rgba(109, 181, 196, 0.6));
-    }
-    nav a[data-page="music"]::before {
-      background: linear-gradient(135deg, var(--red), rgba(227, 35, 44, 0.6));
-    }
-    nav a[data-page="contact"]::before {
-      background: linear-gradient(135deg, var(--navy), rgba(45, 56, 83, 0.6));
     }
 
     nav a:hover {
-      color: var(--white);
-      background: rgba(0, 0, 0, 0.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      color: var(--navy);
+      background: rgba(255, 255, 255, 0.8);
     }
 
-    nav a:hover::before {
-      opacity: 1;
+    nav a:hover::after {
+      width: 60%;
+      opacity: 0.3;
     }
 
     nav a.active {
       color: var(--white);
-      background: transparent;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    nav a.active::before {
-      opacity: 1;
+      background: var(--navy);
+      box-shadow: 0 2px 12px rgba(45, 56, 83, 0.3);
     }
 
     nav a.active[data-page="film"] {
-      box-shadow: 0 4px 20px rgba(109, 181, 196, 0.4);
+      background: linear-gradient(135deg, var(--cyan) 0%, #5da3b0 100%);
+      box-shadow: 0 2px 16px rgba(109, 181, 196, 0.4);
     }
 
     nav a.active[data-page="music"] {
-      box-shadow: 0 4px 20px rgba(227, 35, 44, 0.4);
+      background: linear-gradient(135deg, var(--red) 0%, #c72029 100%);
+      box-shadow: 0 2px 16px rgba(227, 35, 44, 0.4);
     }
 
     nav a.active[data-page="contact"] {
-      box-shadow: 0 4px 20px rgba(45, 56, 83, 0.4);
+      background: linear-gradient(135deg, var(--navy) 0%, #1f2842 100%);
+      box-shadow: 0 2px 16px rgba(45, 56, 83, 0.4);
+    }
+
+    nav a.active::after {
+      display: none;
     }
 
     /* Sections */
