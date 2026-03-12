@@ -1048,8 +1048,14 @@
         </div>
       `;
 
-      card.querySelector('.video-thumbnail').addEventListener('click', () => playVideo(card, video.title));
-      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card, video.title));
+      // Toute la carte est cliquable
+      card.addEventListener('click', () => {
+        if (!card.classList.contains('playing')) {
+          playVideo(card, video.title);
+        }
+      });
+
+      // Sauf le bouton close
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
@@ -1075,8 +1081,14 @@
         </div>
       `;
 
-      card.querySelector('.music-thumbnail').addEventListener('click', () => playVideo(card, video.title));
-      card.querySelector('.play-btn').addEventListener('click', () => playVideo(card, video.title));
+      // Toute la carte est cliquable
+      card.addEventListener('click', () => {
+        if (!card.classList.contains('playing')) {
+          playVideo(card, video.title);
+        }
+      });
+
+      // Sauf le bouton close
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
