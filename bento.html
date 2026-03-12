@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Freaks - Bento Grid</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --black: #2D3853;
+      --white: #fafafa;
+      --red: #E3232C;
+      --gray: #898F9F;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* Header & Logo */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(250, 250, 250, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .header-inner {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-family: 'Europa', -apple-system, BlinkMacSystemFont, 'Inter', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      color: var(--black);
+      cursor: pointer;
+      position: relative;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo::before {
+      content: 'modern freaks';
+      position: absolute;
+      top: 0;
+      left: 0;
+      color: var(--red);
+      clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+      transition: clip-path 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logo:hover::before {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    nav {
+      display: flex;
+      gap: 40px;
+    }
+
+    nav a {
+      color: var(--gray);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--red);
+      transition: width 0.3s ease;
+    }
+
+    nav a:hover {
+      color: var(--black);
+    }
+
+    nav a:hover::after,
+    nav a.active::after {
+      width: 100%;
+    }
+
+    nav a.active {
+      color: var(--black);
+    }
+
+    /* Main Content */
+    main {
+      max-width: 1600px;
+      margin: 0 auto;
+      padding: 140px 40px 80px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gray);
+      margin-bottom: 60px;
+      font-weight: 500;
+    }
+
+    /* Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 20px;
+      grid-auto-flow: dense;
+    }
+
+    .video-card {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      background: #f0f0f0;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 280px;
+    }
+
+    .video-card.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Tailles variées (Bento style) */
+    .video-card.size-1 {
+      grid-column: span 4;
+      aspect-ratio: 4 / 3;
+    }
+
+    .video-card.size-2 {
+      grid-column: span 6;
+      aspect-ratio: 16 / 9;
+    }
+
+    .video-card.size-3 {
+      grid-column: span 8;
+      aspect-ratio: 21 / 9;
+    }
+
+    .video-card.size-4 {
+      grid-column: span 3;
+      aspect-ratio: 3 / 4;
+    }
+
+    .video-card.size-5 {
+      grid-column: span 6;
+      aspect-ratio: 4 / 5;
+    }
+
+    .video-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(45,56,83,0.9));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .video-card:hover::before {
+      opacity: 1;
+    }
+
+    .video-card:hover {
+      transform: scale(1.02);
+      box-shadow:
+        0 30px 80px rgba(45, 56, 83, 0.2),
+        0 0 0 1px rgba(227, 35, 44, 0.15);
+      z-index: 10;
+    }
+
+    .video-thumbnail {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.5s ease;
+    }
+
+    .video-card:hover .video-thumbnail {
+      transform: scale(1.08);
+    }
+
+    /* Play Button */
+    .play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+      opacity: 0;
+    }
+
+    .video-card:hover .play-btn {
+      opacity: 1;
+    }
+
+    .play-btn::after {
+      content: '';
+      width: 0;
+      height: 0;
+      border-left: 24px solid var(--black);
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      margin-left: 6px;
+    }
+
+    .video-card:hover .play-btn {
+      background: var(--red);
+      transform: translate(-50%, -50%) scale(1.15);
+      box-shadow: 0 16px 48px rgba(227, 35, 44, 0.5);
+    }
+
+    .video-card:hover .play-btn::after {
+      border-left-color: white;
+    }
+
+    /* Video Info */
+    .video-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 24px;
+      z-index: 2;
+      transform: translateY(10px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+
+    .video-card:hover .video-info {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .video-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 6px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .video-meta {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.8);
+      letter-spacing: 0.5px;
+    }
+
+    /* Fullscreen Video Player */
+    .fullscreen-player {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fullscreen-player.active {
+      display: flex;
+    }
+
+    .fullscreen-player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .fullscreen-close:hover {
+      background: white;
+      color: var(--black);
+      transform: scale(1.1);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .bento-grid {
+        grid-template-columns: repeat(6, 1fr);
+      }
+
+      .video-card.size-1 { grid-column: span 3; }
+      .video-card.size-2 { grid-column: span 6; }
+      .video-card.size-3 { grid-column: span 6; }
+      .video-card.size-4 { grid-column: span 2; }
+      .video-card.size-5 { grid-column: span 3; }
+    }
+
+    @media (max-width: 768px) {
+      .header-inner {
+        flex-direction: column;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .logo {
+        font-size: 32px;
+      }
+
+      nav {
+        gap: 20px;
+      }
+
+      main {
+        padding: 120px 20px 60px;
+      }
+
+      .bento-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .video-card.size-1,
+      .video-card.size-2,
+      .video-card.size-3,
+      .video-card.size-4,
+      .video-card.size-5 {
+        grid-column: span 1;
+        aspect-ratio: 16 / 9;
+      }
+
+      .fullscreen-close {
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading .video-thumbnail {
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="logo">modern freaks</div>
+      <nav>
+        <a href="#film" class="active">Film</a>
+        <a href="#music">Music</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="section-title">Selected Works</div>
+
+    <div class="bento-grid" id="bentoGrid">
+      <!-- Videos will be inserted here by JavaScript -->
+    </div>
+  </main>
+
+  <!-- Fullscreen Video Player -->
+  <div class="fullscreen-player" id="fullscreenPlayer">
+    <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
+    <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    // Données des vidéos avec vrais titres
+    const videos = [
+      { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
+      { id: "1125480221", title: "Bodins_Le desert" },
+      { id: "1125484591", title: "Yacht_Gene" },
+      { id: "1092497480", title: "Les Infaillibles_Générique_FREAKS" },
+      { id: "1092500213", title: "Les Infaillibles_Mechant#1_GOOD" },
+      { id: "1092500102", title: "Les Infaillibles_Les toits_Good" },
+      { id: "906000696", title: "Generique Uderzo Freaks" },
+      { id: "905968626", title: "BDE_ROCK#2" },
+      { id: "905973318", title: "BDE_TEUF#1" },
+      { id: "905969175", title: "BDE_MYFRIENDS" },
+      { id: "905969277", title: "BDE_BDABDE" },
+      { id: "905966719", title: "BDE_SANGRECALIENTE" },
+      { id: "790376671", title: "Video 13" },
+      { id: "790378664", title: "1Mec7Z9Gog0Jxyh1S8Nvzsu9827Lpq" },
+      { id: "790378306", title: "Mivcj8Yz88258E2M74Jwskotggxshe" },
+      { id: "790390287", title: "Video 16" },
+      { id: "790392010", title: "Ta6Eddtsjphrog4Hv1Divr46Iwo5B2" },
+      { id: "636258595", title: "Yumtefu31Omgd5My2S0Alty1I2Ro12" },
+      { id: "636284708", title: "JTVMNP - Extrait 1.mp4" },
+      { id: "636286285", title: "JTVMNP - Extrait 2.mp4" },
+      { id: "906060661", title: "Les Disparus du Fleuve (2022) #2" },
+      { id: "636287938", title: "JTVMNP - Extrait 4.mp4" },
+      { id: "636287161", title: "JTVMNP - Extrait 3.mp4" },
+      { id: "636342480", title: "Klcsgpfvqz4Axl8868Bvo901Atkx9B" },
+      { id: "790445038", title: "DivorceClub_Clip.mov" },
+      { id: "790446169", title: "DivorceClub_ClubScene.mov" },
+      { id: "408873994", title: "PREGEN_1" },
+      { id: "408873499", title: "HUBER POOP" },
+      { id: "790446249", title: "DivorceClub_GtoRide" },
+      { id: "790457293", title: "DivorceClub_GtoRide2.mov" },
+      { id: "790446325", title: "DivorceClub_Ikea" },
+      { id: "277878741", title: "pme_qtp" },
+      { id: "277878719", title: "melodiedumenagefreaksmid" },
+      { id: "390310795", title: "la_puree_misterv_ludovik" },
+      { id: "396704418", title: "LETALISMAN_EXTRAIT2" },
+      { id: "396703214", title: "LETALISMAN_EXTRAIT1" },
+      { id: "396690796", title: "GOODLUCKMRGORSKY_1" },
+      { id: "396692043", title: "GOODLUCKMRGORSKY_4" },
+      { id: "277879100", title: "Adidas - Get ready" },
+      { id: "277614450", title: "Le Manoir - The end of Sam" },
+      { id: "277614461", title: "Le Manoir - La salle des trophées" },
+      { id: "277614422", title: "Le Manoir -Final fight" },
+      { id: "277614432", title: "Le Manoir - La collection" },
+      { id: "277879133", title: "Targets_Fall_Fashion_Show" },
+      { id: "277878755", title: "starck" },
+      { id: "277858419", title: "Vive la France - La mode" },
+      { id: "277858423", title: "Vive la France - La plage" },
+      { id: "277858411", title: "Vive la France - Générique" },
+      { id: "277878795", title: "USAIN_BOLT_EX1_qtp" },
+      { id: "277858851", title: "APP_EX11 bis_qtp" },
+      { id: "277858848", title: "APP_EX8_qtp" },
+      { id: "277858836", title: "APP_EX3_qtp" },
+      { id: "277856448", title: "Fatal - Canapi" },
+      { id: "277628464", title: "Fatal - Generique" },
+      { id: "277856461", title: "Fatal - Restaurant" },
+      { id: "277856472", title: "Fatal - My friends" },
+      { id: "277858430", title: "Sul Mare - Theme" },
+      { id: "277858438", title: "Sul Mare - Underwater" },
+      { id: "277878623", title: "stephanie" },
+      { id: "277878628", title: "LE DBQT_2_880" },
+      { id: "277878668", title: "Freaks_Cesar2014" },
+      { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
+    ];
+
+    const bentoGrid = document.getElementById('bentoGrid');
+    const fullscreenPlayer = document.getElementById('fullscreenPlayer');
+    const videoPlayer = document.getElementById('videoPlayer');
+
+    // Pattern de tailles pour le Bento Grid (répétitif mais varié)
+    const sizePattern = [2, 1, 4, 2, 5, 1, 3, 1, 1, 2, 4, 1];
+
+    // Générer les cards avec tailles variées
+    videos.forEach((video, index) => {
+      const card = document.createElement('div');
+      const sizeClass = `size-${sizePattern[index % sizePattern.length]}`;
+      card.className = `video-card ${sizeClass} loading`;
+      card.setAttribute('data-index', index);
+      card.innerHTML = `
+        <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}" loading="lazy">
+        <div class="play-btn"></div>
+        <div class="video-info">
+          <div class="video-title">${video.title}</div>
+          <div class="video-meta">Vimeo · ${video.id}</div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        openFullscreen(video.id);
+      });
+
+      const img = card.querySelector('img');
+      img.addEventListener('load', () => {
+        card.classList.remove('loading');
+      });
+
+      bentoGrid.appendChild(card);
+    });
+
+    // Intersection Observer pour animations au scroll
+    const observerOptions = {
+      root: null,
+      rootMargin: '50px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const cardIndex = parseInt(card.getAttribute('data-index'));
+          const delay = (cardIndex % 6) * 60;
+
+          setTimeout(() => {
+            card.classList.add('visible');
+          }, delay);
+
+          observer.unobserve(card);
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.video-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    function openFullscreen(videoId) {
+      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+      fullscreenPlayer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      if (fullscreenPlayer.requestFullscreen) {
+        fullscreenPlayer.requestFullscreen().catch(() => {});
+      } else if (fullscreenPlayer.webkitRequestFullscreen) {
+        fullscreenPlayer.webkitRequestFullscreen();
+      }
+    }
+
+    function closeFullscreen() {
+      videoPlayer.src = '';
+      fullscreenPlayer.classList.remove('active');
+      document.body.style.overflow = '';
+
+      if (document.fullscreenElement || document.webkitFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeFullscreen();
+    });
+
+    fullscreenPlayer.addEventListener('click', (e) => {
+      if (e.target === fullscreenPlayer) closeFullscreen();
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) closeFullscreen();
+    });
+  </script>
+</body>
+</html>
