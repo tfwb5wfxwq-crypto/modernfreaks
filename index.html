@@ -212,8 +212,8 @@
     /* Grid vidéos avec couleurs */
     .video-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-      gap: 35px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
     }
 
     .video-card {
@@ -233,53 +233,137 @@
       transform: scale(1);
     }
 
-    /* Video card expanded - mode cinéma ultra stylé */
+    /* Video card expanded - mode cinéma ULTRA STYLÉ */
     .video-card.playing {
       grid-column: 1 / -1;
-      max-width: 1200px;
-      width: 85%;
-      margin: 0 auto;
+      max-width: 1400px;
+      width: 90%;
+      margin: 40px auto;
       aspect-ratio: 16 / 9;
       z-index: 100;
       cursor: default;
-      border-radius: 20px;
-      animation: videoExpand 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 24px;
+      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
       transform-origin: center;
+      position: relative;
     }
 
     @keyframes videoExpand {
-      from {
-        transform: scale(0.8);
+      0% {
+        transform: scale(0.7) rotateX(15deg);
         opacity: 0;
-        filter: blur(10px);
+        filter: blur(20px) brightness(1.2);
       }
-      to {
-        transform: scale(1);
+      50% {
+        transform: scale(1.05) rotateX(-2deg);
+      }
+      100% {
+        transform: scale(1) rotateX(0deg);
         opacity: 1;
-        filter: blur(0);
+        filter: blur(0) brightness(1);
       }
     }
 
-    /* Glow coloré selon la vidéo */
+    /* Effet de ripple au clic */
+    .video-card.playing::after {
+      content: '';
+      position: absolute;
+      inset: -20px;
+      border-radius: 30px;
+      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+      animation: ripple 0.8s ease-out;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.8;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* Glow ULTRA coloré selon la vidéo avec pulse */
     .video-card.playing:nth-child(3n+1) {
       box-shadow:
-        0 0 0 1px rgba(109, 181, 196, 0.2),
-        0 20px 60px rgba(109, 181, 196, 0.3),
-        0 0 100px rgba(109, 181, 196, 0.15);
+        0 0 0 2px rgba(109, 181, 196, 0.3),
+        0 30px 80px rgba(109, 181, 196, 0.4),
+        0 0 120px rgba(109, 181, 196, 0.25),
+        inset 0 0 40px rgba(109, 181, 196, 0.05);
+      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseCyan 3s ease-in-out infinite;
     }
 
     .video-card.playing:nth-child(3n+2) {
       box-shadow:
-        0 0 0 1px rgba(227, 35, 44, 0.2),
-        0 20px 60px rgba(227, 35, 44, 0.3),
-        0 0 100px rgba(227, 35, 44, 0.15);
+        0 0 0 2px rgba(227, 35, 44, 0.3),
+        0 30px 80px rgba(227, 35, 44, 0.4),
+        0 0 120px rgba(227, 35, 44, 0.25),
+        inset 0 0 40px rgba(227, 35, 44, 0.05);
+      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseRed 3s ease-in-out infinite;
     }
 
     .video-card.playing:nth-child(3n+3) {
       box-shadow:
-        0 0 0 1px rgba(45, 56, 83, 0.2),
-        0 20px 60px rgba(45, 56, 83, 0.3),
-        0 0 100px rgba(45, 56, 83, 0.15);
+        0 0 0 2px rgba(45, 56, 83, 0.3),
+        0 30px 80px rgba(45, 56, 83, 0.4),
+        0 0 120px rgba(45, 56, 83, 0.25),
+        inset 0 0 40px rgba(45, 56, 83, 0.05);
+      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseNavy 3s ease-in-out infinite;
+    }
+
+    @keyframes glowPulseCyan {
+      0%, 100% {
+        box-shadow:
+          0 0 0 2px rgba(109, 181, 196, 0.3),
+          0 30px 80px rgba(109, 181, 196, 0.4),
+          0 0 120px rgba(109, 181, 196, 0.25),
+          inset 0 0 40px rgba(109, 181, 196, 0.05);
+      }
+      50% {
+        box-shadow:
+          0 0 0 3px rgba(109, 181, 196, 0.4),
+          0 35px 90px rgba(109, 181, 196, 0.5),
+          0 0 140px rgba(109, 181, 196, 0.3),
+          inset 0 0 50px rgba(109, 181, 196, 0.08);
+      }
+    }
+
+    @keyframes glowPulseRed {
+      0%, 100% {
+        box-shadow:
+          0 0 0 2px rgba(227, 35, 44, 0.3),
+          0 30px 80px rgba(227, 35, 44, 0.4),
+          0 0 120px rgba(227, 35, 44, 0.25),
+          inset 0 0 40px rgba(227, 35, 44, 0.05);
+      }
+      50% {
+        box-shadow:
+          0 0 0 3px rgba(227, 35, 44, 0.4),
+          0 35px 90px rgba(227, 35, 44, 0.5),
+          0 0 140px rgba(227, 35, 44, 0.3),
+          inset 0 0 50px rgba(227, 35, 44, 0.08);
+      }
+    }
+
+    @keyframes glowPulseNavy {
+      0%, 100% {
+        box-shadow:
+          0 0 0 2px rgba(45, 56, 83, 0.3),
+          0 30px 80px rgba(45, 56, 83, 0.4),
+          0 0 120px rgba(45, 56, 83, 0.25),
+          inset 0 0 40px rgba(45, 56, 83, 0.05);
+      }
+      50% {
+        box-shadow:
+          0 0 0 3px rgba(45, 56, 83, 0.4),
+          0 35px 90px rgba(45, 56, 83, 0.5),
+          0 0 140px rgba(45, 56, 83, 0.3),
+          inset 0 0 50px rgba(45, 56, 83, 0.08);
+      }
     }
 
     .video-card.playing .video-thumbnail {
@@ -311,7 +395,7 @@
       border-radius: 20px;
     }
 
-    /* Backdrop blur élégant sur toute la page */
+    /* Backdrop blur ULTRA élégant sur toute la page */
     body.video-playing {
       overflow: hidden;
     }
@@ -320,20 +404,21 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px) saturate(0.8);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.9) 100%);
+      backdrop-filter: blur(20px) saturate(0.6) brightness(1.05);
       z-index: 50;
-      animation: backdropAppear 0.4s ease forwards;
+      animation: backdropAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
     }
 
     @keyframes backdropAppear {
       from {
         opacity: 0;
-        backdrop-filter: blur(0);
+        backdrop-filter: blur(0) saturate(1) brightness(1);
       }
       to {
         opacity: 1;
-        backdrop-filter: blur(12px) saturate(0.8);
+        backdrop-filter: blur(20px) saturate(0.6) brightness(1.05);
       }
     }
 
@@ -738,32 +823,49 @@
     }
 
     /* Player avec animation stylée */
-    /* Bouton close sur vidéo en lecture - ultra stylé */
-    .video-card .close-btn {
+    /* Boutons sur vidéo en lecture - ultra stylés */
+    .video-card .close-btn,
+    .video-card .share-btn {
       display: none;
       position: absolute;
       top: -18px;
-      right: -18px;
       width: 48px;
       height: 48px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.98);
       border: 2px solid rgba(0, 0, 0, 0.06);
       color: var(--navy);
-      font-size: 26px;
+      font-size: 20px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
       z-index: 1000;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       line-height: 1;
-      font-weight: 300;
+      font-weight: 600;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .video-card .close-btn {
+      right: -18px;
+      font-size: 26px;
+      font-weight: 300;
+    }
+
+    .video-card .share-btn {
+      right: 45px;
     }
 
     .video-card.playing .close-btn {
       display: flex;
       animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+      opacity: 0;
+      transform: scale(0.5) rotate(-90deg);
+    }
+
+    .video-card.playing .share-btn {
+      display: flex;
+      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.5s forwards;
       opacity: 0;
       transform: scale(0.5) rotate(-90deg);
     }
@@ -782,6 +884,36 @@
       color: white;
     }
 
+    .video-card .share-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      background: var(--cyan);
+      color: white;
+    }
+
+    /* Toast pour le partage */
+    .share-toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--navy);
+      color: white;
+      padding: 16px 28px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .share-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
     /* Animation des vidéos quand player ouvert */
     body.player-open .video-card,
     body.player-open .music-card {
@@ -792,10 +924,19 @@
     }
 
     /* Responsive */
-    @media (max-width: 1200px) {
+    @media (max-width: 1400px) {
       .video-grid,
       .music-grid {
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .video-grid,
+      .music-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
       }
     }
 
@@ -887,68 +1028,68 @@
 
   <script>
     const videos = [
-      { id: "1125470403", title: "Bodins_Le desert_Chefchaouene" },
-      { id: "1125480221", title: "Bodins_Le desert" },
-      { id: "1125484591", title: "Yacht_Gene" },
-      { id: "1092497480", title: "Les Infaillibles_Générique_FREAKS" },
-      { id: "1092500213", title: "Les Infaillibles_Mechant#1_GOOD" },
-      { id: "1092500102", title: "Les Infaillibles_Les toits_Good" },
-      { id: "906000696", title: "Generique Uderzo Freaks" },
-      { id: "905968626", title: "BDE_ROCK#2" },
-      { id: "905973318", title: "BDE_TEUF#1" },
-      { id: "905969175", title: "BDE_MYFRIENDS" },
-      { id: "905969277", title: "BDE_BDABDE" },
-      { id: "905966719", title: "BDE_SANGRECALIENTE" },
-      { id: "790376671", title: "Video 13" },
-      { id: "790378664", title: "1Mec7Z9Gog0Jxyh1S8Nvzsu9827Lpq" },
-      { id: "790378306", title: "Mivcj8Yz88258E2M74Jwskotggxshe" },
-      { id: "790390287", title: "Video 16" },
-      { id: "790392010", title: "Ta6Eddtsjphrog4Hv1Divr46Iwo5B2" },
-      { id: "636258595", title: "Yumtefu31Omgd5My2S0Alty1I2Ro12" },
-      { id: "636284708", title: "JTVMNP - Extrait 1.mp4" },
-      { id: "636286285", title: "JTVMNP - Extrait 2.mp4" },
-      { id: "906060661", title: "Les Disparus du Fleuve (2022) #2" },
-      { id: "636287938", title: "JTVMNP - Extrait 4.mp4" },
-      { id: "636287161", title: "JTVMNP - Extrait 3.mp4" },
-      { id: "636342480", title: "Klcsgpfvqz4Axl8868Bvo901Atkx9B" },
-      { id: "790445038", title: "DivorceClub_Clip.mov" },
-      { id: "790446169", title: "DivorceClub_ClubScene.mov" },
-      { id: "408873994", title: "PREGEN_1" },
-      { id: "408873499", title: "HUBER POOP" },
-      { id: "790446249", title: "DivorceClub_GtoRide" },
-      { id: "790457293", title: "DivorceClub_GtoRide2.mov" },
-      { id: "790446325", title: "DivorceClub_Ikea" },
-      { id: "277878741", title: "pme_qtp" },
-      { id: "277878719", title: "melodiedumenagefreaksmid" },
-      { id: "390310795", title: "la_puree_misterv_ludovik" },
-      { id: "396704418", title: "LETALISMAN_EXTRAIT2" },
-      { id: "396703214", title: "LETALISMAN_EXTRAIT1" },
-      { id: "396690796", title: "GOODLUCKMRGORSKY_1" },
-      { id: "396692043", title: "GOODLUCKMRGORSKY_4" },
-      { id: "277879100", title: "Adidas - Get ready" },
-      { id: "277614450", title: "Le Manoir - The end of Sam" },
-      { id: "277614461", title: "Le Manoir - La salle des trophées" },
-      { id: "277614422", title: "Le Manoir -Final fight" },
-      { id: "277614432", title: "Le Manoir - La collection" },
-      { id: "277879133", title: "Targets_Fall_Fashion_Show" },
-      { id: "277878755", title: "starck" },
-      { id: "277858419", title: "Vive la France - La mode" },
-      { id: "277858423", title: "Vive la France - La plage" },
-      { id: "277858411", title: "Vive la France - Générique" },
-      { id: "277878795", title: "USAIN_BOLT_EX1_qtp" },
-      { id: "277858851", title: "APP_EX11 bis_qtp" },
-      { id: "277858848", title: "APP_EX8_qtp" },
-      { id: "277858836", title: "APP_EX3_qtp" },
-      { id: "277856448", title: "Fatal - Canapi" },
-      { id: "277628464", title: "Fatal - Generique" },
-      { id: "277856461", title: "Fatal - Restaurant" },
-      { id: "277856472", title: "Fatal - My friends" },
-      { id: "277858430", title: "Sul Mare - Theme" },
-      { id: "277858438", title: "Sul Mare - Underwater" },
-      { id: "277878623", title: "stephanie" },
-      { id: "277878628", title: "LE DBQT_2_880" },
-      { id: "277878668", title: "Freaks_Cesar2014" },
-      { id: "277879120", title: "Advertising OST for Moulinex World - Jam Block_qtp" }
+      { id: "1125470403", title: "Les Bodin's partent en vrille" },
+      { id: "1125480221", title: "Les Bodin's partent en vrille" },
+      { id: "1125484591", title: "Yacht Stories" },
+      { id: "1092497480", title: "Les Infaillibles" },
+      { id: "1092500213", title: "Les Infaillibles" },
+      { id: "1092500102", title: "Les Infaillibles" },
+      { id: "906000696", title: "Uderzo, sur le divan d'Astérix" },
+      { id: "905968626", title: "BDE" },
+      { id: "905973318", title: "BDE" },
+      { id: "905969175", title: "BDE" },
+      { id: "905969277", title: "BDE" },
+      { id: "905966719", title: "BDE" },
+      { id: "790376671", title: "Les Bodin's en Thaïlande" },
+      { id: "790378664", title: "Les Bodin's en Thaïlande" },
+      { id: "790378306", title: "Les Bodin's en Thaïlande" },
+      { id: "790390287", title: "Les Bodin's en Thaïlande" },
+      { id: "790392010", title: "Les Bodin's en Thaïlande" },
+      { id: "636258595", title: "Frérots" },
+      { id: "636284708", title: "Je te veux, moi non plus" },
+      { id: "636286285", title: "Je te veux, moi non plus" },
+      { id: "906060661", title: "Les Disparus du Fleuve" },
+      { id: "636287938", title: "Je te veux, moi non plus" },
+      { id: "636287161", title: "Je te veux, moi non plus" },
+      { id: "636342480", title: "Ninja Turtles, Shredder's Revenge" },
+      { id: "790445038", title: "Divorce Club" },
+      { id: "790446169", title: "Divorce Club" },
+      { id: "408873994", title: "Morning Night" },
+      { id: "408873499", title: "Morning Night" },
+      { id: "790446249", title: "Divorce Club" },
+      { id: "790457293", title: "Divorce Club" },
+      { id: "790446325", title: "Divorce Club" },
+      { id: "277878741", title: "Parents Mode d'Emploi" },
+      { id: "277878719", title: "Parents Mode d'Emploi" },
+      { id: "390310795", title: "La Purée" },
+      { id: "396704418", title: "Le Talisman" },
+      { id: "396703214", title: "Le Talisman" },
+      { id: "396690796", title: "Good Luck Mr Gorsky" },
+      { id: "396692043", title: "Good Luck Mr Gorsky" },
+      { id: "277879100", title: "Adidas - Get Ready" },
+      { id: "277614450", title: "Le Manoir" },
+      { id: "277614461", title: "Le Manoir" },
+      { id: "277614422", title: "Le Manoir" },
+      { id: "277614432", title: "Le Manoir" },
+      { id: "277879133", title: "Target" },
+      { id: "277878755", title: "Future by Starck" },
+      { id: "277858419", title: "Vive la France" },
+      { id: "277858423", title: "Vive la France" },
+      { id: "277858411", title: "Vive la France" },
+      { id: "277878795", title: "Usain Bolt" },
+      { id: "277858851", title: "Arrête de pleurer Pénélope" },
+      { id: "277858848", title: "Arrête de pleurer Pénélope" },
+      { id: "277858836", title: "Arrête de pleurer Pénélope" },
+      { id: "277856448", title: "Fatal" },
+      { id: "277628464", title: "Fatal" },
+      { id: "277856461", title: "Fatal" },
+      { id: "277856472", title: "Fatal" },
+      { id: "277858430", title: "Sul Mare" },
+      { id: "277858438", title: "Sul Mare" },
+      { id: "277878623", title: "Certains l'aiment chaud" },
+      { id: "277878628", title: "Le Débarquement" },
+      { id: "277878668", title: "Cesar" },
+      { id: "277879120", title: "Moulinex" }
     ];
 
     // Vidéos musique (exemples - à remplacer par vraies vidéos)
@@ -975,6 +1116,7 @@
         <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button class="close-btn">×</button>
+        <button class="share-btn">🔗</button>
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
@@ -987,6 +1129,10 @@
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
+      });
+      card.querySelector('.share-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        shareVideo(video.id, video.title);
       });
 
       videoGrid.appendChild(card);
@@ -1002,6 +1148,7 @@
         <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <button class="close-btn">×</button>
+        <button class="share-btn">🔗</button>
         <div class="play-btn"></div>
         <div class="music-info">
           <div class="music-title">${video.title}</div>
@@ -1014,6 +1161,10 @@
       card.querySelector('.close-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         stopVideo(card);
+      });
+      card.querySelector('.share-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        shareVideo(video.id, video.title);
       });
 
       musicGrid.appendChild(card);
@@ -1091,6 +1242,34 @@
       card.classList.remove('playing');
       card.querySelector('iframe').src = '';
       document.body.classList.remove('video-playing');
+    }
+
+    function shareVideo(videoId, title) {
+      const vimeoUrl = `https://vimeo.com/${videoId}`;
+
+      // Copier dans le clipboard
+      navigator.clipboard.writeText(vimeoUrl).then(() => {
+        showShareToast('Lien copié!');
+      }).catch(() => {
+        showShareToast('Lien: ' + vimeoUrl);
+      });
+    }
+
+    function showShareToast(message) {
+      // Créer le toast s'il n'existe pas
+      let toast = document.querySelector('.share-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'share-toast';
+        document.body.appendChild(toast);
+      }
+
+      toast.textContent = message;
+      toast.classList.add('show');
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
     }
 
     // Escape pour fermer la vidéo
