@@ -150,7 +150,14 @@
       overflow: hidden;
       cursor: pointer;
       background: #f0f0f0;
-      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-card.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
 
     .video-card::before {
@@ -168,8 +175,8 @@
     }
 
     .video-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 
+      transform: translateY(-8px) scale(1.02);
+      box-shadow:
         0 20px 60px rgba(0, 0, 0, 0.15),
         0 0 0 1px rgba(255, 0, 0, 0.1);
     }
@@ -256,6 +263,53 @@
       letter-spacing: 1px;
     }
 
+    /* Fullscreen Video Player */
+    .fullscreen-player {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--black);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fullscreen-player.active {
+      display: flex;
+    }
+
+    .fullscreen-player iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .fullscreen-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10000;
+    }
+
+    .fullscreen-close:hover {
+      background: white;
+      color: black;
+      transform: scale(1.1);
+    }
+
     /* Responsive */
     @media (max-width: 1200px) {
       .video-grid {
@@ -287,6 +341,13 @@
         grid-template-columns: 1fr;
         gap: 24px;
       }
+
+      .fullscreen-close {
+        top: 20px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+      }
     }
 
     /* Loading animation */
@@ -297,54 +358,6 @@
 
     .loading .video-thumbnail {
       animation: pulse 1.5s ease-in-out infinite;
-    }
-
-    /* Modal pour lecture vidéo */
-    .video-modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 40px;
-    }
-
-    .video-modal.active {
-      display: flex;
-    }
-
-    .video-modal iframe {
-      width: 100%;
-      max-width: 1200px;
-      aspect-ratio: 16 / 9;
-      border: none;
-      border-radius: 8px;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 30px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      font-size: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s ease;
-    }
-
-    .close-modal:hover {
-      background: white;
-      color: black;
-      transform: scale(1.1);
     }
   </style>
 </head>
@@ -371,14 +384,14 @@
     </div>
   </main>
 
-  <!-- Video Modal -->
-  <div class="video-modal" id="videoModal">
-    <button class="close-modal" onclick="closeModal()">×</button>
+  <!-- Fullscreen Video Player -->
+  <div class="fullscreen-player" id="fullscreenPlayer">
+    <button class="fullscreen-close" onclick="closeFullscreen()">×</button>
     <iframe id="videoPlayer" src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
   </div>
 
   <script>
-    // Liste des 62 vidéos Vimeo
+    // Liste des 62 vidéos Vimeo (ordre original respecté)
     const videos = [
       { id: '1092497480', title: 'Project 01' },
       { id: '1092500102', title: 'Project 02' },
@@ -445,13 +458,14 @@
     ];
 
     const videoGrid = document.getElementById('videoGrid');
-    const videoModal = document.getElementById('videoModal');
+    const fullscreenPlayer = document.getElementById('fullscreenPlayer');
     const videoPlayer = document.getElementById('videoPlayer');
 
-    // Générer les cards
-    videos.forEach(video => {
+    // Générer les cards (ordre respecté)
+    videos.forEach((video, index) => {
       const card = document.createElement('div');
       card.className = 'video-card loading';
+      card.setAttribute('data-index', index);
       card.innerHTML = `
         <img class="video-thumbnail" src="https://vumbnail.com/${video.id}.jpg" alt="${video.title}" loading="lazy">
         <div class="play-btn"></div>
@@ -460,9 +474,9 @@
           <div class="video-meta">Vimeo · ${video.id}</div>
         </div>
       `;
-      
+
       card.addEventListener('click', () => {
-        openModal(video.id);
+        openFullscreen(video.id);
       });
 
       // Remove loading class when image loads
@@ -474,26 +488,84 @@
       videoGrid.appendChild(card);
     });
 
-    function openModal(videoId) {
-      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1`;
-      videoModal.classList.add('active');
+    // Intersection Observer pour animations au scroll
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          const card = entry.target;
+          const cardIndex = parseInt(card.getAttribute('data-index'));
+          // Stagger delay basé sur l'index de la carte
+          const delay = (cardIndex % 9) * 80; // 80ms entre chaque carte (par groupe de 9)
+
+          setTimeout(() => {
+            card.classList.add('visible');
+          }, delay);
+
+          observer.unobserve(card);
+        }
+      });
+    }, observerOptions);
+
+    // Observer toutes les cartes
+    document.querySelectorAll('.video-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    function openFullscreen(videoId) {
+      videoPlayer.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
+      fullscreenPlayer.classList.add('active');
       document.body.style.overflow = 'hidden';
+
+      // Tenter le vrai fullscreen natif
+      if (fullscreenPlayer.requestFullscreen) {
+        fullscreenPlayer.requestFullscreen().catch(() => {
+          // Si ça échoue, on reste en fullscreen CSS
+        });
+      } else if (fullscreenPlayer.webkitRequestFullscreen) {
+        fullscreenPlayer.webkitRequestFullscreen();
+      } else if (fullscreenPlayer.msRequestFullscreen) {
+        fullscreenPlayer.msRequestFullscreen();
+      }
     }
 
-    function closeModal() {
+    function closeFullscreen() {
       videoPlayer.src = '';
-      videoModal.classList.remove('active');
+      fullscreenPlayer.classList.remove('active');
       document.body.style.overflow = '';
+
+      // Quitter le fullscreen natif si actif
+      if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+        }
+      }
     }
 
     // Close on Escape key
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Escape') closeFullscreen();
     });
 
     // Close on click outside
-    videoModal.addEventListener('click', (e) => {
-      if (e.target === videoModal) closeModal();
+    fullscreenPlayer.addEventListener('click', (e) => {
+      if (e.target === fullscreenPlayer) closeFullscreen();
+    });
+
+    // Détecter quand on quitte le fullscreen natif
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        closeFullscreen();
+      }
     });
   </script>
 </body>
