@@ -235,17 +235,18 @@
       transform: scale(1);
     }
 
-    /* Effet WHAHOU au hover - 3D Tilt + Glow */
+    /* Effet élégant au hover */
     .video-card:hover {
-      transform: scale(1.08) translateZ(20px);
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
       z-index: 10;
     }
 
     .video-card:hover .video-thumbnail {
-      transform: scale(1.15);
+      transform: scale(1.05);
     }
 
-    /* Video card expanded - mode cinéma ULTRA STYLÉ */
+    /* Video card expanded - mode cinéma CLEAN & ÉLÉGANT */
     .video-card.playing {
       grid-column: 1 / -1;
       max-width: 1400px;
@@ -254,127 +255,24 @@
       aspect-ratio: 16 / 9;
       z-index: 100;
       cursor: default;
-      border-radius: 24px;
-      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      border-radius: 20px;
+      animation: videoExpand 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: center;
       position: relative;
+      box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.08),
+        0 40px 100px rgba(0, 0, 0, 0.25),
+        0 20px 40px rgba(0, 0, 0, 0.15);
     }
 
     @keyframes videoExpand {
       0% {
-        transform: scale(0.7) rotateX(15deg);
+        transform: scale(0.85);
         opacity: 0;
-        filter: blur(20px) brightness(1.2);
-      }
-      50% {
-        transform: scale(1.05) rotateX(-2deg);
       }
       100% {
-        transform: scale(1) rotateX(0deg);
+        transform: scale(1);
         opacity: 1;
-        filter: blur(0) brightness(1);
-      }
-    }
-
-    /* Effet de ripple au clic */
-    .video-card.playing::after {
-      content: '';
-      position: absolute;
-      inset: -20px;
-      border-radius: 30px;
-      background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
-      animation: ripple 0.8s ease-out;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    @keyframes ripple {
-      0% {
-        transform: scale(0.8);
-        opacity: 0.8;
-      }
-      100% {
-        transform: scale(1.5);
-        opacity: 0;
-      }
-    }
-
-    /* Glow ULTRA coloré selon la vidéo avec pulse */
-    .video-card.playing:nth-child(3n+1) {
-      box-shadow:
-        0 0 0 2px rgba(109, 181, 196, 0.3),
-        0 30px 80px rgba(109, 181, 196, 0.4),
-        0 0 120px rgba(109, 181, 196, 0.25),
-        inset 0 0 40px rgba(109, 181, 196, 0.05);
-      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseCyan 3s ease-in-out infinite;
-    }
-
-    .video-card.playing:nth-child(3n+2) {
-      box-shadow:
-        0 0 0 2px rgba(227, 35, 44, 0.3),
-        0 30px 80px rgba(227, 35, 44, 0.4),
-        0 0 120px rgba(227, 35, 44, 0.25),
-        inset 0 0 40px rgba(227, 35, 44, 0.05);
-      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseRed 3s ease-in-out infinite;
-    }
-
-    .video-card.playing:nth-child(3n+3) {
-      box-shadow:
-        0 0 0 2px rgba(45, 56, 83, 0.3),
-        0 30px 80px rgba(45, 56, 83, 0.4),
-        0 0 120px rgba(45, 56, 83, 0.25),
-        inset 0 0 40px rgba(45, 56, 83, 0.05);
-      animation: videoExpand 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), glowPulseNavy 3s ease-in-out infinite;
-    }
-
-    @keyframes glowPulseCyan {
-      0%, 100% {
-        box-shadow:
-          0 0 0 2px rgba(109, 181, 196, 0.3),
-          0 30px 80px rgba(109, 181, 196, 0.4),
-          0 0 120px rgba(109, 181, 196, 0.25),
-          inset 0 0 40px rgba(109, 181, 196, 0.05);
-      }
-      50% {
-        box-shadow:
-          0 0 0 3px rgba(109, 181, 196, 0.4),
-          0 35px 90px rgba(109, 181, 196, 0.5),
-          0 0 140px rgba(109, 181, 196, 0.3),
-          inset 0 0 50px rgba(109, 181, 196, 0.08);
-      }
-    }
-
-    @keyframes glowPulseRed {
-      0%, 100% {
-        box-shadow:
-          0 0 0 2px rgba(227, 35, 44, 0.3),
-          0 30px 80px rgba(227, 35, 44, 0.4),
-          0 0 120px rgba(227, 35, 44, 0.25),
-          inset 0 0 40px rgba(227, 35, 44, 0.05);
-      }
-      50% {
-        box-shadow:
-          0 0 0 3px rgba(227, 35, 44, 0.4),
-          0 35px 90px rgba(227, 35, 44, 0.5),
-          0 0 140px rgba(227, 35, 44, 0.3),
-          inset 0 0 50px rgba(227, 35, 44, 0.08);
-      }
-    }
-
-    @keyframes glowPulseNavy {
-      0%, 100% {
-        box-shadow:
-          0 0 0 2px rgba(45, 56, 83, 0.3),
-          0 30px 80px rgba(45, 56, 83, 0.4),
-          0 0 120px rgba(45, 56, 83, 0.25),
-          inset 0 0 40px rgba(45, 56, 83, 0.05);
-      }
-      50% {
-        box-shadow:
-          0 0 0 3px rgba(45, 56, 83, 0.4),
-          0 35px 90px rgba(45, 56, 83, 0.5),
-          0 0 140px rgba(45, 56, 83, 0.3),
-          inset 0 0 50px rgba(45, 56, 83, 0.08);
       }
     }
 
@@ -407,7 +305,7 @@
       border-radius: 20px;
     }
 
-    /* Backdrop blur ULTRA élégant sur toute la page */
+    /* Backdrop élégant sur toute la page */
     body.video-playing {
       overflow: hidden;
     }
@@ -416,64 +314,32 @@
       content: '';
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.9) 100%);
-      backdrop-filter: blur(20px) saturate(0.6) brightness(1.05);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(30px);
       z-index: 50;
-      animation: backdropAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      animation: backdropAppear 0.4s ease forwards;
     }
 
     @keyframes backdropAppear {
       from {
         opacity: 0;
-        backdrop-filter: blur(0) saturate(1) brightness(1);
       }
       to {
         opacity: 1;
-        backdrop-filter: blur(20px) saturate(0.6) brightness(1.05);
       }
     }
 
     /* Autres vidéos - effet discret */
     body.video-playing .video-card:not(.playing) {
-      opacity: 0.3;
-      transform: scale(0.92);
-      filter: blur(4px) grayscale(0.3);
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.2;
+      transform: scale(0.95);
+      filter: blur(8px);
+      transition: all 0.5s ease;
     }
 
-    /* Bordures et glow WHAHOU colorés selon vidéo */
-    .video-card:nth-child(3n+1) {
+    /* Bordures subtiles au hover */
+    .video-card {
       border: 2px solid transparent;
-    }
-    .video-card:nth-child(3n+1):hover {
-      border-color: var(--cyan);
-      box-shadow:
-        0 0 0 3px rgba(109, 181, 196, 0.3),
-        0 20px 60px rgba(109, 181, 196, 0.5),
-        0 0 80px rgba(109, 181, 196, 0.3);
-    }
-
-    .video-card:nth-child(3n+2) {
-      border: 2px solid transparent;
-    }
-    .video-card:nth-child(3n+2):hover {
-      border-color: var(--red);
-      box-shadow:
-        0 0 0 3px rgba(227, 35, 44, 0.3),
-        0 20px 60px rgba(227, 35, 44, 0.5),
-        0 0 80px rgba(227, 35, 44, 0.3);
-    }
-
-    .video-card:nth-child(3n+3) {
-      border: 2px solid transparent;
-    }
-    .video-card:nth-child(3n+3):hover {
-      border-color: var(--navy);
-      box-shadow:
-        0 0 0 3px rgba(45, 56, 83, 0.3),
-        0 20px 60px rgba(45, 56, 83, 0.5),
-        0 0 80px rgba(45, 56, 83, 0.3);
     }
 
     .video-thumbnail {
@@ -483,24 +349,15 @@
       transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    /* Overlay avec gradient coloré */
+    /* Overlay subtil au hover */
     .video-card::before {
       content: '';
       position: absolute;
       inset: 0;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, transparent 60%);
       opacity: 0;
       transition: opacity 0.4s ease;
       z-index: 1;
-    }
-
-    .video-card:nth-child(3n+1)::before {
-      background: linear-gradient(135deg, rgba(109, 181, 196, 0.9) 0%, transparent 60%);
-    }
-    .video-card:nth-child(3n+2)::before {
-      background: linear-gradient(135deg, rgba(227, 35, 44, 0.9) 0%, transparent 60%);
-    }
-    .video-card:nth-child(3n+3)::before {
-      background: linear-gradient(135deg, rgba(45, 56, 83, 0.9) 0%, transparent 60%);
     }
 
     .video-card:hover::before {
@@ -644,37 +501,36 @@
     .music-card .close-btn {
       display: none;
       position: absolute;
-      top: -18px;
-      right: -18px;
-      width: 48px;
-      height: 48px;
+      top: -22px;
+      right: -22px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.98);
-      border: 2px solid rgba(0, 0, 0, 0.06);
-      color: var(--navy);
-      font-size: 26px;
+      background: var(--navy);
+      border: 3px solid white;
+      color: white;
+      font-size: 32px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1001;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
-      font-weight: 300;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      font-weight: 400;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
 
     .music-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
       opacity: 0;
-      transform: scale(0.5) rotate(-90deg);
+      transform: scale(0.7);
     }
 
     .music-card .close-btn:hover {
-      transform: rotate(90deg) scale(1.15);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      background: var(--navy);
-      color: white;
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      background: var(--red);
     }
 
     /* Autres vidéos quand une music est en lecture */
@@ -836,48 +692,47 @@
     }
 
     /* Player avec animation stylée */
-    /* Bouton close sur vidéo en lecture - ultra stylé */
+    /* Bouton close ULTRA VISIBLE */
     .video-card .close-btn {
       display: none;
       position: absolute;
-      top: -18px;
-      right: -18px;
-      width: 48px;
-      height: 48px;
+      top: -22px;
+      right: -22px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.98);
-      border: 2px solid rgba(0, 0, 0, 0.06);
-      color: var(--navy);
-      font-size: 26px;
+      background: var(--navy);
+      border: 3px solid white;
+      color: white;
+      font-size: 32px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 1001;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1;
-      font-weight: 300;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      font-weight: 400;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
     }
 
     .video-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards;
+      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.3s forwards;
       opacity: 0;
-      transform: scale(0.5) rotate(-90deg);
+      transform: scale(0.7);
     }
 
     @keyframes closeButtonAppear {
       to {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
       }
     }
 
     .video-card .close-btn:hover {
-      transform: rotate(90deg) scale(1.15);
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-      background: var(--navy);
-      color: white;
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      background: var(--red);
     }
 
     /* Animation des vidéos quand player ouvert */
