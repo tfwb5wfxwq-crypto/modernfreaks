@@ -392,25 +392,32 @@
       transition: all 0.5s ease;
     }
 
+    /* Garde la miniature visible pendant chargement */
     .video-card.playing .video-thumbnail {
-      display: none;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    .video-card.playing.loaded .video-thumbnail {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .video-card.playing .play-btn,
     .video-card.playing .video-info {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .video-card.playing iframe {
       display: block;
-      animation: iframeAppear 0.5s ease 0.2s forwards;
       opacity: 0;
+      transition: opacity 0.4s ease;
     }
 
-    @keyframes iframeAppear {
-      to {
-        opacity: 1;
-      }
+    .video-card.playing.loaded iframe {
+      opacity: 1;
     }
 
     .video-card iframe {
@@ -615,19 +622,32 @@
         0 0 100px rgba(227, 35, 44, 0.15);
     }
 
+    /* Garde la miniature visible pendant chargement - Music */
     .music-card.playing .music-thumbnail {
-      display: none;
+      display: block;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+    }
+
+    .music-card.playing.loaded .music-thumbnail {
+      opacity: 0;
+      pointer-events: none;
     }
 
     .music-card.playing .play-btn,
     .music-card.playing .music-info {
-      display: none;
+      opacity: 0;
+      pointer-events: none;
     }
 
     .music-card.playing iframe {
       display: block;
-      animation: iframeAppear 0.5s ease 0.2s forwards;
       opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .music-card.playing.loaded iframe {
+      opacity: 1;
     }
 
     .music-card iframe {
@@ -1245,9 +1265,13 @@
         setTimeout(() => {
           iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=1080p`;
           iframe.onload = () => {
-            setTimeout(() => card.classList.remove('loading'), 500);
+            // Quand l'iframe est chargée, fade de la miniature vers la vidéo
+            setTimeout(() => {
+              card.classList.remove('loading');
+              card.classList.add('loaded');
+            }, 300);
           };
-        }, 200);
+        }, 250);
       });
 
       // Met à jour l'URL
@@ -1296,6 +1320,7 @@
       // Nettoie après l'animation
       setTimeout(() => {
         iframe.src = '';
+        card.classList.remove('loaded', 'loading');
         card.style.position = '';
         card.style.left = '';
         card.style.top = '';
