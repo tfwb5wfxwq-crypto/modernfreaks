@@ -1534,7 +1534,9 @@
         clone.style.opacity = '0';
       });
 
-      history.replaceState(null, null, ' ');
+      // Remet le hash à la page actuelle (film ou music)
+      const currentPage = document.querySelector('.page-section.active')?.id.replace('-page', '') || 'film';
+      window.location.hash = currentPage;
     }
 
     // Escape pour fermer la vidéo
