@@ -1336,7 +1336,9 @@
 
     // Hash change navigation
     window.addEventListener('hashchange', () => {
-      const page = window.location.hash.slice(1) || 'film';
+      const hash = window.location.hash.slice(1) || 'film';
+      // Format: "film/video-slug" ou juste "film"
+      const page = hash.split('/')[0];
       navigateToPage(page, false);
     });
 
@@ -1494,8 +1496,10 @@
         });
       });
 
-      // Ne change PAS le hash pour éviter de casser la navigation
-      // (le hash #film ou #music doit rester actif)
+      // Met à jour l'URL pour permettre le partage (format: #page/video-slug)
+      const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
+      const slug = createSlug(title);
+      window.location.hash = `${currentPage}/${slug}`;
     }
 
     function stopVideo(card) {
@@ -1564,6 +1568,10 @@
         clone.style.height = targetRect.height + 'px';
         clone.style.opacity = '0';
       });
+
+      // Restaure le hash vers juste la page (enlève le /video-slug)
+      const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
+      window.location.hash = currentPage;
     }
 
     // Escape pour fermer la vidéo
@@ -1606,10 +1614,13 @@
     // Auto-play vidéo si hash présent dans l'URL au chargement
     window.addEventListener('load', () => {
       const hash = window.location.hash.slice(1); // Retire le #
-      if (hash) {
+      if (hash && hash.includes('/')) {
+        // Format: "film/video-slug" ou "music/video-slug"
+        const [page, videoSlug] = hash.split('/');
+
         // Cherche la vidéo correspondant au slug
         const allVideos = [...videos, ...musicVideos];
-        const matchedVideo = allVideos.find(v => createSlug(v.title) === hash);
+        const matchedVideo = allVideos.find(v => createSlug(v.title) === videoSlug);
 
         if (matchedVideo) {
           // Trouve la carte correspondante
