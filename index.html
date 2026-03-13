@@ -1770,10 +1770,13 @@
         }, 300);
 
         // Bouton close sur le clone
-        clone.querySelector('.close-btn').addEventListener('click', (e) => {
-          e.stopPropagation();
-          stopVideo(card);
-        });
+        const closeBtn = clone.querySelector('.close-btn');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            stopVideo(card);
+          });
+        }
       });
 
       // Met à jour l'URL pour permettre le partage (format: #page/video-slug)
@@ -1921,6 +1924,14 @@
             // Update association
             originalCard._clone = null;
             nextCard._clone = playingClone;
+
+            // Update URL avec le nouveau titre
+            const videoData = currentPage === 'music' ? musicVideos : videos;
+            const newVideo = videoData.find(v => v.id === newVideoId);
+            if (newVideo) {
+              const slug = createSlug(newVideo.title);
+              window.location.hash = `${currentPage}/${slug}`;
+            }
 
             // Fade in after load
             iframe.onload = () => {
