@@ -1933,6 +1933,17 @@
               window.location.hash = `${currentPage}/${slug}`;
             }
 
+            // Scroll vers la carte active + highlight
+            nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Highlight temporaire
+            nextCard.style.outline = '3px solid rgba(109, 181, 196, 0.8)';
+            nextCard.style.outlineOffset = '4px';
+            setTimeout(() => {
+              nextCard.style.outline = '';
+              nextCard.style.outlineOffset = '';
+            }, 1500);
+
             // Fade in after load
             iframe.onload = () => {
               setTimeout(() => {
