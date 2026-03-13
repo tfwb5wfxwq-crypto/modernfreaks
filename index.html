@@ -1443,8 +1443,8 @@
 
       // Lance les 2 animations EN MÊME TEMPS (clone dézoom + carte blop)
       requestAnimationFrame(() => {
-        // Clone dézoom avec fade out progressif
-        clone.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.4s ease 0.15s';
+        // Clone dézoom avec fade rapide seulement à la fin (reste bien visible)
+        clone.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.2s ease 0.38s';
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.width = targetRect.width + 'px';
