@@ -1412,26 +1412,23 @@
 
       clone.offsetHeight;
 
-      // Crossfade synchronisé à la fin: clone fade out + carte fade in
+      // Swap instantané à la fin (pas de fade = pas de flash)
       const onTransitionEnd = (e) => {
         if (e.target !== clone) return;
 
-        // Prépare les transitions
-        clone.style.transition = 'opacity 0.2s ease-out';
-        card.style.transition = 'opacity 0.2s ease-in';
-
-        // Crossfade simultané
-        clone.style.opacity = '0';
+        // Swap INSTANTANÉ (pas de transition)
+        clone.style.display = 'none';
+        card.style.transition = 'none';
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
 
         clone.removeEventListener('transitionend', onTransitionEnd);
 
-        // Bounce après le crossfade
-        setTimeout(() => {
+        // Bounce IMMÉDIATEMENT pour masquer le swap
+        requestAnimationFrame(() => {
           card.classList.add('returning');
           setTimeout(() => card.classList.remove('returning'), 300);
-        }, 100);
+        });
 
         // Cleanup
         setTimeout(() => {
@@ -1439,7 +1436,7 @@
             clone.parentNode.removeChild(clone);
           }
           card._clone = null;
-        }, 250);
+        }, 50);
       };
 
       clone.addEventListener('transitionend', onTransitionEnd);
