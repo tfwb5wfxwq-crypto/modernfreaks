@@ -1537,10 +1537,6 @@
         clone.style.height = targetRect.height + 'px';
         clone.style.opacity = '0';
       });
-
-      // Remet le hash à la page actuelle sans déclencher hashchange
-      const currentPage = document.querySelector('.page-section.active')?.id.replace('-page', '') || 'film';
-      history.replaceState(null, '', `#${currentPage}`);
     }
 
     // Escape pour fermer la vidéo
