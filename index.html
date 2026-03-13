@@ -288,11 +288,13 @@
     }
 
     /* Clone en position fixed - propriétés identiques à l'original */
-    .video-card.video-clone {
+    /* Styles communs pour tous les clones (film + music) */
+    .video-clone {
       overflow: hidden;
       box-sizing: border-box;
       border: 2px solid transparent;
       border-radius: 20px;
+      z-index: 9999;
     }
 
     .video-card.visible {
