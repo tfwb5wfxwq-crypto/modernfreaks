@@ -1394,7 +1394,7 @@
       document.body.classList.remove('video-playing');
       clone.classList.remove('playing', 'loaded', 'loading');
 
-      // Cache l'iframe IMMÉDIATEMENT (sans transition)
+      // Cache l'iframe du clone IMMÉDIATEMENT
       const cloneIframe = clone.querySelector('iframe');
       const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
 
@@ -1408,40 +1408,43 @@
         cloneThumbnail.style.transition = 'none';
         cloneThumbnail.style.opacity = '1';
         cloneThumbnail.style.display = 'block';
-        cloneThumbnail.style.zIndex = '10';
       }
 
-      // Force reflow pour appliquer les changements AVANT l'animation
+      // Révèle la carte originale IMMÉDIATEMENT (sous le clone)
+      const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
+      if (originalThumbnail) {
+        originalThumbnail.style.display = 'block';
+        originalThumbnail.style.opacity = '1';
+      }
+      card.style.opacity = '1';
+      card.style.pointerEvents = 'auto';
+
+      // Force reflow
       clone.offsetHeight;
 
-      // Anime le clone vers la position de retour (seulement position/size)
+      // Anime le clone vers la position de retour + fade out PENDANT l'animation
       requestAnimationFrame(() => {
-        clone.style.transition = 'all 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+        clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease 0.15s';
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.width = targetRect.width + 'px';
         clone.style.height = targetRect.height + 'px';
+        clone.style.opacity = '0';
       });
 
-      // À la fin de l'animation : swap instantané clone → original
+      // Supprime le clone après l'animation
       setTimeout(() => {
-        // Supprime le clone
         if (clone.parentNode) {
           clone.parentNode.removeChild(clone);
         }
         card._clone = null;
 
-        // Révèle la carte originale INSTANTANÉMENT avec effet "plop"
-        card.style.transition = '';
-        card.style.opacity = '1';
-        card.style.pointerEvents = 'auto';
+        // Effet plop sur la carte originale (déjà visible)
         card.classList.add('returning');
-
-        // Retire l'effet après l'animation
         setTimeout(() => {
           card.classList.remove('returning');
         }, 800);
-      }, 450);
+      }, 500);
 
       // Retire le hash
       history.replaceState(null, null, ' ');
