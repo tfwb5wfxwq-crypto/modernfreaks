@@ -1092,8 +1092,8 @@
 
   <script>
     const videos = [
-      { id: "1125470403", title: "Les Bodin's partent en vrille" },
-      { id: "1125480221", title: "Les Bodin's partent en vrille" },
+      { id: "1125470403", title: "Les Bodin's partent en vrille", ratio: "4/3" },
+      { id: "1125480221", title: "Les Bodin's partent en vrille", ratio: "4/3" },
       { id: "1125484591", title: "Yacht Stories" },
       { id: "1092497480", title: "Les Infaillibles" },
       { id: "1092500213", title: "Les Infaillibles" },
@@ -1177,6 +1177,7 @@
       const hoverClass = `hover-${Math.floor(Math.random() * 10) + 1}`;
       card.className = `video-card ${hoverClass}`;
       card.dataset.videoId = video.id;
+      if (video.ratio) card.dataset.ratio = video.ratio;
       card.innerHTML = `
         <img class="video-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -1211,6 +1212,7 @@
       const card = document.createElement('div');
       card.className = 'music-card';
       card.dataset.videoId = video.id;
+      if (video.ratio) card.dataset.ratio = video.ratio;
       card.innerHTML = `
         <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
@@ -1342,11 +1344,23 @@
       document.body.appendChild(clone);
       card._clone = clone;
 
-      // Calcule position finale
+      // Calcule position finale adaptée au ratio de la vidéo
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const maxWidth = Math.min(viewportWidth * 0.85, 1200);
-      const finalHeight = maxWidth * (9 / 16);
+
+      // Détecte le ratio (16:9 par défaut, peut être surchargé avec data-ratio)
+      const videoRatio = card.dataset.ratio ? eval(card.dataset.ratio) : (16 / 9);
+
+      // Calcule taille optimale selon le ratio de la vidéo
+      let maxWidth = Math.min(viewportWidth * 0.85, 1200);
+      let finalHeight = maxWidth / videoRatio;
+
+      // Vérifie si ça dépasse la hauteur disponible
+      if (finalHeight > viewportHeight * 0.85) {
+        finalHeight = viewportHeight * 0.85;
+        maxWidth = finalHeight * videoRatio;
+      }
+
       const finalLeft = (viewportWidth - maxWidth) / 2;
       const finalTop = (viewportHeight - finalHeight) / 2;
 
