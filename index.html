@@ -286,6 +286,14 @@
       perspective: 1000px;
     }
 
+    /* Clone en position fixed - propriétés identiques à l'original */
+    .video-card.video-clone {
+      overflow: hidden;
+      box-sizing: border-box;
+      border: 2px solid transparent;
+      border-radius: 20px;
+    }
+
     .video-card.visible {
       opacity: 1;
       transform: scale(1);
@@ -507,6 +515,83 @@
     /* Bordures subtiles au hover */
     .video-card {
       border: 2px solid transparent;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    /* Effet liquid glass au retour - bounce élastique */
+    @keyframes liquidGlass {
+      0% {
+        transform: scale(0.92);
+        filter: brightness(1) blur(0);
+      }
+      30% {
+        transform: scale(1.05);
+        filter: brightness(1.15) blur(0);
+      }
+      50% {
+        transform: scale(0.98);
+        filter: brightness(1.05) blur(0);
+      }
+      70% {
+        transform: scale(1.02);
+        filter: brightness(1.08) blur(0);
+      }
+      85% {
+        transform: scale(0.995);
+        filter: brightness(1.02) blur(0);
+      }
+      100% {
+        transform: scale(1);
+        filter: brightness(1) blur(0);
+      }
+    }
+
+    .video-card.returning {
+      animation: liquidGlass 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Glass reflet qui glisse sur la carte */
+    .video-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -100%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(110deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(255, 255, 255, 0) 60%,
+        transparent 100%
+      );
+      transform: skewX(-15deg);
+      opacity: 0;
+      pointer-events: none;
+      filter: blur(8px);
+    }
+
+    .video-card.returning::after {
+      animation: glassSlide 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    @keyframes glassSlide {
+      0% {
+        left: -100%;
+        opacity: 0;
+      }
+      30% {
+        opacity: 1;
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        left: 150%;
+        opacity: 0;
+      }
     }
 
     .video-thumbnail {
@@ -607,6 +692,8 @@
       aspect-ratio: 16 / 9;
       border-radius: 16px;
       overflow: hidden;
+      box-sizing: border-box;
+      border: 2px solid transparent;
       cursor: pointer;
       background: #f5f5f5;
       transition: all 0.4s ease;
@@ -685,37 +772,43 @@
     .music-card .close-btn {
       display: none;
       position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
+      top: -25px;
+      right: -25px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.95);
-      border: none;
+      background: rgba(255, 255, 255, 0.98);
+      border: 3px solid rgba(227, 35, 44, 0.2);
       color: var(--navy);
-      font-size: 28px;
+      font-size: 26px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
       z-index: 10001;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       line-height: 1;
       font-weight: 300;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.15),
+        0 0 0 0 rgba(227, 35, 44, 0);
+      backdrop-filter: blur(15px);
     }
 
     .music-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
       opacity: 0;
-      transform: scale(0.5);
+      transform: scale(0.4) rotate(-90deg);
     }
 
     .music-card .close-btn:hover {
       transform: scale(1.15) rotate(90deg);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-      background: var(--red);
+      box-shadow:
+        0 8px 32px rgba(227, 35, 44, 0.3),
+        0 0 0 8px rgba(227, 35, 44, 0.1);
+      background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+      border-color: rgba(227, 35, 44, 0.4);
+      color: var(--red);
     }
 
     /* Autres vidéos quand une music est en lecture */
@@ -877,48 +970,58 @@
     }
 
     /* Player avec animation stylée */
-    /* Bouton close ULTRA VISIBLE */
+    /* Bouton close premium - positionné en dehors pour ne pas cacher les contrôles Vimeo */
     .video-card .close-btn {
       display: none;
       position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 50px;
-      height: 50px;
+      top: -25px;
+      right: -25px;
+      width: 56px;
+      height: 56px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.95);
-      border: none;
+      background: rgba(255, 255, 255, 0.98);
+      border: 3px solid rgba(109, 181, 196, 0.2);
       color: var(--navy);
-      font-size: 28px;
+      font-size: 26px;
       cursor: pointer;
       align-items: center;
       justify-content: center;
       z-index: 10001;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
       line-height: 1;
       font-weight: 300;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.15),
+        0 0 0 0 rgba(109, 181, 196, 0);
+      backdrop-filter: blur(15px);
     }
 
     .video-card.playing .close-btn {
       display: flex;
-      animation: closeButtonAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards;
+      animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
       opacity: 0;
-      transform: scale(0.5);
+      transform: scale(0.4) rotate(-90deg);
     }
 
     @keyframes closeButtonAppear {
       to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) rotate(0deg);
       }
     }
 
     .video-card .close-btn:hover {
       transform: scale(1.15) rotate(90deg);
-      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-      background: var(--red);
+      box-shadow:
+        0 8px 32px rgba(227, 35, 44, 0.3),
+        0 0 0 8px rgba(227, 35, 44, 0.1);
+      background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+      border-color: rgba(227, 35, 44, 0.3);
+      color: var(--red);
+    }
+
+    .video-card .close-btn:active {
+      transform: scale(1.05) rotate(90deg);
     }
 
     /* Animation des vidéos quand player ouvert */
@@ -1347,22 +1450,27 @@
       // Fade out le clone et fade in la carte originale en simultané
       setTimeout(() => {
         clone.style.opacity = '0';
-        clone.style.transition = 'opacity 0.2s ease';
+        clone.style.transition = 'opacity 0.25s ease';
 
-        card.style.transition = 'opacity 0.2s ease';
+        // Révèle la carte originale avec effet premium
+        card.style.transition = 'opacity 0.25s ease';
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
+        card.classList.add('returning');
       }, 450);
 
-      // Nettoie le clone après l'animation
+      // Nettoie le clone et l'effet après l'animation
       setTimeout(() => {
         if (clone.parentNode) {
           clone.parentNode.removeChild(clone);
         }
         card._clone = null;
 
-        // Reset styles
-        card.style.transition = '';
+        // Retire l'effet premium
+        setTimeout(() => {
+          card.classList.remove('returning');
+          card.style.transition = '';
+        }, 800);
       }, 700);
 
       // Retire le hash
