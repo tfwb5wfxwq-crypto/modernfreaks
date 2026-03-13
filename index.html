@@ -1256,20 +1256,20 @@
       <h1 class="contact-title">Let's Create Together</h1>
       <p class="contact-subtitle">Vous avez un projet en tête ? Parlons-en.</p>
 
-      <form class="contact-form" id="contactForm">
+      <form class="contact-form" id="contactForm" novalidate>
         <div class="form-row">
           <div class="form-group">
-            <input type="text" id="name" placeholder="Votre nom" required>
+            <input type="text" id="name" name="name" placeholder="Votre nom" required>
           </div>
           <div class="form-group">
-            <input type="email" id="email" placeholder="Votre email" required>
+            <input type="email" id="email" name="email" placeholder="Votre email" required>
           </div>
         </div>
         <div class="form-group">
-          <input type="text" id="subject" placeholder="Sujet" required>
+          <input type="text" id="subject" name="subject" placeholder="Sujet" required>
         </div>
         <div class="form-group">
-          <textarea id="message" placeholder="Votre message" required></textarea>
+          <textarea id="message" name="message" placeholder="Votre message" required></textarea>
         </div>
         <button type="submit" class="submit-btn">Envoyer</button>
       </form>
@@ -1595,9 +1595,42 @@
       }, 4000);
     }
 
+    // Validation custom du formulaire
+    const contactForm = document.getElementById('contactForm');
+    const formInputs = contactForm.querySelectorAll('input, textarea');
+
+    // Messages de validation personnalisés
+    formInputs.forEach(input => {
+      input.addEventListener('invalid', (e) => {
+        e.preventDefault();
+
+        let message = '';
+        if (input.validity.valueMissing) {
+          const labels = {
+            name: 'Ton nom',
+            email: 'Ton email',
+            subject: 'Un sujet',
+            message: 'Un message'
+          };
+          message = `${labels[input.name] || 'Ce champ'} est requis`;
+        } else if (input.validity.typeMismatch && input.type === 'email') {
+          message = 'Entre une adresse email valide';
+        }
+
+        showToast('Oups !', message, 'error');
+        input.focus();
+      });
+    });
+
     // Formulaire avec animation stylée
-    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Validation manuelle
+      if (!contactForm.checkValidity()) {
+        // Le listener 'invalid' va gérer les messages
+        return;
+      }
 
       const submitBtn = e.target.querySelector('.submit-btn');
       const originalText = submitBtn.textContent;
