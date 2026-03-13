@@ -1444,23 +1444,27 @@
       // Force reflow
       clone.offsetHeight;
 
-      // Révèle la carte originale IMMÉDIATEMENT
-      card.style.opacity = '1';
-      card.style.pointerEvents = 'auto';
-
-      // Lance l'animation du clone + effet BLOP synchronisés
+      // Lance SEULEMENT l'animation du clone (pas de fade, juste dézoom)
       requestAnimationFrame(() => {
-        // Clone fait son dézoom + fade out
-        clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease 0.1s';
+        clone.style.transition = 'all 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.width = targetRect.width + 'px';
         clone.style.height = targetRect.height + 'px';
-        clone.style.opacity = '0';
-
-        // Effet BLOP EN MÊME TEMPS (pas après !)
-        card.classList.add('returning');
       });
+
+      // À la fin du dézoom : swap instantané + effet BLOP
+      setTimeout(() => {
+        // Swap instantané
+        clone.style.display = 'none';
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
+
+        // Effet BLOP immédiatement après le swap
+        requestAnimationFrame(() => {
+          card.classList.add('returning');
+        });
+      }, 430);
 
       // Supprime le clone
       setTimeout(() => {
