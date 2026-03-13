@@ -298,6 +298,12 @@
       background: #000;
     }
 
+    /* Thumbnail du clone doit être derrière l'iframe */
+    .video-clone .video-thumbnail,
+    .video-clone .music-thumbnail {
+      z-index: -1 !important;
+    }
+
     .video-card.visible {
       opacity: 1;
       transform: scale(1);
