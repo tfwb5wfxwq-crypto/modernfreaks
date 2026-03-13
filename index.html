@@ -428,6 +428,11 @@
       transition-delay: 0.3s;
     }
 
+    /* Fond noir pour bandes latérales des vidéos 4:3 */
+    .video-card.playing.loaded {
+      background: #000;
+    }
+
     .video-card.playing .play-btn,
     .video-card.playing .video-info {
       opacity: 0;
@@ -685,6 +690,11 @@
       pointer-events: none;
     }
 
+    /* Fond noir pour bandes latérales */
+    .music-card.playing.loaded {
+      background: #000;
+    }
+
     .music-card.playing .play-btn,
     .music-card.playing .music-info {
       opacity: 0;
@@ -717,7 +727,7 @@
       display: none;
       position: absolute;
       top: 12px;
-      right: 60px;
+      right: 40px;
       width: 44px;
       height: 44px;
       border-radius: 50%;
@@ -919,7 +929,7 @@
       display: none;
       position: absolute;
       top: 12px;
-      right: 60px;
+      right: 40px;
       width: 44px;
       height: 44px;
       border-radius: 50%;
