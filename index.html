@@ -1482,6 +1482,35 @@
         const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
         if (playingCard) stopVideo(playingCard);
       }
+
+      // Navigation avec les flèches gauche/droite
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
+        if (!playingCard) return;
+
+        const currentPage = document.querySelector('nav a.active').dataset.page;
+        const cards = Array.from(document.querySelectorAll(
+          currentPage === 'music' ? '.music-card' : '.video-card'
+        ));
+        const currentIndex = cards.indexOf(playingCard);
+
+        let nextIndex;
+        if (e.key === 'ArrowLeft') {
+          nextIndex = currentIndex > 0 ? currentIndex - 1 : cards.length - 1;
+        } else {
+          nextIndex = currentIndex < cards.length - 1 ? currentIndex + 1 : 0;
+        }
+
+        const nextCard = cards[nextIndex];
+        if (nextCard) {
+          stopVideo(playingCard);
+          setTimeout(() => {
+            const videoData = currentPage === 'music' ? musicVideos : videos;
+            const video = videoData.find(v => v.id === nextCard.dataset.videoId);
+            if (video) playVideo(nextCard, video.title);
+          }, 100);
+        }
+      }
     });
 
     // Auto-play vidéo si hash présent dans l'URL au chargement
