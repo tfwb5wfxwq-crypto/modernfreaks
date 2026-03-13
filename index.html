@@ -295,6 +295,7 @@
       border: 2px solid transparent;
       border-radius: 20px;
       z-index: 9999;
+      background: #000;
     }
 
     .video-card.visible {
@@ -424,11 +425,12 @@
       z-index: 3;
     }
 
-    .video-clone.loaded .video-thumbnail {
+    .video-clone.loaded .video-thumbnail,
+    .video-clone.loaded .music-thumbnail {
       opacity: 0;
       pointer-events: none;
-      transition-delay: 0.3s;
       display: none;
+      visibility: hidden;
     }
 
     .video-card.playing .play-btn,
