@@ -422,7 +422,7 @@
       z-index: 3;
     }
 
-    .video-card.playing.loaded .video-thumbnail {
+    .video-clone.loaded .video-thumbnail {
       opacity: 0;
       pointer-events: none;
       transition-delay: 0.3s;
@@ -681,7 +681,7 @@
       transition: opacity 0.4s ease;
     }
 
-    .music-card.playing.loaded .music-thumbnail {
+    .video-clone.loaded .music-thumbnail {
       opacity: 0;
       pointer-events: none;
       display: none;
@@ -1036,9 +1036,9 @@
         <div class="logo-sub">Modern</div>
       </div>
       <nav>
-        <a href="#film" class="active" data-page="film">Film</a>
-        <a href="#music" data-page="music">Music</a>
-        <a href="#contact" data-page="contact">Contact</a>
+        <a href="/film" class="active" data-page="film">Film</a>
+        <a href="/music" data-page="music">Music</a>
+        <a href="/contact" data-page="contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -1247,47 +1247,103 @@
       musicGrid.appendChild(card);
     });
 
-    // Navigation
+    // Navigation avec History API + Swipe
     const navLinks = document.querySelectorAll('nav a');
     const pages = document.querySelectorAll('.page-section');
 
+    function navigateToPage(pageName, pushState = true) {
+      const targetPage = pageName || 'film';
+
+      navLinks.forEach(l => l.classList.remove('active'));
+      const activeLink = document.querySelector(`nav a[data-page="${targetPage}"]`);
+      if (activeLink) activeLink.classList.add('active');
+
+      // Update URL + meta tags
+      if (pushState) {
+        const url = targetPage === 'film' ? '/' : `/${targetPage}`;
+        history.pushState({ page: targetPage }, '', url);
+        document.title = `Modern Freaks - ${targetPage.charAt(0).toUpperCase() + targetPage.slice(1)}`;
+      }
+
+      // Animation logo
+      const logoLetters = document.querySelectorAll('.logo span');
+      logoLetters.forEach((letter, index) => {
+        const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
+        setTimeout(() => {
+          letter.classList.add(animClass);
+          setTimeout(() => letter.classList.remove(animClass), 600);
+        }, index * 60);
+      });
+
+      // Switch pages
+      pages.forEach(page => {
+        page.classList.remove('active');
+        if (page.id === `${targetPage}-page`) {
+          page.classList.add('active');
+
+          if (targetPage === 'music') {
+            document.querySelectorAll('.music-card').forEach((card, i) => {
+              setTimeout(() => card.classList.add('visible'), i * 80);
+            });
+          }
+          if (targetPage === 'contact') {
+            setTimeout(() => {
+              document.querySelector('.contact-container').classList.add('visible');
+            }, 100);
+          }
+        }
+      });
+    }
+
+    // Click navigation
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        const targetPage = link.dataset.page;
-
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
-
-        // Animation variée des lettres du logo
-        const logoLetters = document.querySelectorAll('.logo span');
-        logoLetters.forEach((letter, index) => {
-          const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
-          setTimeout(() => {
-            letter.classList.add(animClass);
-            setTimeout(() => letter.classList.remove(animClass), 600);
-          }, index * 60);
-        });
-
-        pages.forEach(page => {
-          page.classList.remove('active');
-          if (page.id === `${targetPage}-page`) {
-            page.classList.add('active');
-
-            if (targetPage === 'music') {
-              document.querySelectorAll('.music-card').forEach((card, i) => {
-                setTimeout(() => card.classList.add('visible'), i * 80);
-              });
-            }
-            if (targetPage === 'contact') {
-              setTimeout(() => {
-                document.querySelector('.contact-container').classList.add('visible');
-              }, 100);
-            }
-          }
-        });
+        navigateToPage(link.dataset.page);
       });
     });
+
+    // Browser back/forward
+    window.addEventListener('popstate', (e) => {
+      const page = e.state?.page || window.location.pathname.slice(1) || 'film';
+      navigateToPage(page, false);
+    });
+
+    // Swipe gestures
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 100;
+      const diff = touchStartX - touchEndX;
+
+      if (Math.abs(diff) < swipeThreshold) return;
+
+      const currentPage = document.querySelector('nav a.active').dataset.page;
+      const pageOrder = ['film', 'music', 'contact'];
+      const currentIndex = pageOrder.indexOf(currentPage);
+
+      if (diff > 0 && currentIndex < pageOrder.length - 1) {
+        // Swipe left - next page
+        navigateToPage(pageOrder[currentIndex + 1]);
+      } else if (diff < 0 && currentIndex > 0) {
+        // Swipe right - previous page
+        navigateToPage(pageOrder[currentIndex - 1]);
+      }
+    }
+
+    // Init page from URL
+    const initialPage = window.location.pathname.slice(1) || 'film';
+    navigateToPage(initialPage, false);
 
     // Formulaire
     document.getElementById('contactForm').addEventListener('submit', (e) => {
