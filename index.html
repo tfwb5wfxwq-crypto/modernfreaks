@@ -655,10 +655,34 @@
       transform: translateY(0);
     }
 
-    .music-card:hover {
-      transform: scale(1.01);
-      box-shadow: 0 8px 24px rgba(227, 35, 44, 0.15);
-      border: 2px solid var(--red);
+    .music-card.hover-1:hover:not(.playing) {
+      transform: translateY(-12px) scale(1.03) rotate(1deg);
+      box-shadow: 0 25px 70px rgba(227, 35, 44, 0.3);
+      border-color: rgba(227, 35, 44, 0.4);
+    }
+
+    .music-card.hover-2:hover:not(.playing) {
+      transform: translateY(-8px) scale(1.05) rotate(-2deg);
+      box-shadow: 0 20px 60px rgba(109, 181, 196, 0.25);
+      border-color: rgba(109, 181, 196, 0.4);
+    }
+
+    .music-card.hover-3:hover:not(.playing) {
+      transform: translateY(-10px) scale(1.04) skewY(1deg);
+      box-shadow: 0 22px 65px rgba(45, 56, 83, 0.3);
+      border-color: rgba(45, 56, 83, 0.4);
+    }
+
+    .music-card.hover-4:hover:not(.playing) {
+      transform: translateY(-15px) scale(1.02) rotateX(3deg);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+      border-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .music-card.hover-5:hover:not(.playing) {
+      transform: translateY(-10px) scale(1.06);
+      box-shadow: 0 22px 68px rgba(227, 35, 44, 0.28);
+      border-color: rgba(227, 35, 44, 0.5);
     }
 
     /* Music card expanded - mode cinéma ultra stylé */
@@ -1223,6 +1247,10 @@
       card.className = 'music-card';
       card.dataset.videoId = video.id;
       if (video.ratio) card.dataset.ratio = video.ratio;
+
+      // Ajouter variante hover aléatoire (1-5) comme pour les video-card
+      const hoverVariant = Math.floor(Math.random() * 5) + 1;
+      card.classList.add(`hover-${hoverVariant}`);
       card.innerHTML = `
         <img class="music-thumbnail" src="images/${video.id}.jpg" alt="${video.title}">
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
