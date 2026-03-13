@@ -1444,27 +1444,36 @@
       // Force reflow
       clone.offsetHeight;
 
-      // Lance SEULEMENT l'animation du clone (pas de fade, juste dézoom)
-      requestAnimationFrame(() => {
-        clone.style.transition = 'all 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
-        clone.style.left = targetRect.left + 'px';
-        clone.style.top = targetRect.top + 'px';
-        clone.style.width = targetRect.width + 'px';
-        clone.style.height = targetRect.height + 'px';
-      });
+      // Fonction pour swap + blop EXACTEMENT quand le dézoom est fini
+      const onTransitionEnd = (e) => {
+        // Ignore les transitions des éléments enfants
+        if (e.target !== clone) return;
 
-      // À la fin du dézoom : swap instantané + effet BLOP
-      setTimeout(() => {
         // Swap instantané
         clone.style.display = 'none';
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
 
-        // Effet BLOP immédiatement après le swap
+        // Effet BLOP immédiatement après
         requestAnimationFrame(() => {
           card.classList.add('returning');
         });
-      }, 430);
+
+        // Cleanup listener
+        clone.removeEventListener('transitionend', onTransitionEnd);
+      };
+
+      // Écoute la fin de l'animation pour swap parfaitement synchronisé
+      clone.addEventListener('transitionend', onTransitionEnd);
+
+      // Lance l'animation du clone (dézoom sans fade)
+      requestAnimationFrame(() => {
+        clone.style.transition = 'all 0.42s cubic-bezier(0.32, 0.72, 0, 1)';
+        clone.style.left = targetRect.left + 'px';
+        clone.style.top = targetRect.top + 'px';
+        clone.style.width = targetRect.width + 'px';
+        clone.style.height = targetRect.height + 'px';
+      });
 
       // Supprime le clone
       setTimeout(() => {
