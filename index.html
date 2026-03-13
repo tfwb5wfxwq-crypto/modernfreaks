@@ -1376,7 +1376,7 @@
 
         // Lance la vidéo
         setTimeout(() => {
-          cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0`;
+          cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
 
           const loadTimeout = setTimeout(() => {
             clone.classList.remove('loading');
