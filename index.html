@@ -1113,6 +1113,35 @@
       line-height: 1.4;
     }
 
+    /* Titre vidéo en overlay (navigation flèches) */
+    .video-title-overlay {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      padding: 16px 32px;
+      border-radius: 50px;
+      z-index: 100001;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .video-title-overlay.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .video-title-overlay-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
     /* Player avec animation stylée */
     /* Bouton close premium - en haut à gauche pour ne pas cacher boutons Vimeo */
     .video-card .close-btn {
@@ -1598,6 +1627,27 @@
       }, 4000);
     }
 
+    // Afficher titre vidéo en overlay (navigation flèches)
+    function showVideoTitle(title) {
+      // Retirer ancien overlay
+      document.querySelectorAll('.video-title-overlay').forEach(o => o.remove());
+
+      const overlay = document.createElement('div');
+      overlay.className = 'video-title-overlay';
+      overlay.innerHTML = `<div class="video-title-overlay-text">${title}</div>`;
+
+      document.body.appendChild(overlay);
+
+      // Trigger animation
+      setTimeout(() => overlay.classList.add('show'), 10);
+
+      // Auto-remove after 2.5s
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.remove(), 400);
+      }, 2500);
+    }
+
     // Validation custom du formulaire
     const contactForm = document.getElementById('contactForm');
     const formInputs = contactForm.querySelectorAll('input, textarea');
@@ -1941,6 +1991,9 @@
             if (newVideo) {
               const slug = createSlug(newVideo.title);
               window.location.hash = `${currentPage}/${slug}`;
+
+              // Afficher le titre en overlay
+              showVideoTitle(newVideo.title);
             }
 
             // Scroll vers la carte active + highlight
