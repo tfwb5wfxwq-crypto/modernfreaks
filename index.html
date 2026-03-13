@@ -1394,51 +1394,57 @@
       const cloneIframe = clone.querySelector('iframe');
       const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
 
-      // Cache l'iframe IMMÉDIATEMENT (pas de fade = pas de flash blanc)
+      // Cache l'iframe immédiatement
       if (cloneIframe) {
         cloneIframe.style.transition = 'none';
         cloneIframe.style.opacity = '0';
         cloneIframe.style.visibility = 'hidden';
       }
 
-      // Montre SEULEMENT la thumbnail pendant le dezoom
+      // Thumbnail du clone visible
       if (cloneThumbnail) {
         cloneThumbnail.style.transition = 'none';
         cloneThumbnail.style.position = 'absolute';
         cloneThumbnail.style.inset = '0';
-        cloneThumbnail.style.zIndex = '1';
         cloneThumbnail.style.opacity = '1';
         cloneThumbnail.style.display = 'block';
       }
 
-      // Thumbnail originale visible en dessous (sécurité)
-      const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
-      if (originalThumbnail) {
-        originalThumbnail.style.position = 'absolute';
-        originalThumbnail.style.inset = '0';
-        originalThumbnail.style.zIndex = '-1';
-        originalThumbnail.style.opacity = '1';
-        originalThumbnail.style.display = 'block';
-      }
-
       clone.offsetHeight;
 
-      // Swap à la fin avec petit bounce
+      // Crossfade synchronisé à la fin: clone fade out + carte fade in
       const onTransitionEnd = (e) => {
         if (e.target !== clone) return;
 
-        clone.style.display = 'none';
+        // Prépare les transitions
+        clone.style.transition = 'opacity 0.2s ease-out';
+        card.style.transition = 'opacity 0.2s ease-in';
+
+        // Crossfade simultané
+        clone.style.opacity = '0';
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
-        card.classList.add('returning');
 
         clone.removeEventListener('transitionend', onTransitionEnd);
-        setTimeout(() => card.classList.remove('returning'), 300);
+
+        // Bounce après le crossfade
+        setTimeout(() => {
+          card.classList.add('returning');
+          setTimeout(() => card.classList.remove('returning'), 300);
+        }, 100);
+
+        // Cleanup
+        setTimeout(() => {
+          if (clone.parentNode) {
+            clone.parentNode.removeChild(clone);
+          }
+          card._clone = null;
+        }, 250);
       };
 
       clone.addEventListener('transitionend', onTransitionEnd);
 
-      // Animation de retour (clone reste 100% opaque, pas de fade)
+      // Animation de retour du clone (dezoom)
       requestAnimationFrame(() => {
         clone.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         clone.style.left = targetRect.left + 'px';
@@ -1446,14 +1452,6 @@
         clone.style.width = targetRect.width + 'px';
         clone.style.height = targetRect.height + 'px';
       });
-
-      // Cleanup
-      setTimeout(() => {
-        if (clone.parentNode) {
-          clone.parentNode.removeChild(clone);
-        }
-        card._clone = null;
-      }, 650);
 
       history.replaceState(null, null, ' ');
     }
