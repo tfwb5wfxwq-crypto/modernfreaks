@@ -1427,11 +1427,15 @@
 
       clone.offsetHeight;
 
-      // Cleanup à la fin de l'animation
+      // Cleanup + bounce à la fin de l'animation
       const onTransitionEnd = (e) => {
         if (e.target !== clone) return;
 
         clone.removeEventListener('transitionend', onTransitionEnd);
+
+        // Petit bounce sur la carte pour effet fun et satisfaisant
+        card.classList.add('returning');
+        setTimeout(() => card.classList.remove('returning'), 300);
 
         // Remove clone après fade
         setTimeout(() => {
