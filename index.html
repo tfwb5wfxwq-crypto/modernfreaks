@@ -1933,7 +1933,7 @@
         }
       }
 
-      // Navigation avec les flèches gauche/droite (effet slide iPhone)
+      // Navigation avec les flèches gauche/droite (transition smooth)
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
         const playingClone = document.querySelector('.video-clone.playing, .music-card.playing');
         if (!playingClone) return;
@@ -1960,75 +1960,61 @@
 
         const nextCard = cards[nextIndex];
         if (nextCard && nextCard !== originalCard) {
-          const currentIframe = playingClone.querySelector('iframe');
-          const viewportWidth = window.innerWidth;
-          const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide de gauche, Right = slide de droite
+          // Transition smooth : fade out iframe, change src, fade in
+          const iframe = playingClone.querySelector('iframe');
+          const thumbnail = playingClone.querySelector('.video-thumbnail, .music-thumbnail');
 
-          // Créer le nouvel iframe (hors écran)
-          const newIframe = document.createElement('iframe');
-          const newVideoId = nextCard.dataset.videoId;
-          newIframe.src = `https://player.vimeo.com/video/${newVideoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
-          newIframe.allow = 'autoplay; fullscreen; picture-in-picture';
-          newIframe.allowFullscreen = true;
-          newIframe.frameBorder = '0';
+          // Fade out
+          iframe.style.opacity = '0';
+          if (thumbnail) thumbnail.style.opacity = '1';
 
-          // Style de l'iframe (positionnement absolu pour le slide)
-          newIframe.style.position = 'absolute';
-          newIframe.style.inset = '0';
-          newIframe.style.width = '100%';
-          newIframe.style.height = '100%';
-          newIframe.style.border = 'none';
-          newIframe.style.borderRadius = '30px';
-          newIframe.style.transform = `translateX(${-direction * 100}%)`;
-          newIframe.style.transition = 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
-
-          // Position initiale de l'iframe actuelle
-          currentIframe.style.transition = 'transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
-          currentIframe.style.transform = 'translateX(0)';
-
-          // Ajouter le nouvel iframe au clone
-          playingClone.appendChild(newIframe);
-
-          // Trigger animation sur le prochain frame
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              currentIframe.style.transform = `translateX(${direction * 100%})`;
-              newIframe.style.transform = 'translateX(0)';
-            });
-          });
-
-          // Update association
-          originalCard._clone = null;
-          nextCard._clone = playingClone;
-
-          // Update URL avec le nouveau titre
-          const videoData = currentPage === 'music' ? musicVideos : videos;
-          const newVideo = videoData.find(v => v.id === newVideoId);
-          if (newVideo) {
-            const slug = createSlug(newVideo.title);
-            window.location.hash = `${currentPage}/${slug}`;
-
-            // Afficher le titre en overlay
-            showVideoTitle(newVideo.title);
-          }
-
-          // Scroll vers la carte active + highlight
-          nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-          // Highlight temporaire
-          nextCard.style.outline = '3px solid rgba(109, 181, 196, 0.8)';
-          nextCard.style.outlineOffset = '4px';
           setTimeout(() => {
-            nextCard.style.outline = '';
-            nextCard.style.outlineOffset = '';
-          }, 1500);
+            // Change video
+            const newVideoId = nextCard.dataset.videoId;
+            iframe.src = `https://player.vimeo.com/video/${newVideoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
 
-          // Supprimer l'ancien iframe après l'animation
-          setTimeout(() => {
-            if (currentIframe.parentNode) {
-              currentIframe.remove();
+            // Update thumbnail
+            if (thumbnail) {
+              const newThumbnail = nextCard.querySelector('.video-thumbnail, .music-thumbnail');
+              if (newThumbnail) {
+                thumbnail.src = newThumbnail.src;
+              }
             }
-          }, 500);
+
+            // Update association
+            originalCard._clone = null;
+            nextCard._clone = playingClone;
+
+            // Update URL avec le nouveau titre
+            const videoData = currentPage === 'music' ? musicVideos : videos;
+            const newVideo = videoData.find(v => v.id === newVideoId);
+            if (newVideo) {
+              const slug = createSlug(newVideo.title);
+              window.location.hash = `${currentPage}/${slug}`;
+
+              // Afficher le titre en overlay
+              showVideoTitle(newVideo.title);
+            }
+
+            // Scroll vers la carte active + highlight
+            nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // Highlight temporaire
+            nextCard.style.outline = '3px solid rgba(109, 181, 196, 0.8)';
+            nextCard.style.outlineOffset = '4px';
+            setTimeout(() => {
+              nextCard.style.outline = '';
+              nextCard.style.outlineOffset = '';
+            }, 1500);
+
+            // Fade in after load
+            iframe.onload = () => {
+              setTimeout(() => {
+                iframe.style.opacity = '1';
+                if (thumbnail) thumbnail.style.opacity = '0';
+              }, 300);
+            };
+          }, 400);
         }
       }
     });
