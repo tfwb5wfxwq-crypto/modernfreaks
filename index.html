@@ -1036,9 +1036,9 @@
         <div class="logo-sub">Modern</div>
       </div>
       <nav>
-        <a href="/film" class="active" data-page="film">Film</a>
-        <a href="/music" data-page="music">Music</a>
-        <a href="/contact" data-page="contact">Contact</a>
+        <a href="#film" class="active" data-page="film">Film</a>
+        <a href="#music" data-page="music">Music</a>
+        <a href="#contact" data-page="contact">Contact</a>
       </nav>
     </div>
   </header>
@@ -1260,8 +1260,7 @@
 
       // Update URL + meta tags
       if (pushState) {
-        const url = targetPage === 'film' ? '/' : `/${targetPage}`;
-        history.pushState({ page: targetPage }, '', url);
+        window.location.hash = targetPage;
         document.title = `Modern Freaks - ${targetPage.charAt(0).toUpperCase() + targetPage.slice(1)}`;
       }
 
@@ -1303,9 +1302,9 @@
       });
     });
 
-    // Browser back/forward
-    window.addEventListener('popstate', (e) => {
-      const page = e.state?.page || window.location.pathname.slice(1) || 'film';
+    // Hash change navigation
+    window.addEventListener('hashchange', () => {
+      const page = window.location.hash.slice(1) || 'film';
       navigateToPage(page, false);
     });
 
@@ -1341,8 +1340,8 @@
       }
     }
 
-    // Init page from URL
-    const initialPage = window.location.pathname.slice(1) || 'film';
+    // Init page from URL hash
+    const initialPage = window.location.hash.slice(1) || 'film';
     navigateToPage(initialPage, false);
 
     // Formulaire
