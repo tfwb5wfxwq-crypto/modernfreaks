@@ -1670,11 +1670,20 @@
       window.location.hash = currentPage;
     }
 
-    // Escape pour fermer la vidéo
+    // Escape pour fermer la vidéo ou revenir à la home
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
-        if (playingCard) stopVideo(playingCard);
+        if (playingCard) {
+          // Si vidéo en cours, la fermer
+          stopVideo(playingCard);
+        } else {
+          // Sinon, ramener à la page Film (home)
+          const currentPage = document.querySelector('nav a.active').dataset.page;
+          if (currentPage !== 'film') {
+            navigateToPage('film');
+          }
+        }
       }
 
       // Navigation avec les flèches gauche/droite
