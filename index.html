@@ -1834,16 +1834,23 @@
         }
       }
 
-      // Navigation avec les flèches gauche/droite
+      // Navigation avec les flèches gauche/droite (transition smooth)
       if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-        const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
-        if (!playingCard) return;
+        const playingClone = document.querySelector('.video-clone.playing, .music-card.playing');
+        if (!playingClone) return;
+
+        e.preventDefault();
 
         const currentPage = document.querySelector('nav a.active').dataset.page;
         const cards = Array.from(document.querySelectorAll(
           currentPage === 'music' ? '.music-card' : '.video-card'
         ));
-        const currentIndex = cards.indexOf(playingCard);
+
+        // Trouve la carte originale associée au clone
+        const originalCard = Array.from(cards).find(c => c._clone === playingClone);
+        if (!originalCard) return;
+
+        const currentIndex = cards.indexOf(originalCard);
 
         let nextIndex;
         if (e.key === 'ArrowLeft') {
@@ -1853,13 +1860,40 @@
         }
 
         const nextCard = cards[nextIndex];
-        if (nextCard) {
-          stopVideo(playingCard);
+        if (nextCard && nextCard !== originalCard) {
+          // Transition smooth : fade out iframe, change src, fade in
+          const iframe = playingClone.querySelector('iframe');
+          const thumbnail = playingClone.querySelector('.video-thumbnail, .music-thumbnail');
+
+          // Fade out
+          iframe.style.opacity = '0';
+          if (thumbnail) thumbnail.style.opacity = '1';
+
           setTimeout(() => {
-            const videoData = currentPage === 'music' ? musicVideos : videos;
-            const video = videoData.find(v => v.id === nextCard.dataset.videoId);
-            if (video) playVideo(nextCard, video.title);
-          }, 100);
+            // Change video
+            const newVideoId = nextCard.dataset.videoId;
+            iframe.src = `https://player.vimeo.com/video/${newVideoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
+
+            // Update thumbnail
+            if (thumbnail) {
+              const newThumbnail = nextCard.querySelector('.video-thumbnail, .music-thumbnail');
+              if (newThumbnail) {
+                thumbnail.src = newThumbnail.src;
+              }
+            }
+
+            // Update association
+            originalCard._clone = null;
+            nextCard._clone = playingClone;
+
+            // Fade in after load
+            iframe.onload = () => {
+              setTimeout(() => {
+                iframe.style.opacity = '1';
+                if (thumbnail) thumbnail.style.opacity = '0';
+              }, 300);
+            };
+          }, 400);
         }
       }
     });
