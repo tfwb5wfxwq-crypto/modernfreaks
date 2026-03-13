@@ -1394,8 +1394,16 @@
       const cloneIframe = clone.querySelector('iframe');
       const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
 
-      // Prépare la thumbnail du clone (visible en dessous)
+      // Cache l'iframe IMMÉDIATEMENT (pas de fade = pas de flash blanc)
+      if (cloneIframe) {
+        cloneIframe.style.transition = 'none';
+        cloneIframe.style.opacity = '0';
+        cloneIframe.style.visibility = 'hidden';
+      }
+
+      // Montre SEULEMENT la thumbnail pendant le dezoom
       if (cloneThumbnail) {
+        cloneThumbnail.style.transition = 'none';
         cloneThumbnail.style.position = 'absolute';
         cloneThumbnail.style.inset = '0';
         cloneThumbnail.style.zIndex = '1';
@@ -1403,15 +1411,7 @@
         cloneThumbnail.style.display = 'block';
       }
 
-      // L'iframe reste visible au début, va fade pendant l'animation
-      if (cloneIframe) {
-        cloneIframe.style.position = 'absolute';
-        cloneIframe.style.inset = '0';
-        cloneIframe.style.zIndex = '2';
-        cloneIframe.style.opacity = '1';
-      }
-
-      // Thumbnail originale visible
+      // Thumbnail originale visible en dessous (sécurité)
       const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
       if (originalThumbnail) {
         originalThumbnail.style.position = 'absolute';
@@ -1423,7 +1423,7 @@
 
       clone.offsetHeight;
 
-      // Swap final avec bounce
+      // Swap à la fin avec petit bounce
       const onTransitionEnd = (e) => {
         if (e.target !== clone) return;
 
@@ -1438,18 +1438,13 @@
 
       clone.addEventListener('transitionend', onTransitionEnd);
 
-      // Animation de retour avec fade de l'iframe
+      // Animation de retour (clone reste 100% opaque, pas de fade)
       requestAnimationFrame(() => {
         clone.style.transition = 'all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.width = targetRect.width + 'px';
         clone.style.height = targetRect.height + 'px';
-
-        if (cloneIframe) {
-          cloneIframe.style.transition = 'opacity 0.3s ease-out';
-          cloneIframe.style.opacity = '0';
-        }
       });
 
       // Cleanup
