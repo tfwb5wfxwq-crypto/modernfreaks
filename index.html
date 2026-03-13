@@ -520,83 +520,32 @@
       box-sizing: border-box;
     }
 
-    /* Effet "plop" satisfaisant au retour - bounce prononcé + glow */
+    /* Effet "plop" satisfaisant au retour - bounce prononcé + glow subtil */
     @keyframes plopEffect {
       0% {
         transform: scale(0.88);
-        box-shadow:
-          0 0 0 0 rgba(109, 181, 196, 0),
-          0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
       40% {
         transform: scale(1.08);
-        box-shadow:
-          0 0 25px 8px rgba(109, 181, 196, 0.4),
-          0 8px 30px rgba(109, 181, 196, 0.2);
+        box-shadow: 0 0 20px 6px rgba(109, 181, 196, 0.35);
       }
       60% {
         transform: scale(0.96);
-        box-shadow:
-          0 0 15px 4px rgba(109, 181, 196, 0.25),
-          0 6px 20px rgba(109, 181, 196, 0.15);
+        box-shadow: 0 0 10px 3px rgba(109, 181, 196, 0.2);
       }
       80% {
         transform: scale(1.02);
-        box-shadow:
-          0 0 8px 2px rgba(109, 181, 196, 0.15),
-          0 4px 15px rgba(109, 181, 196, 0.1);
+        box-shadow: 0 0 5px 1px rgba(109, 181, 196, 0.1);
       }
       100% {
         transform: scale(1);
-        box-shadow:
-          0 0 0 0 rgba(109, 181, 196, 0),
-          0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
     }
 
     .video-card.returning {
-      animation: plopEffect 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    /* Éclat lumineux qui traverse la carte */
-    .video-card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -150%;
-      width: 60%;
-      height: 200%;
-      background: linear-gradient(120deg,
-        transparent 0%,
-        rgba(255, 255, 255, 0) 35%,
-        rgba(255, 255, 255, 0.9) 50%,
-        rgba(255, 255, 255, 0) 65%,
-        transparent 100%
-      );
-      transform: skewX(-20deg);
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .video-card.returning::after {
-      animation: flashEffect 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    @keyframes flashEffect {
-      0% {
-        left: -150%;
-        opacity: 0;
-      }
-      40% {
-        opacity: 0.8;
-      }
-      60% {
-        opacity: 0.6;
-      }
-      100% {
-        left: 200%;
-        opacity: 0;
-      }
+      animation: plopEffect 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .video-thumbnail {
@@ -778,7 +727,7 @@
       display: none;
       position: absolute;
       top: 20px;
-      left: 20px;
+      right: 20px;
       width: 54px;
       height: 54px;
       border-radius: 50%;
@@ -975,12 +924,12 @@
     }
 
     /* Player avec animation stylée */
-    /* Bouton close premium - en haut à gauche pour ne pas cacher les contrôles Vimeo */
+    /* Bouton close premium - en haut à droite (intuitif) */
     .video-card .close-btn {
       display: none;
       position: absolute;
       top: 20px;
-      left: 20px;
+      right: 20px;
       width: 54px;
       height: 54px;
       border-radius: 50%;
@@ -1441,30 +1390,40 @@
       // Position de retour (carte originale dans le flow)
       const targetRect = card.getBoundingClientRect();
 
-      // Retire backdrop
+      // Retire backdrop et états
       document.body.classList.remove('video-playing');
-      clone.classList.remove('playing', 'loaded');
+      clone.classList.remove('playing', 'loaded', 'loading');
 
-      // Cache l'iframe et réaffiche la thumbnail AVANT l'animation (pour éviter flash blanc)
+      // Cache l'iframe IMMÉDIATEMENT (sans transition)
       const cloneIframe = clone.querySelector('iframe');
       const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
+
       if (cloneIframe) {
+        cloneIframe.style.transition = 'none';
         cloneIframe.style.opacity = '0';
         cloneIframe.style.display = 'none';
       }
+
       if (cloneThumbnail) {
+        cloneThumbnail.style.transition = 'none';
         cloneThumbnail.style.opacity = '1';
         cloneThumbnail.style.display = 'block';
+        cloneThumbnail.style.zIndex = '10';
       }
 
-      // Anime le clone vers la position de retour
-      clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
-      clone.style.left = targetRect.left + 'px';
-      clone.style.top = targetRect.top + 'px';
-      clone.style.width = targetRect.width + 'px';
-      clone.style.height = targetRect.height + 'px';
+      // Force reflow pour appliquer les changements AVANT l'animation
+      clone.offsetHeight;
 
-      // À la fin de l'animation : swap instantané clone → original (sans fade)
+      // Anime le clone vers la position de retour (seulement position/size)
+      requestAnimationFrame(() => {
+        clone.style.transition = 'all 0.45s cubic-bezier(0.32, 0.72, 0, 1)';
+        clone.style.left = targetRect.left + 'px';
+        clone.style.top = targetRect.top + 'px';
+        clone.style.width = targetRect.width + 'px';
+        clone.style.height = targetRect.height + 'px';
+      });
+
+      // À la fin de l'animation : swap instantané clone → original
       setTimeout(() => {
         // Supprime le clone
         if (clone.parentNode) {
@@ -1472,7 +1431,8 @@
         }
         card._clone = null;
 
-        // Révèle la carte originale INSTANTANÉMENT avec effet "plop" satisfaisant
+        // Révèle la carte originale INSTANTANÉMENT avec effet "plop"
+        card.style.transition = '';
         card.style.opacity = '1';
         card.style.pointerEvents = 'auto';
         card.classList.add('returning');
@@ -1480,8 +1440,8 @@
         // Retire l'effet après l'animation
         setTimeout(() => {
           card.classList.remove('returning');
-        }, 1000);
-      }, 500);
+        }, 800);
+      }, 450);
 
       // Retire le hash
       history.replaceState(null, null, ' ');
