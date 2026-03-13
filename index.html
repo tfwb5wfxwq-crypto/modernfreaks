@@ -1860,10 +1860,20 @@
     // Escape pour fermer la vidéo ou revenir à la home
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        const playingCard = document.querySelector('.video-card.playing, .music-card.playing');
-        if (playingCard) {
-          // Si vidéo en cours, la fermer
-          stopVideo(playingCard);
+        // Chercher le clone en cours de lecture
+        const playingClone = document.querySelector('.video-clone.playing, .music-card.playing');
+        if (playingClone) {
+          // Trouver la carte originale associée au clone
+          const currentPage = document.querySelector('nav a.active').dataset.page;
+          const cards = Array.from(document.querySelectorAll(
+            currentPage === 'music' ? '.music-card' : '.video-card'
+          ));
+          const originalCard = cards.find(c => c._clone === playingClone);
+
+          if (originalCard) {
+            // Fermer la vidéo avec animation
+            stopVideo(originalCard);
+          }
         } else {
           // Sinon, ramener à la page Film (home)
           const currentPage = document.querySelector('nav a.active').dataset.page;
