@@ -520,32 +520,43 @@
       box-sizing: border-box;
     }
 
-    /* Effet "plop" satisfaisant au retour - bounce prononcé + glow subtil */
-    @keyframes plopEffect {
+    /* Effet "BLOP" ultra satisfaisant - bounce prononcé + glow intense */
+    @keyframes blopEffect {
       0% {
-        transform: scale(0.88);
+        transform: scale(0.85);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        filter: brightness(1);
       }
-      40% {
-        transform: scale(1.08);
-        box-shadow: 0 0 20px 6px rgba(109, 181, 196, 0.35);
+      45% {
+        transform: scale(1.15);
+        box-shadow:
+          0 0 35px 12px rgba(109, 181, 196, 0.6),
+          0 0 60px 20px rgba(109, 181, 196, 0.3);
+        filter: brightness(1.15);
       }
-      60% {
-        transform: scale(0.96);
-        box-shadow: 0 0 10px 3px rgba(109, 181, 196, 0.2);
+      65% {
+        transform: scale(0.95);
+        box-shadow:
+          0 0 20px 6px rgba(109, 181, 196, 0.4),
+          0 0 40px 10px rgba(109, 181, 196, 0.2);
+        filter: brightness(1.08);
       }
-      80% {
-        transform: scale(1.02);
-        box-shadow: 0 0 5px 1px rgba(109, 181, 196, 0.1);
+      85% {
+        transform: scale(1.03);
+        box-shadow:
+          0 0 10px 3px rgba(109, 181, 196, 0.2),
+          0 4px 12px rgba(0, 0, 0, 0.1);
+        filter: brightness(1.02);
       }
       100% {
         transform: scale(1);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        filter: brightness(1);
       }
     }
 
     .video-card.returning {
-      animation: plopEffect 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      animation: blopEffect 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .video-thumbnail {
@@ -726,10 +737,10 @@
     .music-card .close-btn {
       display: none;
       position: absolute;
-      top: -15px;
-      right: -15px;
-      width: 50px;
-      height: 50px;
+      top: -8px;
+      right: -8px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.98);
       border: 2.5px solid rgba(227, 35, 44, 0.3);
@@ -743,7 +754,7 @@
       line-height: 1;
       font-weight: 300;
       box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.2),
+        0 4px 24px rgba(0, 0, 0, 0.25),
         0 0 0 0 rgba(227, 35, 44, 0);
       backdrop-filter: blur(15px);
     }
@@ -924,14 +935,14 @@
     }
 
     /* Player avec animation stylée */
-    /* Bouton close premium - en dehors du cadre pour ne pas cacher les contrôles Vimeo */
+    /* Bouton close premium - légèrement en dehors sans être coupé */
     .video-card .close-btn {
       display: none;
       position: absolute;
-      top: -15px;
-      right: -15px;
-      width: 50px;
-      height: 50px;
+      top: -8px;
+      right: -8px;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
       background: rgba(255, 255, 255, 0.98);
       border: 2.5px solid rgba(109, 181, 196, 0.3);
@@ -945,7 +956,7 @@
       line-height: 1;
       font-weight: 300;
       box-shadow:
-        0 4px 24px rgba(0, 0, 0, 0.2),
+        0 4px 24px rgba(0, 0, 0, 0.25),
         0 0 0 0 rgba(109, 181, 196, 0);
       backdrop-filter: blur(15px);
     }
@@ -1410,41 +1421,53 @@
         cloneThumbnail.style.display = 'block';
       }
 
-      // Révèle la carte originale IMMÉDIATEMENT (sous le clone)
+      // Prépare la thumbnail de la carte originale (mais carte invisible)
       const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
       if (originalThumbnail) {
         originalThumbnail.style.display = 'block';
         originalThumbnail.style.opacity = '1';
       }
-      card.style.opacity = '1';
-      card.style.pointerEvents = 'auto';
+      // Carte reste INVISIBLE pour éviter double image
+      card.style.opacity = '0';
 
       // Force reflow
       clone.offsetHeight;
 
-      // Anime le clone vers la position de retour + fade out PENDANT l'animation
+      // Anime le clone vers la position de retour
       requestAnimationFrame(() => {
-        clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.35s ease 0.15s';
+        clone.style.transition = 'all 0.42s cubic-bezier(0.32, 0.72, 0, 1)';
         clone.style.left = targetRect.left + 'px';
         clone.style.top = targetRect.top + 'px';
         clone.style.width = targetRect.width + 'px';
         clone.style.height = targetRect.height + 'px';
-        clone.style.opacity = '0';
       });
 
-      // Supprime le clone après l'animation
+      // Juste avant la fin : swap INSTANTANÉ clone → original
+      setTimeout(() => {
+        // Masque clone instantanément
+        clone.style.display = 'none';
+
+        // Révèle carte originale instantanément
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
+
+        // Effet BLOP prononcé et satisfaisant
+        requestAnimationFrame(() => {
+          card.classList.add('returning');
+        });
+      }, 380);
+
+      // Supprime le clone
       setTimeout(() => {
         if (clone.parentNode) {
           clone.parentNode.removeChild(clone);
         }
         card._clone = null;
 
-        // Effet plop sur la carte originale (déjà visible)
-        card.classList.add('returning');
         setTimeout(() => {
           card.classList.remove('returning');
-        }, 800);
-      }, 500);
+        }, 900);
+      }, 450);
 
       // Retire le hash
       history.replaceState(null, null, ' ');
