@@ -1466,9 +1466,8 @@
         });
       });
 
-      // Met à jour l'URL
-      const slug = createSlug(title);
-      window.location.hash = slug;
+      // Ne change PAS le hash pour éviter de casser la navigation
+      // (le hash #film ou #music doit rester actif)
     }
 
     function stopVideo(card) {
