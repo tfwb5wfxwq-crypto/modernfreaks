@@ -1321,9 +1321,18 @@
 
       const videoId = card.dataset.videoId;
 
-      // Cache la carte originale (reste dans le flow)
+      // Cache la carte originale MAIS garde la thumbnail visible pour éviter flash blanc au retour
       card.style.opacity = '0';
       card.style.pointerEvents = 'none';
+
+      const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
+      if (originalThumbnail) {
+        originalThumbnail.style.position = 'absolute';
+        originalThumbnail.style.inset = '0';
+        originalThumbnail.style.zIndex = '-1';
+        originalThumbnail.style.opacity = '1';
+        originalThumbnail.style.display = 'block';
+      }
 
       // Clone la carte pour l'animation
       const clone = card.cloneNode(true);
@@ -1422,14 +1431,15 @@
         cloneThumbnail.style.display = 'block';
       }
 
-      // Prépare la thumbnail de la carte originale (mais carte invisible)
+      // S'assure que la thumbnail de la carte originale est visible (devrait déjà l'être)
       const originalThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
       if (originalThumbnail) {
-        originalThumbnail.style.display = 'block';
+        originalThumbnail.style.position = 'absolute';
+        originalThumbnail.style.inset = '0';
+        originalThumbnail.style.zIndex = '-1';
         originalThumbnail.style.opacity = '1';
+        originalThumbnail.style.display = 'block';
       }
-      // Carte reste INVISIBLE pour éviter double image
-      card.style.opacity = '0';
 
       // Force reflow
       clone.offsetHeight;
