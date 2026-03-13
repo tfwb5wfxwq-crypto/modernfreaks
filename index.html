@@ -1251,21 +1251,32 @@
       });
 
       const videoId = card.dataset.videoId;
-      const iframe = card.querySelector('iframe');
 
-      // Capture position initiale de la miniature
+      // Cache la carte originale (reste dans le flow)
+      card.style.opacity = '0';
+      card.style.pointerEvents = 'none';
+
+      // Clone la carte pour l'animation
+      const clone = card.cloneNode(true);
+      clone.classList.add('video-clone');
+      const cloneIframe = clone.querySelector('iframe');
+
+      // Position du clone = position actuelle de la carte
       const startRect = card.getBoundingClientRect();
+      clone.style.position = 'fixed';
+      clone.style.left = startRect.left + 'px';
+      clone.style.top = startRect.top + 'px';
+      clone.style.width = startRect.width + 'px';
+      clone.style.height = startRect.height + 'px';
+      clone.style.margin = '0';
+      clone.style.transition = 'none';
+      clone.style.opacity = '1';
+      clone.style.pointerEvents = 'auto';
 
-      // Crée un placeholder invisible pour garder la place dans la grille
-      const placeholder = document.createElement('div');
-      placeholder.className = 'video-placeholder';
-      placeholder.style.width = startRect.width + 'px';
-      placeholder.style.height = startRect.height + 'px';
-      placeholder.style.visibility = 'hidden';
-      card.parentNode.insertBefore(placeholder, card);
-      card._placeholder = placeholder;
+      document.body.appendChild(clone);
+      card._clone = clone;
 
-      // Calcule position finale (centrée, 85% largeur viewport, max 1200px)
+      // Calcule position finale
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const maxWidth = Math.min(viewportWidth * 0.85, 1200);
@@ -1273,46 +1284,41 @@
       const finalLeft = (viewportWidth - maxWidth) / 2;
       const finalTop = (viewportHeight - finalHeight) / 2;
 
-      // Positionne la carte en fixed à sa position actuelle (invisible au user)
-      card.style.position = 'fixed';
-      card.style.left = startRect.left + 'px';
-      card.style.top = startRect.top + 'px';
-      card.style.width = startRect.width + 'px';
-      card.style.height = startRect.height + 'px';
-      card.style.margin = '0';
-      card.style.transition = 'none';
-
-      // Active l'état playing et backdrop
-      card.classList.add('playing', 'loading');
+      // Active l'état playing
+      clone.classList.add('playing', 'loading');
       document.body.classList.add('video-playing');
 
-      // Anime vers la position finale
+      // Anime le clone vers la position finale
       requestAnimationFrame(() => {
-        card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
-        card.style.left = finalLeft + 'px';
-        card.style.top = finalTop + 'px';
-        card.style.width = maxWidth + 'px';
-        card.style.height = finalHeight + 'px';
+        clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+        clone.style.left = finalLeft + 'px';
+        clone.style.top = finalTop + 'px';
+        clone.style.width = maxWidth + 'px';
+        clone.style.height = finalHeight + 'px';
 
         // Lance la vidéo
         setTimeout(() => {
-          iframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0`;
+          cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0`;
 
-          // Fallback si onload ne se déclenche pas
           const loadTimeout = setTimeout(() => {
-            card.classList.remove('loading');
-            card.classList.add('loaded');
+            clone.classList.remove('loading');
+            clone.classList.add('loaded');
           }, 3000);
 
-          iframe.onload = () => {
+          cloneIframe.onload = () => {
             clearTimeout(loadTimeout);
-            // Quand l'iframe est chargée, fade de la miniature vers la vidéo
             setTimeout(() => {
-              card.classList.remove('loading');
-              card.classList.add('loaded');
+              clone.classList.remove('loading');
+              clone.classList.add('loaded');
             }, 400);
           };
         }, 300);
+
+        // Bouton close sur le clone
+        clone.querySelector('.close-btn').addEventListener('click', (e) => {
+          e.stopPropagation();
+          stopVideo(card);
+        });
       });
 
       // Met à jour l'URL
@@ -1321,78 +1327,43 @@
     }
 
     function stopVideo(card) {
-      const iframe = card.querySelector('iframe');
-      const placeholder = card._placeholder;
+      const clone = card._clone;
+      if (!clone) return;
 
-      // Position actuelle (expanded)
-      const currentRect = card.getBoundingClientRect();
+      // Position de retour (carte originale dans le flow)
+      const targetRect = card.getBoundingClientRect();
 
-      // Position de retour (placeholder qui a gardé la place)
-      const targetRect = placeholder ? placeholder.getBoundingClientRect() : card.getBoundingClientRect();
-
-      // Retire l'état playing
-      card.classList.remove('playing');
+      // Retire backdrop
       document.body.classList.remove('video-playing');
+      clone.classList.remove('playing');
 
-      // Garde la carte en fixed pour l'animation de retour
-      card.style.transition = 'none';
-      card.style.position = 'fixed';
-      card.style.left = currentRect.left + 'px';
-      card.style.top = currentRect.top + 'px';
-      card.style.width = currentRect.width + 'px';
-      card.style.height = currentRect.height + 'px';
-      card.style.zIndex = '10000';
-      card.style.opacity = '1';
+      // Anime le clone vers la position de retour
+      clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+      clone.style.left = targetRect.left + 'px';
+      clone.style.top = targetRect.top + 'px';
+      clone.style.width = targetRect.width + 'px';
+      clone.style.height = targetRect.height + 'px';
 
-      // Anime vers la position de retour
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          card.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
-          card.style.left = targetRect.left + 'px';
-          card.style.top = targetRect.top + 'px';
-          card.style.width = targetRect.width + 'px';
-          card.style.height = targetRect.height + 'px';
-        });
-      });
-
-      // Fade out puis replacement pour éviter la saccade
+      // Fade out le clone et fade in la carte originale en simultané
       setTimeout(() => {
-        card.style.transition = 'opacity 0.15s ease';
-        card.style.opacity = '0';
+        clone.style.opacity = '0';
+        clone.style.transition = 'opacity 0.2s ease';
+
+        card.style.transition = 'opacity 0.2s ease';
+        card.style.opacity = '1';
+        card.style.pointerEvents = 'auto';
       }, 450);
 
+      // Nettoie le clone après l'animation
       setTimeout(() => {
-        // Replace la carte dans le flow
-        card.style.transition = 'none';
-        card.style.position = '';
-        card.style.left = '';
-        card.style.top = '';
-        card.style.width = '';
-        card.style.height = '';
-        card.style.margin = '';
-        card.style.zIndex = '';
-        card.style.opacity = '';
+        if (clone.parentNode) {
+          clone.parentNode.removeChild(clone);
+        }
+        card._clone = null;
 
-        // Nettoie
-        iframe.src = '';
-        card.classList.remove('loaded', 'loading');
-
-        // Fade in la carte replacée
-        requestAnimationFrame(() => {
-          card.style.transition = 'opacity 0.15s ease';
-          card.style.opacity = '1';
-
-          setTimeout(() => {
-            card.style.transition = '';
-
-            // Retire le placeholder
-            if (placeholder && placeholder.parentNode) {
-              placeholder.parentNode.removeChild(placeholder);
-              card._placeholder = null;
-            }
-          }, 150);
-        });
-      }, 600);
+        // Reset styles
+        card.style.transition = '';
+      }, 700);
 
       // Retire le hash
       history.replaceState(null, null, ' ');
