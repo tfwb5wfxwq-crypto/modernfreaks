@@ -295,13 +295,15 @@
       border: 2px solid transparent;
       border-radius: 20px;
       z-index: 9999;
-      background: #000; /* Masque le gap pendant transition miniature → iframe */
     }
 
-    /* Thumbnail du clone doit être derrière l'iframe */
+    /* Thumbnail du clone commence visible, fade out avec loaded */
     .video-clone .video-thumbnail,
     .video-clone .music-thumbnail {
-      z-index: -1 !important;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      transition: opacity 0.8s ease;
     }
 
     .video-card.visible {
@@ -433,10 +435,8 @@
 
     .video-clone.loaded .video-thumbnail,
     .video-clone.loaded .music-thumbnail {
-      opacity: 0;
+      opacity: 0; /* Crossfade avec iframe qui monte à opacity: 1 */
       pointer-events: none;
-      display: none;
-      visibility: hidden;
     }
 
     .video-card.playing .play-btn,
@@ -465,7 +465,7 @@
       height: 100%;
       border: none;
       border-radius: 20px;
-      z-index: 2;
+      z-index: 2; /* Au-dessus de la miniature (z-index: 1) pour crossfade */
     }
 
     /* Loader élégant pendant chargement vidéo */
