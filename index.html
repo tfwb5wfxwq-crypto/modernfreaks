@@ -2061,10 +2061,30 @@
             requestAnimationFrame(() => {
               playingClone.style.transition = 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
               playingClone.style.left = currentLeft + 'px'; // Retour à la position centrée d'origine
-
-              // PAS de loader pendant swipe (thumbnail déjà visible)
-              // L'iframe va charger en background et crossfade automatiquement
             });
+
+            // Crossfade thumbnail → video quand iframe est loaded (pas de blanc)
+            iframe.style.opacity = '0';
+            iframe.style.transition = 'opacity 0.4s ease-out';
+
+            iframe.onload = () => {
+              // Attendre un peu que la vidéo commence à jouer
+              setTimeout(() => {
+                // Fade IN iframe
+                iframe.style.opacity = '1';
+
+                // Fade OUT thumbnail simultanément
+                if (thumbnail) {
+                  thumbnail.style.transition = 'opacity 0.4s ease-out';
+                  thumbnail.style.opacity = '0';
+                }
+
+                // Marquer comme loaded après transition
+                setTimeout(() => {
+                  playingClone.classList.add('loaded');
+                }, 400);
+              }, 100);
+            };
 
             // IMPORTANT: Réattacher le close button event listener après navigation
             const closeBtn = playingClone.querySelector('.close-btn');
