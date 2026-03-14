@@ -2045,6 +2045,7 @@
 
             // Garde la position/dimension actuelle (pas de recalcul pour éviter letterbox)
             const currentRect = playingClone.getBoundingClientRect();
+            const finalLeft = currentRect.left; // Garde position centrée actuelle
 
             // Position clone hors écran côté opposé (instantané)
             playingClone.style.transition = 'none';
