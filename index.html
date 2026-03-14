@@ -1665,17 +1665,18 @@
         document.title = `Modern Freaks - ${targetPage.charAt(0).toUpperCase() + targetPage.slice(1)}`;
       }
 
-      // Animation logo (désactivée sur mobile pour réactivité)
-      if (!isMobile) {
-        const logoLetters = document.querySelectorAll('.logo span');
-        logoLetters.forEach((letter, index) => {
-          const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
-          setTimeout(() => {
-            letter.classList.add(animClass);
-            setTimeout(() => letter.classList.remove(animClass), 600);
-          }, index * 60);
-        });
-      }
+      // Animation logo (ultra-rapide sur mobile, normale sur desktop)
+      const logoLetters = document.querySelectorAll('.logo span');
+      const animDuration = isMobile ? 150 : 600;
+      const letterDelay = isMobile ? 15 : 60;
+
+      logoLetters.forEach((letter, index) => {
+        const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
+        setTimeout(() => {
+          letter.classList.add(animClass);
+          setTimeout(() => letter.classList.remove(animClass), animDuration);
+        }, index * letterDelay);
+      });
 
       // Switch pages
       pages.forEach(page => {
