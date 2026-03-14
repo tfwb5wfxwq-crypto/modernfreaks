@@ -187,6 +187,7 @@
       position: relative;
       padding: 8px 0;
       background: transparent;
+      touch-action: manipulation; /* Supprime délai 300ms mobile */
     }
 
     /* Ligne subtile sous le bouton actif */
@@ -285,6 +286,7 @@
       transform: scale(0.95);
       transform-style: preserve-3d;
       perspective: 1000px;
+      touch-action: manipulation; /* Supprime délai 300ms mobile */
     }
 
     /* Clone en position fixed - propriétés identiques à l'original */
@@ -656,6 +658,7 @@
       transition: all 0.4s ease;
       opacity: 0;
       transform: translateY(30px);
+      touch-action: manipulation; /* Supprime délai 300ms mobile */
     }
 
     .music-card.visible {
@@ -1411,6 +1414,57 @@
 
 
   <script>
+    // ===== HAPTICS =====
+    const haptic = (() => {
+      const presets = {
+        success: [100, 30, 100],           // Double tap
+        error: [200, 50, 200, 50, 200],   // Triple tap
+        nudge: [50, 50, 50],              // Tap léger
+        buzz: [500]                        // Buzz long
+      };
+
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+
+      // iOS : créer checkbox + label et cliquer (iOS 17.4+)
+      function triggerIOSHaptic(count = 1, delay = 80) {
+        for (let i = 0; i < count; i++) {
+          setTimeout(() => {
+            const id = 'haptic-' + Date.now() + '-' + Math.random();
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = id;
+            checkbox.setAttribute('switch', ''); // iOS 17.4+ haptic
+            checkbox.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;left:-9999px';
+            const label = document.createElement('label');
+            label.htmlFor = id;
+            label.style.cssText = 'position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;left:-9999px';
+            document.body.appendChild(checkbox);
+            document.body.appendChild(label);
+            label.click(); // Clic sur le label déclenche haptic iOS
+            setTimeout(() => { checkbox.remove(); label.remove(); }, 10);
+          }, i * delay);
+        }
+      }
+
+      return {
+        trigger(type) {
+          const pattern = typeof type === 'string' ? presets[type] : type;
+          if (!pattern) return;
+
+          // iOS : créer/toggle/supprimer checkbox
+          if (isIOS) {
+            const count = type === 'success' ? 2 : type === 'error' ? 3 : type === 'buzz' ? 4 : 1;
+            const delay = type === 'buzz' ? 50 : 80; // Buzz plus rapide et fort
+            triggerIOSHaptic(count, delay);
+          }
+          // Android/autres : Vibration API
+          else if (navigator.vibrate) {
+            navigator.vibrate(pattern);
+          }
+        }
+      };
+    })();
+
     const videos = [
       { id: "1125470403", title: "Les Bodin's partent en vrille", ratio: "4/3" },
       { id: "1125480221", title: "Les Bodin's partent en vrille", ratio: "4/3" },
@@ -1528,8 +1582,8 @@
       card.addEventListener('click', () => {
         if (!card.classList.contains('playing')) {
           // Vibration haptique sur mobile
-          if (window.innerWidth <= 768 && navigator.vibrate) {
-            navigator.vibrate(10);
+          if (window.innerWidth <= 768) {
+            haptic.trigger('nudge');
           }
           playVideo(card, video.title);
         }
@@ -1571,8 +1625,8 @@
       card.addEventListener('click', () => {
         if (!card.classList.contains('playing')) {
           // Vibration haptique sur mobile
-          if (window.innerWidth <= 768 && navigator.vibrate) {
-            navigator.vibrate(10);
+          if (window.innerWidth <= 768) {
+            haptic.trigger('nudge');
           }
           playVideo(card, video.title);
         }
