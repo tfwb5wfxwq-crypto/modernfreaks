@@ -1839,6 +1839,10 @@
       const clone = card._clone;
       if (!clone) return;
 
+      // Nettoyer le highlight bleu (si navigation flèches avant fermeture)
+      card.style.outline = '';
+      card.style.outlineOffset = '';
+
       // Scroll vers la carte pour garantir qu'elle est visible (animation plus belle)
       card.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'nearest' });
 
