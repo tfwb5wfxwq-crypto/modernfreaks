@@ -2037,19 +2037,27 @@
             const finalLeft = (viewportWidth - maxWidth) / 2;
             const finalTop = (viewportHeight - finalHeight) / 2;
 
-            // Applique nouvelles dimensions (sans transition pour éviter conflit)
+            // Applique nouvelles dimensions SANS animer (instantané)
+            // Position le clone hors écran côté opposé AVANT de changer dimensions
+            playingClone.style.transform = `translateX(${direction * -100}vw)`;
+
+            // Force reflow pour appliquer transform AVANT changement dimensions
+            playingClone.offsetHeight;
+
+            // Change dimensions instantanément
             playingClone.style.transition = 'none';
             playingClone.style.left = finalLeft + 'px';
             playingClone.style.top = finalTop + 'px';
             playingClone.style.width = maxWidth + 'px';
             playingClone.style.height = finalHeight + 'px';
 
-            // Swipe IN animation (vient de l'autre côté)
-            playingClone.style.transform = `translateX(${direction * -100}vw)`; // Commence hors écran opposé
+            // Force reflow pour appliquer dimensions AVANT animation swipe
+            playingClone.offsetHeight;
 
+            // Swipe IN animation (du côté opposé vers le centre)
             requestAnimationFrame(() => {
               playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-              playingClone.style.transform = 'translateX(0)'; // Swipe vers le centre
+              playingClone.style.transform = 'translateX(0)';
             });
 
             // IMPORTANT: Réattacher le close button event listener après navigation
