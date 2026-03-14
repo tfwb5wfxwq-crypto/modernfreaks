@@ -1988,6 +1988,13 @@
               }
             }
 
+            // Restaurer la miniature de la carte précédente
+            const originalThumbnail = originalCard.querySelector('.video-thumbnail, .music-thumbnail');
+            if (originalThumbnail) {
+              originalThumbnail.style.opacity = '1';
+              originalThumbnail.style.display = 'block';
+            }
+
             // Update association
             originalCard._clone = null;
             nextCard._clone = playingClone;
