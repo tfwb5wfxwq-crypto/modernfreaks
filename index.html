@@ -2002,16 +2002,14 @@
           // CRITIQUE: Désactiver overflow-x hidden temporairement pour voir le swipe
           document.body.style.overflowX = 'visible';
 
-          // Reset transform pour partir de 0
-          playingClone.style.transition = 'none';
-          playingClone.style.transform = 'translateX(0)';
+          // Récupère position actuelle
+          const currentLeft = parseFloat(playingClone.style.left);
+          const viewportWidth = window.innerWidth;
 
-          // Force reflow
-          playingClone.offsetHeight;
-
-          // Swipe OUT - IMPORTANT: seulement animer transform, pas left/top/width/height
-          playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
-          playingClone.style.transform = `translateX(${direction * 100}vw)`; // Slide complètement hors écran
+          // Swipe OUT - Animer LEFT directement (plus simple que transform)
+          playingClone.style.transition = 'left 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.2s ease';
+          playingClone.style.left = `${currentLeft + (direction * viewportWidth)}px`; // Slide hors écran
+          playingClone.style.opacity = '0.8'; // Légère transparence pendant slide
 
           setTimeout(() => {
             // Change video
@@ -2056,26 +2054,22 @@
             const finalLeft = (viewportWidth - maxWidth) / 2;
             const finalTop = (viewportHeight - finalHeight) / 2;
 
-            // Change dimensions instantanément (SANS animer, SANS toucher au transform)
+            // Position clone hors écran côté opposé (instantané)
             playingClone.style.transition = 'none';
-            playingClone.style.left = finalLeft + 'px';
             playingClone.style.top = finalTop + 'px';
             playingClone.style.width = maxWidth + 'px';
             playingClone.style.height = finalHeight + 'px';
-
-            // Force reflow pour appliquer dimensions
-            playingClone.offsetHeight;
-
-            // Position clone hors écran côté opposé (sans animation)
-            playingClone.style.transform = `translateX(${direction * -100}vw)`;
+            playingClone.style.left = `${finalLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
+            playingClone.style.opacity = '0';
 
             // Force reflow
             playingClone.offsetHeight;
 
-            // Swipe IN animation (du côté opposé vers le centre) - SEULEMENT transform
+            // Swipe IN animation (entre par l'autre côté)
             requestAnimationFrame(() => {
-              playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
-              playingClone.style.transform = 'translateX(0)';
+              playingClone.style.transition = 'left 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.3s ease';
+              playingClone.style.left = finalLeft + 'px'; // Vers le centre
+              playingClone.style.opacity = '1';
 
               // Remettre classe loading après swipe IN pour animation chargement
               playingClone.classList.add('loading');
@@ -2125,11 +2119,11 @@
               }, 300);
             };
 
-            // Remettre overflow-x hidden après swipe IN terminé (400ms)
+            // Remettre overflow-x hidden après swipe IN terminé (500ms)
             setTimeout(() => {
               document.body.style.overflowX = 'hidden';
-            }, 400);
-          }, 400); // Correspond à la durée du swipe OUT (0.4s)
+            }, 500);
+          }, 500); // Correspond à la durée du swipe OUT (0.5s)
         }
       }
     });
