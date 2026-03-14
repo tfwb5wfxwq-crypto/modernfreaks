@@ -1855,22 +1855,7 @@
       clone.classList.add('video-clone');
       const cloneIframe = clone.querySelector('iframe');
 
-      // Position du clone = position actuelle de la carte
-      const startRect = card.getBoundingClientRect();
-      clone.style.position = 'fixed';
-      clone.style.left = startRect.left + 'px';
-      clone.style.top = startRect.top + 'px';
-      clone.style.width = startRect.width + 'px';
-      clone.style.height = startRect.height + 'px';
-      clone.style.margin = '0';
-      clone.style.transition = 'none';
-      clone.style.opacity = '1';
-      clone.style.pointerEvents = 'auto';
-
-      document.body.appendChild(clone);
-      card._clone = clone;
-
-      // Calcule position finale adaptée au ratio de la vidéo
+      // Calcule dimensions finales AVANT de créer le clone
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       const isMobile = viewportWidth <= 768;
@@ -1878,7 +1863,7 @@
       let maxWidth, finalHeight, finalLeft, finalTop;
 
       if (isMobile) {
-        // Mobile : fullscreen direct (pas de calcul ratio)
+        // Mobile : fullscreen direct
         maxWidth = viewportWidth;
         finalHeight = viewportHeight;
         finalLeft = 0;
@@ -1889,7 +1874,6 @@
         maxWidth = Math.min(viewportWidth * 0.85, 1200);
         finalHeight = maxWidth / videoRatio;
 
-        // Vérifie si ça dépasse la hauteur disponible
         if (finalHeight > viewportHeight * 0.85) {
           finalHeight = viewportHeight * 0.85;
           maxWidth = finalHeight * videoRatio;
@@ -1899,20 +1883,50 @@
         finalTop = (viewportHeight - finalHeight) / 2;
       }
 
+      // Position du clone
+      clone.style.position = 'fixed';
+      clone.style.margin = '0';
+      clone.style.pointerEvents = 'auto';
+
+      if (isMobile) {
+        // Mobile : démarre direct en fullscreen, opacity 0
+        clone.style.left = finalLeft + 'px';
+        clone.style.top = finalTop + 'px';
+        clone.style.width = maxWidth + 'px';
+        clone.style.height = finalHeight + 'px';
+        clone.style.opacity = '0';
+        clone.style.transition = 'opacity 0.25s ease-out';
+      } else {
+        // Desktop : démarre à la position de la carte
+        const startRect = card.getBoundingClientRect();
+        clone.style.left = startRect.left + 'px';
+        clone.style.top = startRect.top + 'px';
+        clone.style.width = startRect.width + 'px';
+        clone.style.height = startRect.height + 'px';
+        clone.style.opacity = '1';
+        clone.style.transition = 'none';
+      }
+
+      document.body.appendChild(clone);
+      card._clone = clone;
+
       // Active l'état playing
       clone.classList.add('playing', 'loading');
       document.body.classList.add('video-playing');
 
       // Anime le clone vers la position finale
       requestAnimationFrame(() => {
-        // Mobile : animation plus rapide (0.3s)
-        // Desktop : animation smooth (0.5s)
-        const animDuration = isMobile ? '0.3s' : '0.5s';
-        clone.style.transition = `all ${animDuration} cubic-bezier(0.32, 0.72, 0, 1)`;
-        clone.style.left = finalLeft + 'px';
-        clone.style.top = finalTop + 'px';
-        clone.style.width = maxWidth + 'px';
-        clone.style.height = finalHeight + 'px';
+        if (isMobile) {
+          // Mobile : fade in direct (pas d'animation de taille)
+          clone.style.opacity = '1';
+        } else {
+          // Desktop : animation zoom smooth
+          clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+          clone.style.left = finalLeft + 'px';
+          clone.style.top = finalTop + 'px';
+          clone.style.width = maxWidth + 'px';
+          clone.style.height = finalHeight + 'px';
+        }
 
         // Lance la vidéo
         setTimeout(() => {
