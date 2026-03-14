@@ -1996,12 +1996,15 @@
               }
             }
 
-            // Restaurer la miniature de la carte précédente
+            // Restaurer la miniature ET la carte précédente
             const originalThumbnail = originalCard.querySelector('.video-thumbnail, .music-thumbnail');
             if (originalThumbnail) {
               originalThumbnail.style.opacity = '1';
               originalThumbnail.style.display = 'block';
             }
+            // Restaurer l'opacité de la carte
+            originalCard.style.opacity = '1';
+            originalCard.style.pointerEvents = 'auto';
 
             // Update association
             originalCard._clone = null;
