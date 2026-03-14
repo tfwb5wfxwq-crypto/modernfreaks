@@ -2070,13 +2070,29 @@
             originalCard._clone = null;
             nextCard._clone = playingClone;
 
-            // Garde dimensions actuelles (pas de recalcul pour éviter letterbox)
-            playingClone.style.width = currentWidth + 'px';
-            playingClone.style.height = currentHeight + 'px';
+            // Recalculer dimensions selon ratio de la nouvelle vidéo (comme à l'ouverture)
+            const videoRatio = nextCard.dataset.ratio ? eval(nextCard.dataset.ratio) : (16 / 9);
+            let maxWidth = Math.min(viewportWidth * 0.85, 1200);
+            let finalHeight = maxWidth / videoRatio;
+
+            // Vérifie si ça dépasse la hauteur disponible
+            const viewportHeight = window.innerHeight;
+            if (finalHeight > viewportHeight * 0.85) {
+              finalHeight = viewportHeight * 0.85;
+              maxWidth = finalHeight * videoRatio;
+            }
+
+            const finalLeft = (viewportWidth - maxWidth) / 2;
+            const finalTop = (viewportHeight - finalHeight) / 2;
+
+            // Applique nouvelles dimensions
+            playingClone.style.width = maxWidth + 'px';
+            playingClone.style.height = finalHeight + 'px';
+            playingClone.style.top = finalTop + 'px';
 
             // Position clone hors écran côté opposé (instantané)
             playingClone.style.transition = 'none';
-            playingClone.style.left = `${currentLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
+            playingClone.style.left = `${finalLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
             playingClone.style.opacity = '1'; // Garde opacité pour éviter blanc
 
             // Force reflow
@@ -2084,8 +2100,8 @@
 
             // Swipe IN animation (entre par l'autre côté - rapide)
             requestAnimationFrame(() => {
-              playingClone.style.transition = 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-              playingClone.style.left = currentLeft + 'px'; // Retour à la position centrée d'origine
+              playingClone.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+              playingClone.style.left = finalLeft + 'px'; // Retour à la position centrée recalculée
             });
 
             // Crossfade thumbnail → video quand iframe est loaded (pas de blanc)
