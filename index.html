@@ -221,6 +221,12 @@
       transform: scaleX(1);
     }
 
+    /* Feedback visuel immédiat sur mobile */
+    nav a:active {
+      opacity: 0.6;
+      transform: scale(0.98);
+    }
+
     nav a.active[data-page="film"] {
       color: var(--cyan);
     }
@@ -1647,6 +1653,7 @@
 
     function navigateToPage(pageName, pushState = true) {
       const targetPage = pageName || 'film';
+      const isMobile = window.innerWidth <= 768;
 
       navLinks.forEach(l => l.classList.remove('active'));
       const activeLink = document.querySelector(`nav a[data-page="${targetPage}"]`);
@@ -1658,15 +1665,17 @@
         document.title = `Modern Freaks - ${targetPage.charAt(0).toUpperCase() + targetPage.slice(1)}`;
       }
 
-      // Animation logo
-      const logoLetters = document.querySelectorAll('.logo span');
-      logoLetters.forEach((letter, index) => {
-        const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
-        setTimeout(() => {
-          letter.classList.add(animClass);
-          setTimeout(() => letter.classList.remove(animClass), 600);
-        }, index * 60);
-      });
+      // Animation logo (désactivée sur mobile pour réactivité)
+      if (!isMobile) {
+        const logoLetters = document.querySelectorAll('.logo span');
+        logoLetters.forEach((letter, index) => {
+          const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
+          setTimeout(() => {
+            letter.classList.add(animClass);
+            setTimeout(() => letter.classList.remove(animClass), 600);
+          }, index * 60);
+        });
+      }
 
       // Switch pages
       pages.forEach(page => {
@@ -1676,13 +1685,15 @@
 
           if (targetPage === 'music') {
             document.querySelectorAll('.music-card').forEach((card, i) => {
-              setTimeout(() => card.classList.add('visible'), i * 80);
+              // Mobile : affichage instantané, Desktop : animation séquentielle
+              setTimeout(() => card.classList.add('visible'), isMobile ? 0 : i * 80);
             });
           }
           if (targetPage === 'contact') {
+            // Mobile : affichage instantané, Desktop : délai 100ms
             setTimeout(() => {
               document.querySelector('.contact-container').classList.add('visible');
-            }, 100);
+            }, isMobile ? 0 : 100);
           }
         }
       });
@@ -1692,6 +1703,10 @@
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
+        // Vibration haptique immédiate sur mobile
+        if (window.innerWidth <= 768) {
+          haptic.trigger('nudge');
+        }
         navigateToPage(link.dataset.page);
       });
     });
