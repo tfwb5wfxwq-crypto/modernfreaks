@@ -1993,7 +1993,14 @@
           const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide right, Right = slide left
 
           // Force thumbnail visible (enlève classe loaded qui la cache)
+          // IMPORTANT: on ne rajoute JAMAIS 'loading' pendant le swipe (crossfade suffit)
           playingClone.classList.remove('loaded', 'loading');
+
+          // Cacher le loader définitivement pendant le swipe
+          const loader = playingClone.querySelector('.video-loader');
+          if (loader) {
+            loader.style.display = 'none';
+          }
 
           // Garde thumbnail visible pendant swipe
           iframe.style.opacity = '0';
