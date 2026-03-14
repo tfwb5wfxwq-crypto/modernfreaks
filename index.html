@@ -1256,17 +1256,78 @@
         gap: 30px;
       }
 
+      nav a {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+
       .page-section {
-        padding: 130px 30px 80px;
+        padding: 120px 20px 60px;
       }
 
       .video-grid,
       .music-grid {
         grid-template-columns: 1fr;
+        gap: 20px;
       }
 
+      /* Player fullscreen mobile - SEULEMENT quand .playing */
+      .video-card.playing,
+      .music-card.playing {
+        left: 0 !important;
+        top: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        max-width: 100vw;
+        max-height: 100vh;
+      }
+
+      /* Close button mobile plus gros */
+      .video-card.playing .close-btn,
+      .music-card.playing .close-btn {
+        width: 50px;
+        height: 50px;
+        top: env(safe-area-inset-top, 20px);
+        right: 20px;
+        font-size: 28px;
+      }
+
+      /* Play button mobile plus gros */
+      .play-btn {
+        width: 80px;
+        height: 80px;
+      }
+
+      .play-btn::after {
+        border-left: 22px solid var(--navy);
+        border-top: 14px solid transparent;
+        border-bottom: 14px solid transparent;
+      }
+
+      /* Video title mobile */
+      .video-title {
+        font-size: 15px;
+      }
+
+      /* Contact form mobile */
       .contact-title {
         font-size: 40px;
+      }
+
+      .contact-form {
+        padding: 40px 25px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        font-size: 16px; /* Évite zoom auto iOS */
+      }
+
+      /* Bouton submit plus gros */
+      .submit-btn {
+        padding: 18px 40px;
+        font-size: 16px;
       }
     }
   </style>
