@@ -1986,16 +1986,15 @@
           // Swipe animation (slide out direction)
           const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide right, Right = slide left
 
-          // Fade out iframe
-          iframe.style.transition = 'opacity 0.2s ease';
+          // Garde thumbnail visible pendant swipe (pas de fade, juste swipe)
           iframe.style.opacity = '0';
           if (thumbnail) {
-            thumbnail.style.transition = 'opacity 0.2s ease';
             thumbnail.style.opacity = '1';
+            thumbnail.style.display = 'block';
           }
 
           // Swipe OUT - IMPORTANT: seulement animer transform, pas left/top/width/height
-          playingClone.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+          playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
           playingClone.style.transform = `translateX(${direction * 100}vw)`; // Slide complètement hors écran
 
           setTimeout(() => {
@@ -2059,7 +2058,7 @@
 
             // Swipe IN animation (du côté opposé vers le centre) - SEULEMENT transform
             requestAnimationFrame(() => {
-              playingClone.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+              playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
               playingClone.style.transform = 'translateX(0)';
             });
 
@@ -2106,7 +2105,7 @@
                 if (thumbnail) thumbnail.style.opacity = '0';
               }, 300);
             };
-          }, 350); // Correspond à la durée du swipe OUT (0.35s)
+          }, 400); // Correspond à la durée du swipe OUT (0.4s)
         }
       }
     });
