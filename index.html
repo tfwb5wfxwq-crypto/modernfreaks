@@ -1840,6 +1840,9 @@
       const clone = card._clone;
       if (!clone) return;
 
+      // Scroll vers la carte pour garantir qu'elle est visible (animation plus belle)
+      card.scrollIntoView({ behavior: 'auto', block: 'center', inline: 'nearest' });
+
       const targetRect = card.getBoundingClientRect();
 
       document.body.classList.remove('video-playing');
