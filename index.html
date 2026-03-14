@@ -1999,6 +1999,9 @@
             thumbnail.style.zIndex = '10';
           }
 
+          // CRITIQUE: Désactiver overflow-x hidden temporairement pour voir le swipe
+          document.body.style.overflowX = 'visible';
+
           // Reset transform pour partir de 0
           playingClone.style.transition = 'none';
           playingClone.style.transform = 'translateX(0)';
@@ -2121,6 +2124,11 @@
                 if (thumbnail) thumbnail.style.opacity = '0';
               }, 300);
             };
+
+            // Remettre overflow-x hidden après swipe IN terminé (400ms)
+            setTimeout(() => {
+              document.body.style.overflowX = 'hidden';
+            }, 400);
           }, 400); // Correspond à la durée du swipe OUT (0.4s)
         }
       }
