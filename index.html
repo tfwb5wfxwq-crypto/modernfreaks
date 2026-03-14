@@ -1387,24 +1387,24 @@
   <section id="contact-page" class="page-section">
     <div class="contact-container">
       <h1 class="contact-title">Let's Create Together</h1>
-      <p class="contact-subtitle">Vous avez un projet en tête ? Parlons-en.</p>
+      <p class="contact-subtitle">Have a project in mind? Let's talk about it.</p>
 
       <form class="contact-form" id="contactForm" novalidate>
         <div class="form-row">
           <div class="form-group">
-            <input type="text" id="name" name="name" placeholder="Votre nom" required>
+            <input type="text" id="name" name="name" placeholder="Your name" required>
           </div>
           <div class="form-group">
-            <input type="email" id="email" name="email" placeholder="Votre email" required>
+            <input type="email" id="email" name="email" placeholder="Your email" required>
           </div>
         </div>
         <div class="form-group">
-          <input type="text" id="subject" name="subject" placeholder="Sujet" required>
+          <input type="text" id="subject" name="subject" placeholder="Subject" required>
         </div>
         <div class="form-group">
-          <textarea id="message" name="message" placeholder="Votre message" required></textarea>
+          <textarea id="message" name="message" placeholder="Your message" required></textarea>
         </div>
-        <button type="submit" class="submit-btn">Envoyer</button>
+        <button type="submit" class="submit-btn">Send</button>
       </form>
     </div>
   </section>
@@ -1527,6 +1527,10 @@
       // Toute la carte est cliquable
       card.addEventListener('click', () => {
         if (!card.classList.contains('playing')) {
+          // Vibration haptique sur mobile
+          if (window.innerWidth <= 768 && navigator.vibrate) {
+            navigator.vibrate(10);
+          }
           playVideo(card, video.title);
         }
       });
@@ -1566,6 +1570,10 @@
       // Toute la carte est cliquable
       card.addEventListener('click', () => {
         if (!card.classList.contains('playing')) {
+          // Vibration haptique sur mobile
+          if (window.innerWidth <= 768 && navigator.vibrate) {
+            navigator.vibrate(10);
+          }
           playVideo(card, video.title);
         }
       });
@@ -1761,17 +1769,17 @@
         let message = '';
         if (input.validity.valueMissing) {
           const labels = {
-            name: 'Ton nom',
-            email: 'Ton email',
-            subject: 'Un sujet',
-            message: 'Un message'
+            name: 'Your name',
+            email: 'Your email',
+            subject: 'A subject',
+            message: 'A message'
           };
-          message = `${labels[input.name] || 'Ce champ'} est requis`;
+          message = `${labels[input.name] || 'This field'} is required`;
         } else if (input.validity.typeMismatch && input.type === 'email') {
-          message = 'Entre une adresse email valide';
+          message = 'Please enter a valid email address';
         }
 
-        showToast('Oups !', message, 'error');
+        showToast('Oops!', message, 'error');
         input.focus();
       });
     });
@@ -1799,12 +1807,12 @@
       // Animation success
       submitBtn.classList.remove('loading');
       submitBtn.classList.add('success');
-      submitBtn.textContent = '✓ Envoyé !';
+      submitBtn.textContent = '✓ Sent!';
 
       // Toast notification
       showToast(
-        'Message envoyé !',
-        'Merci pour votre message, nous vous répondrons rapidement.',
+        'Message sent!',
+        'Thank you for your message, we\'ll get back to you soon.',
         'success'
       );
 
@@ -1886,7 +1894,7 @@
       // Position du clone
       clone.style.position = 'fixed';
       clone.style.margin = '0';
-      clone.style.pointerEvents = 'auto';
+      clone.style.pointerEvents = 'none'; // Désactivé au début pour éviter double-clic mobile
 
       if (isMobile) {
         // Mobile : démarre direct en fullscreen, opacity 0
@@ -1969,6 +1977,8 @@
                 if (isMobile && cloneThumbnail) {
                   cloneThumbnail.style.display = 'none';
                 }
+                // Réactiver pointer-events après chargement complet
+                clone.style.pointerEvents = 'auto';
               }, 300);
             }, crossfadeDelay);
           };
