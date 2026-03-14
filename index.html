@@ -1974,6 +1974,11 @@
           const iframe = playingClone.querySelector('iframe');
           const thumbnail = playingClone.querySelector('.video-thumbnail, .music-thumbnail');
 
+          // Swipe animation (slide out direction)
+          const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide right, Right = slide left
+          playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease';
+          playingClone.style.transform = `translateX(${direction * 30}vw)`; // Slide 30% viewport
+
           // Fade out
           iframe.style.opacity = '0';
           if (thumbnail) thumbnail.style.opacity = '1';
@@ -2001,6 +2006,35 @@
             // Update association
             originalCard._clone = null;
             nextCard._clone = playingClone;
+
+            // Recalculer le format pour la nouvelle vidéo (FIX LETTERBOX)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const videoRatio = nextCard.dataset.ratio ? eval(nextCard.dataset.ratio) : (16 / 9);
+
+            let maxWidth = Math.min(viewportWidth * 0.85, 1200);
+            let finalHeight = maxWidth / videoRatio;
+
+            if (finalHeight > viewportHeight * 0.85) {
+              finalHeight = viewportHeight * 0.85;
+              maxWidth = finalHeight * videoRatio;
+            }
+
+            const finalLeft = (viewportWidth - maxWidth) / 2;
+            const finalTop = (viewportHeight - finalHeight) / 2;
+
+            // Applique nouvelles dimensions
+            playingClone.style.left = finalLeft + 'px';
+            playingClone.style.top = finalTop + 'px';
+            playingClone.style.width = maxWidth + 'px';
+            playingClone.style.height = finalHeight + 'px';
+
+            // Swipe in animation (vient de l'autre côté)
+            playingClone.style.transform = `translateX(${direction * -30}vw)`;
+            requestAnimationFrame(() => {
+              playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+              playingClone.style.transform = 'translateX(0)';
+            });
 
             // IMPORTANT: Réattacher le close button event listener après navigation
             const closeBtn = playingClone.querySelector('.close-btn');
