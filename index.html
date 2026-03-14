@@ -1808,19 +1808,37 @@
 
         // Lance la vidéo
         setTimeout(() => {
+          // Cacher le loader dès le début (crossfade suffit)
+          const loader = clone.querySelector('.video-loader');
+          if (loader) {
+            loader.style.display = 'none';
+          }
+          clone.classList.remove('loading');
+
           cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
 
-          const loadTimeout = setTimeout(() => {
-            clone.classList.remove('loading');
-            clone.classList.add('loaded');
-          }, 3000);
+          // Crossfade thumbnail → video (pas de loader)
+          const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
+          cloneIframe.style.opacity = '0';
+          cloneIframe.style.transition = 'opacity 0.4s ease-out';
 
           cloneIframe.onload = () => {
-            clearTimeout(loadTimeout);
+            // Attendre un peu que Vimeo démarre
             setTimeout(() => {
-              clone.classList.remove('loading');
-              clone.classList.add('loaded');
-            }, 1200); // Augmenté de 400ms à 1200ms pour laisser Vimeo afficher la première frame
+              // Fade IN iframe
+              cloneIframe.style.opacity = '1';
+
+              // Fade OUT thumbnail simultanément
+              if (cloneThumbnail) {
+                cloneThumbnail.style.transition = 'opacity 0.4s ease-out';
+                cloneThumbnail.style.opacity = '0';
+              }
+
+              // Marquer comme loaded après transition
+              setTimeout(() => {
+                clone.classList.add('loaded');
+              }, 400);
+            }, 100);
           };
         }, 300);
 
