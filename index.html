@@ -1834,10 +1834,10 @@
         }
       });
 
-      // Met à jour l'URL pour permettre le partage (format: #page/video-slug)
+      // Met à jour l'URL pour permettre le partage (format: #page/video-id)
       const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
-      const slug = createSlug(title);
-      window.location.hash = `${currentPage}/${slug}`;
+      const videoId = card.dataset.videoId;
+      window.location.hash = `${currentPage}/${videoId}`;
     }
 
     function stopVideo(card) {
@@ -2094,12 +2094,11 @@
               });
             }
 
-            // Update URL avec le nouveau titre
+            // Update URL avec l'ID de la vidéo
             const videoData = currentPage === 'music' ? musicVideos : videos;
             const newVideo = videoData.find(v => v.id === newVideoId);
             if (newVideo) {
-              const slug = createSlug(newVideo.title);
-              window.location.hash = `${currentPage}/${slug}`;
+              window.location.hash = `${currentPage}/${newVideoId}`;
 
               // Afficher le titre en overlay
               showVideoTitle(newVideo.title);
@@ -2141,12 +2140,12 @@
     window.addEventListener('load', () => {
       const hash = window.location.hash.slice(1); // Retire le #
       if (hash && hash.includes('/')) {
-        // Format: "film/video-slug" ou "music/video-slug"
-        const [page, videoSlug] = hash.split('/');
+        // Format: "film/video-id" ou "music/video-id"
+        const [page, videoId] = hash.split('/');
 
-        // Cherche la vidéo correspondant au slug
+        // Cherche la vidéo correspondant à l'ID
         const allVideos = [...videos, ...musicVideos];
-        const matchedVideo = allVideos.find(v => createSlug(v.title) === videoSlug);
+        const matchedVideo = allVideos.find(v => v.id === videoId);
 
         if (matchedVideo) {
           // Trouve la carte correspondante
