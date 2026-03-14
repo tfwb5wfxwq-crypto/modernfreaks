@@ -1976,12 +1976,14 @@
 
           // Swipe animation (slide out direction)
           const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide right, Right = slide left
-          playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease';
-          playingClone.style.transform = `translateX(${direction * 30}vw)`; // Slide 30% viewport
 
-          // Fade out
+          // Fade out iframe
           iframe.style.opacity = '0';
           if (thumbnail) thumbnail.style.opacity = '1';
+
+          // Swipe OUT
+          playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+          playingClone.style.transform = `translateX(${direction * 100}vw)`; // Slide complètement hors écran
 
           setTimeout(() => {
             // Change video
@@ -2026,17 +2028,19 @@
             const finalLeft = (viewportWidth - maxWidth) / 2;
             const finalTop = (viewportHeight - finalHeight) / 2;
 
-            // Applique nouvelles dimensions
+            // Applique nouvelles dimensions (sans transition pour éviter conflit)
+            playingClone.style.transition = 'none';
             playingClone.style.left = finalLeft + 'px';
             playingClone.style.top = finalTop + 'px';
             playingClone.style.width = maxWidth + 'px';
             playingClone.style.height = finalHeight + 'px';
 
-            // Swipe in animation (vient de l'autre côté)
-            playingClone.style.transform = `translateX(${direction * -30}vw)`;
+            // Swipe IN animation (vient de l'autre côté)
+            playingClone.style.transform = `translateX(${direction * -100}vw)`; // Commence hors écran opposé
+
             requestAnimationFrame(() => {
               playingClone.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-              playingClone.style.transform = 'translateX(0)';
+              playingClone.style.transform = 'translateX(0)'; // Swipe vers le centre
             });
 
             // IMPORTANT: Réattacher le close button event listener après navigation
@@ -2082,7 +2086,7 @@
                 if (thumbnail) thumbnail.style.opacity = '0';
               }, 300);
             };
-          }, 400);
+          }, 300); // Correspond à la durée du swipe OUT
         }
       }
     });
