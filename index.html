@@ -808,8 +808,13 @@
       transition: transform 0.5s ease;
     }
 
-    .music-card:hover .music-thumbnail {
+    .music-card:hover:not(.playing) .music-thumbnail {
       transform: scale(1.05);
+    }
+
+    /* Désactive tous les effets internes quand vidéo en lecture */
+    .music-card.playing:hover .music-thumbnail {
+      transform: none;
     }
 
     .music-card::before {
@@ -822,8 +827,12 @@
       z-index: 1;
     }
 
-    .music-card:hover::before {
+    .music-card:hover:not(.playing)::before {
       opacity: 1;
+    }
+
+    .music-card.playing:hover::before {
+      opacity: 0 !important;
     }
 
     .music-info {
@@ -838,9 +847,13 @@
       transition: all 0.4s ease;
     }
 
-    .music-card:hover .music-info {
+    .music-card:hover:not(.playing) .music-info {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .music-card.playing:hover .music-info {
+      opacity: 0 !important;
     }
 
     .music-title {
