@@ -1327,6 +1327,35 @@
         border-bottom: 14px solid transparent;
       }
 
+      /* MOBILE : Cacher miniature pendant chargement, afficher loader sur fond noir */
+      .video-card.playing:not(.loaded) .video-thumbnail,
+      .video-card.playing:not(.loaded) .music-thumbnail,
+      .music-card.playing:not(.loaded) .video-thumbnail,
+      .music-card.playing:not(.loaded) .music-thumbnail {
+        opacity: 0 !important;
+        display: none !important;
+      }
+
+      /* Loader visible sur mobile pendant chargement */
+      .video-card.playing:not(.loaded) .video-loader,
+      .music-card.playing:not(.loaded) .video-loader {
+        display: block !important;
+      }
+
+      /* Fond noir pur pendant chargement mobile */
+      .video-card.playing:not(.loaded),
+      .music-card.playing:not(.loaded) {
+        background: #000 !important;
+      }
+
+      /* Loader plus gros et plus visible sur mobile */
+      .video-card.playing .video-loader,
+      .music-card.playing .video-loader {
+        width: 60px;
+        height: 60px;
+        border-width: 4px;
+      }
+
       /* Video title mobile */
       .video-title {
         font-size: 15px;
