@@ -1986,12 +1986,25 @@
           // Swipe animation (slide out direction)
           const direction = e.key === 'ArrowLeft' ? 1 : -1; // Left = slide right, Right = slide left
 
-          // Garde thumbnail visible pendant swipe (pas de fade, juste swipe)
+          // Force thumbnail visible (enlève classe loaded qui la cache)
+          playingClone.classList.remove('loaded', 'loading');
+
+          // Garde thumbnail visible pendant swipe
           iframe.style.opacity = '0';
           if (thumbnail) {
-            thumbnail.style.opacity = '1';
-            thumbnail.style.display = 'block';
+            thumbnail.style.setProperty('opacity', '1', 'important');
+            thumbnail.style.setProperty('display', 'block', 'important');
+            thumbnail.style.position = 'absolute';
+            thumbnail.style.inset = '0';
+            thumbnail.style.zIndex = '10';
           }
+
+          // Reset transform pour partir de 0
+          playingClone.style.transition = 'none';
+          playingClone.style.transform = 'translateX(0)';
+
+          // Force reflow
+          playingClone.offsetHeight;
 
           // Swipe OUT - IMPORTANT: seulement animer transform, pas left/top/width/height
           playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
@@ -2060,6 +2073,9 @@
             requestAnimationFrame(() => {
               playingClone.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1)';
               playingClone.style.transform = 'translateX(0)';
+
+              // Remettre classe loading après swipe IN pour animation chargement
+              playingClone.classList.add('loading');
             });
 
             // IMPORTANT: Réattacher le close button event listener après navigation
