@@ -1851,22 +1851,31 @@
       // Calcule position finale adaptée au ratio de la vidéo
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
+      const isMobile = viewportWidth <= 768;
 
-      // Détecte le ratio (16:9 par défaut, peut être surchargé avec data-ratio)
-      const videoRatio = card.dataset.ratio ? eval(card.dataset.ratio) : (16 / 9);
+      let maxWidth, finalHeight, finalLeft, finalTop;
 
-      // Calcule taille optimale selon le ratio de la vidéo
-      let maxWidth = Math.min(viewportWidth * 0.85, 1200);
-      let finalHeight = maxWidth / videoRatio;
+      if (isMobile) {
+        // Mobile : fullscreen direct (pas de calcul ratio)
+        maxWidth = viewportWidth;
+        finalHeight = viewportHeight;
+        finalLeft = 0;
+        finalTop = 0;
+      } else {
+        // Desktop : calcule selon ratio vidéo
+        const videoRatio = card.dataset.ratio ? eval(card.dataset.ratio) : (16 / 9);
+        maxWidth = Math.min(viewportWidth * 0.85, 1200);
+        finalHeight = maxWidth / videoRatio;
 
-      // Vérifie si ça dépasse la hauteur disponible
-      if (finalHeight > viewportHeight * 0.85) {
-        finalHeight = viewportHeight * 0.85;
-        maxWidth = finalHeight * videoRatio;
+        // Vérifie si ça dépasse la hauteur disponible
+        if (finalHeight > viewportHeight * 0.85) {
+          finalHeight = viewportHeight * 0.85;
+          maxWidth = finalHeight * videoRatio;
+        }
+
+        finalLeft = (viewportWidth - maxWidth) / 2;
+        finalTop = (viewportHeight - finalHeight) / 2;
       }
-
-      const finalLeft = (viewportWidth - maxWidth) / 2;
-      const finalTop = (viewportHeight - finalHeight) / 2;
 
       // Active l'état playing
       clone.classList.add('playing', 'loading');
@@ -1897,7 +1906,10 @@
           cloneIframe.style.transition = 'opacity 0.4s ease-out';
 
           cloneIframe.onload = () => {
-            // Attendre un peu que Vimeo démarre
+            // Attendre que Vimeo affiche la première frame
+            // Mobile : délai plus long car Vimeo charge plus lentement
+            const crossfadeDelay = isMobile ? 800 : 100;
+
             setTimeout(() => {
               // Fade IN iframe
               cloneIframe.style.opacity = '1';
@@ -1912,7 +1924,7 @@
               setTimeout(() => {
                 clone.classList.add('loaded');
               }, 400);
-            }, 100);
+            }, crossfadeDelay);
           };
         }, 300);
 
