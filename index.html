@@ -2006,10 +2006,9 @@
           const currentLeft = parseFloat(playingClone.style.left);
           const viewportWidth = window.innerWidth;
 
-          // Swipe OUT - Animer LEFT directement (plus simple que transform)
-          playingClone.style.transition = 'left 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.2s ease';
+          // Swipe OUT - Animer LEFT directement (rapide et fluide)
+          playingClone.style.transition = 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
           playingClone.style.left = `${currentLeft + (direction * viewportWidth)}px`; // Slide hors écran
-          playingClone.style.opacity = '0.8'; // Légère transparence pendant slide
 
           setTimeout(() => {
             // Change video
@@ -2060,16 +2059,15 @@
             playingClone.style.width = maxWidth + 'px';
             playingClone.style.height = finalHeight + 'px';
             playingClone.style.left = `${finalLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
-            playingClone.style.opacity = '0';
+            playingClone.style.opacity = '1'; // Garde opacité pour éviter blanc
 
             // Force reflow
             playingClone.offsetHeight;
 
-            // Swipe IN animation (entre par l'autre côté)
+            // Swipe IN animation (entre par l'autre côté - rapide)
             requestAnimationFrame(() => {
-              playingClone.style.transition = 'left 0.5s cubic-bezier(0.25, 0.1, 0.25, 1), opacity 0.3s ease';
+              playingClone.style.transition = 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
               playingClone.style.left = finalLeft + 'px'; // Vers le centre
-              playingClone.style.opacity = '1';
 
               // Remettre classe loading après swipe IN pour animation chargement
               playingClone.classList.add('loading');
@@ -2119,11 +2117,11 @@
               }, 300);
             };
 
-            // Remettre overflow-x hidden après swipe IN terminé (500ms)
+            // Remettre overflow-x hidden après swipe IN terminé (300ms + 100ms marge)
             setTimeout(() => {
               document.body.style.overflowX = 'hidden';
-            }, 500);
-          }, 500); // Correspond à la durée du swipe OUT (0.5s)
+            }, 400);
+          }, 100); // Délai court pour transition fluide (swipe OUT se termine à 300ms)
         }
       }
     });
