@@ -2008,8 +2008,10 @@
           // CRITIQUE: Désactiver overflow-x hidden temporairement pour voir le swipe
           document.body.style.overflowX = 'visible';
 
-          // Récupère position actuelle
+          // Récupère position actuelle ET dimensions AVANT le swipe
           const currentLeft = parseFloat(playingClone.style.left);
+          const currentWidth = playingClone.offsetWidth;
+          const currentHeight = playingClone.offsetHeight;
           const viewportWidth = window.innerWidth;
 
           // Swipe OUT - Animer LEFT directement (rapide et fluide)
@@ -2043,13 +2045,13 @@
             originalCard._clone = null;
             nextCard._clone = playingClone;
 
-            // Garde la position/dimension actuelle (pas de recalcul pour éviter letterbox)
-            const currentRect = playingClone.getBoundingClientRect();
-            const finalLeft = currentRect.left; // Garde position centrée actuelle
+            // Garde dimensions actuelles (pas de recalcul pour éviter letterbox)
+            playingClone.style.width = currentWidth + 'px';
+            playingClone.style.height = currentHeight + 'px';
 
             // Position clone hors écran côté opposé (instantané)
             playingClone.style.transition = 'none';
-            playingClone.style.left = `${currentRect.left + (direction * -window.innerWidth)}px`; // Hors écran opposé
+            playingClone.style.left = `${currentLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
             playingClone.style.opacity = '1'; // Garde opacité pour éviter blanc
 
             // Force reflow
@@ -2058,7 +2060,7 @@
             // Swipe IN animation (entre par l'autre côté - rapide)
             requestAnimationFrame(() => {
               playingClone.style.transition = 'left 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-              playingClone.style.left = finalLeft + 'px'; // Vers le centre
+              playingClone.style.left = currentLeft + 'px'; // Retour à la position centrée d'origine
 
               // PAS de loader pendant swipe (thumbnail déjà visible)
               // L'iframe va charger en background et crossfade automatiquement
