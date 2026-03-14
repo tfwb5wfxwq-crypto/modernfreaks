@@ -1271,6 +1271,15 @@
         gap: 20px;
       }
 
+      /* Overlay noir fullscreen mobile */
+      body.video-playing::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: #000;
+        z-index: 9998;
+      }
+
       /* Player fullscreen mobile - SEULEMENT quand .playing */
       .video-card.playing,
       .music-card.playing {
@@ -1281,16 +1290,20 @@
         border-radius: 0 !important;
         max-width: 100vw;
         max-height: 100vh;
+        background: #000 !important;
       }
 
-      /* Close button mobile plus gros */
+      /* Close button mobile - dans le player, pas en haut écran */
       .video-card.playing .close-btn,
       .music-card.playing .close-btn {
         width: 50px;
         height: 50px;
-        top: env(safe-area-inset-top, 20px);
-        right: 20px;
+        top: 15px;
+        right: 15px;
         font-size: 28px;
+        background: rgba(0, 0, 0, 0.6);
+        color: #fff;
+        border: 2px solid rgba(255, 255, 255, 0.3);
       }
 
       /* Play button mobile plus gros */
@@ -1883,7 +1896,10 @@
 
       // Anime le clone vers la position finale
       requestAnimationFrame(() => {
-        clone.style.transition = 'all 0.5s cubic-bezier(0.32, 0.72, 0, 1)';
+        // Mobile : animation plus rapide (0.3s)
+        // Desktop : animation smooth (0.5s)
+        const animDuration = isMobile ? '0.3s' : '0.5s';
+        clone.style.transition = `all ${animDuration} cubic-bezier(0.32, 0.72, 0, 1)`;
         clone.style.left = finalLeft + 'px';
         clone.style.top = finalTop + 'px';
         clone.style.width = maxWidth + 'px';
@@ -1898,7 +1914,10 @@
           }
           clone.classList.remove('loading');
 
-          cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=0&title=0&byline=0&portrait=0`;
+          // Mobile : muted=1 au début pour éviter popup "rétablir le son"
+          // Desktop : muted=0 (son direct)
+          const mutedParam = isMobile ? 1 : 0;
+          cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=${mutedParam}&title=0&byline=0&portrait=0`;
 
           // Crossfade thumbnail → video (pas de loader)
           const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
@@ -1906,9 +1925,9 @@
           cloneIframe.style.transition = 'opacity 0.4s ease-out';
 
           cloneIframe.onload = () => {
-            // Attendre que Vimeo affiche la première frame
-            // Mobile : délai plus long car Vimeo charge plus lentement
-            const crossfadeDelay = isMobile ? 800 : 100;
+            // Mobile : crossfade plus rapide (200ms)
+            // Desktop : crossfade rapide (100ms)
+            const crossfadeDelay = isMobile ? 200 : 100;
 
             setTimeout(() => {
               // Fade IN iframe
@@ -1916,14 +1935,18 @@
 
               // Fade OUT thumbnail simultanément
               if (cloneThumbnail) {
-                cloneThumbnail.style.transition = 'opacity 0.4s ease-out';
+                cloneThumbnail.style.transition = 'opacity 0.3s ease-out';
                 cloneThumbnail.style.opacity = '0';
               }
 
               // Marquer comme loaded après transition
               setTimeout(() => {
                 clone.classList.add('loaded');
-              }, 400);
+                // Mobile : cacher miniature complètement après fade
+                if (isMobile && cloneThumbnail) {
+                  cloneThumbnail.style.display = 'none';
+                }
+              }, 300);
             }, crossfadeDelay);
           };
         }, 300);
