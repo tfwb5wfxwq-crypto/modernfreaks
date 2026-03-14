@@ -611,7 +611,7 @@
       left: 0;
       right: 0;
       padding: 24px;
-      z-index: 2;
+      z-index: 3;
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.4s ease;
@@ -832,7 +832,7 @@
       left: 0;
       right: 0;
       padding: 24px;
-      z-index: 2;
+      z-index: 3;
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.4s ease;
@@ -1863,6 +1863,13 @@
         cloneThumbnail.style.display = 'block';
       }
 
+      // IMPORTANT: Restaurer la miniature de la carte originale
+      const cardThumbnail = card.querySelector('.video-thumbnail, .music-thumbnail');
+      if (cardThumbnail) {
+        cardThumbnail.style.opacity = '1';
+        cardThumbnail.style.display = 'block';
+      }
+
       // IMPORTANT: Rend la carte visible DÈS LE DÉBUT (en dessous du clone)
       card.style.transition = 'none';
       card.style.opacity = '1';
@@ -1984,6 +1991,20 @@
             // Update association
             originalCard._clone = null;
             nextCard._clone = playingClone;
+
+            // IMPORTANT: Réattacher le close button event listener après navigation
+            const closeBtn = playingClone.querySelector('.close-btn');
+            if (closeBtn) {
+              // Supprimer ancien listener (si existe)
+              const newCloseBtn = closeBtn.cloneNode(true);
+              closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+
+              // Réattacher le listener
+              newCloseBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                stopVideo(nextCard);
+              });
+            }
 
             // Update URL avec le nouveau titre
             const videoData = currentPage === 'music' ? musicVideos : videos;
