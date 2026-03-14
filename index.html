@@ -1316,6 +1316,60 @@
         border: 2px solid rgba(255, 255, 255, 0.3);
       }
 
+      /* Bouton son (mute/unmute) - Mobile uniquement, caché par défaut */
+      .sound-btn {
+        display: none !important;
+      }
+    }
+
+    /* Bouton son visible UNIQUEMENT sur mobile (@media doit être en dehors) */
+    @media (max-width: 768px) {
+      .sound-btn {
+        display: none;
+        position: absolute;
+        bottom: 15px;
+        left: 15px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: #fff;
+        font-size: 24px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        z-index: 10001;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+      }
+
+      .video-card.playing .sound-btn,
+      .music-card.playing .sound-btn {
+        display: flex;
+        animation: closeButtonAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards;
+        opacity: 0;
+        transform: scale(0.4);
+      }
+
+      .sound-btn:active {
+        transform: scale(0.9);
+      }
+
+      .sound-btn.muted::after {
+        content: '🔇';
+      }
+
+      .sound-btn.unmuted::after {
+        content: '🔊';
+      }
+
+      /* Auto-hide après 3 secondes */
+      .sound-btn.auto-hide {
+        opacity: 0 !important;
+        pointer-events: none;
+      }
+
       /* Play button mobile plus gros */
       .play-btn {
         width: 80px;
@@ -1609,6 +1663,7 @@
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <div class="video-loader"></div>
         <button class="close-btn">×</button>
+        <button class="sound-btn muted"></button>
         <div class="play-btn"></div>
         <div class="video-info">
           <div class="video-title">${video.title}</div>
@@ -1652,6 +1707,7 @@
         <iframe src="" allow="autoplay; fullscreen" allowfullscreen></iframe>
         <div class="video-loader"></div>
         <button class="close-btn">×</button>
+        <button class="sound-btn muted"></button>
         <div class="play-btn"></div>
         <div class="music-info">
           <div class="music-title">${video.title}</div>
@@ -1697,10 +1753,10 @@
         document.title = `Modern Freaks - ${targetPage.charAt(0).toUpperCase() + targetPage.slice(1)}`;
       }
 
-      // Animation logo (ultra-rapide sur mobile, normale sur desktop)
+      // Animation logo (plus fluide sur mobile)
       const logoLetters = document.querySelectorAll('.logo span');
-      const animDuration = isMobile ? 150 : 600;
-      const letterDelay = isMobile ? 15 : 60;
+      const animDuration = isMobile ? 350 : 600;
+      const letterDelay = isMobile ? 35 : 60;
 
       logoLetters.forEach((letter, index) => {
         const animClass = `animate-${Math.floor(Math.random() * 10) + 1}`;
@@ -1736,10 +1792,13 @@
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        // Vibration haptique immédiate sur mobile
+        e.stopPropagation();
+
+        // Vibration haptique immédiate sur mobile (non bloquante)
         if (window.innerWidth <= 768) {
-          haptic.trigger('nudge');
+          setTimeout(() => haptic.trigger('nudge'), 0);
         }
+
         navigateToPage(link.dataset.page);
       });
     });
@@ -2093,6 +2152,45 @@
             e.stopPropagation();
             stopVideo(card);
           });
+        }
+
+        // Bouton son sur le clone (mobile uniquement)
+        const soundBtn = clone.querySelector('.sound-btn');
+        if (soundBtn && isMobile) {
+          let isMuted = true;
+
+          soundBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+
+            // Toggle mute/unmute via postMessage Vimeo Player API
+            const iframe = clone.querySelector('iframe');
+            if (iframe && iframe.contentWindow) {
+              isMuted = !isMuted;
+
+              // Commande Vimeo Player API (setVolume 0 = mute, 1 = full volume)
+              iframe.contentWindow.postMessage(
+                JSON.stringify({ method: 'setVolume', value: isMuted ? 0 : 1 }),
+                '*'
+              );
+
+              // Update icône
+              soundBtn.classList.toggle('muted', isMuted);
+              soundBtn.classList.toggle('unmuted', !isMuted);
+
+              // Réafficher le bouton si caché
+              soundBtn.classList.remove('auto-hide');
+
+              // Auto-hide après 3 secondes (sauf si on vient de l'activer)
+              setTimeout(() => {
+                soundBtn.classList.add('auto-hide');
+              }, 3000);
+            }
+          });
+
+          // Auto-hide initial après 3 secondes
+          setTimeout(() => {
+            soundBtn.classList.add('auto-hide');
+          }, 3000);
         }
       });
 
