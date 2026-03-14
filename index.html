@@ -1836,7 +1836,6 @@
 
       // Met à jour l'URL pour permettre le partage (format: #page/video-id)
       const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
-      const videoId = card.dataset.videoId;
       window.location.hash = `${currentPage}/${videoId}`;
     }
 
