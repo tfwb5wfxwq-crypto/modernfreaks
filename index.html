@@ -2043,28 +2043,12 @@
             originalCard._clone = null;
             nextCard._clone = playingClone;
 
-            // Recalculer le format pour la nouvelle vidéo (FIX LETTERBOX)
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            const videoRatio = nextCard.dataset.ratio ? eval(nextCard.dataset.ratio) : (16 / 9);
-
-            let maxWidth = Math.min(viewportWidth * 0.85, 1200);
-            let finalHeight = maxWidth / videoRatio;
-
-            if (finalHeight > viewportHeight * 0.85) {
-              finalHeight = viewportHeight * 0.85;
-              maxWidth = finalHeight * videoRatio;
-            }
-
-            const finalLeft = (viewportWidth - maxWidth) / 2;
-            const finalTop = (viewportHeight - finalHeight) / 2;
+            // Garde la position/dimension actuelle (pas de recalcul pour éviter letterbox)
+            const currentRect = playingClone.getBoundingClientRect();
 
             // Position clone hors écran côté opposé (instantané)
             playingClone.style.transition = 'none';
-            playingClone.style.top = finalTop + 'px';
-            playingClone.style.width = maxWidth + 'px';
-            playingClone.style.height = finalHeight + 'px';
-            playingClone.style.left = `${finalLeft + (direction * -viewportWidth)}px`; // Hors écran opposé
+            playingClone.style.left = `${currentRect.left + (direction * -window.innerWidth)}px`; // Hors écran opposé
             playingClone.style.opacity = '1'; // Garde opacité pour éviter blanc
 
             // Force reflow
