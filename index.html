@@ -1451,7 +1451,7 @@
     /* Tooltip raccourcis clavier (desktop uniquement) - Style comme video-title-overlay */
     .keyboard-hint {
       position: fixed;
-      bottom: 100px;
+      bottom: 180px;
       left: 50%;
       transform: translateX(-50%) translateY(20px) scale(0.95);
       background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 100%);
@@ -1512,9 +1512,219 @@
         display: none;
       }
     }
+
+    /* ====================== LOADING SCREEN ====================== */
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    #loading-screen.loaded {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loading-content {
+      text-align: center;
+    }
+
+    .freaks-letters {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .letter-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 15px;
+      opacity: 0;
+      animation: letterAppear 0.5s ease forwards;
+    }
+
+    .letter-container:nth-child(1) { animation-delay: 0.1s; }
+    .letter-container:nth-child(2) { animation-delay: 0.2s; }
+    .letter-container:nth-child(3) { animation-delay: 0.3s; }
+    .letter-container:nth-child(4) { animation-delay: 0.4s; }
+    .letter-container:nth-child(5) { animation-delay: 0.5s; }
+    .letter-container:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes letterAppear {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .letter {
+      font-size: 48px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+
+    .equalizer {
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+      height: 40px;
+    }
+
+    .bar {
+      width: 6px;
+      background: linear-gradient(180deg, #4a90e2 0%, #667eea 100%);
+      border-radius: 3px;
+      animation: equalizerBounce 0.8s ease-in-out infinite;
+    }
+
+    .equalizer .bar:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .equalizer .bar:nth-child(2) {
+      animation-delay: 0.15s;
+    }
+
+    .equalizer .bar:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    @keyframes equalizerBounce {
+      0%, 100% {
+        height: 10px;
+      }
+      50% {
+        height: 35px;
+      }
+    }
+
+    .loading-subtitle {
+      font-size: 18px;
+      font-weight: 300;
+      color: #ffffff;
+      opacity: 0;
+      animation: subtitleFade 0.5s ease forwards;
+      animation-delay: 0.8s;
+      letter-spacing: 3px;
+    }
+
+    @keyframes subtitleFade {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 0.7;
+        transform: translateY(0);
+      }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 768px) {
+      .freaks-letters {
+        gap: 12px;
+      }
+
+      .letter {
+        font-size: 32px;
+      }
+
+      .equalizer {
+        height: 30px;
+        gap: 3px;
+      }
+
+      .bar {
+        width: 4px;
+      }
+
+      @keyframes equalizerBounce {
+        0%, 100% {
+          height: 8px;
+        }
+        50% {
+          height: 25px;
+        }
+      }
+
+      .loading-subtitle {
+        font-size: 14px;
+      }
+    }
   </style>
 </head>
 <body>
+  <!-- LOADING SCREEN -->
+  <div id="loading-screen">
+    <div class="loading-content">
+      <div class="freaks-letters">
+        <div class="letter-container">
+          <span class="letter">F</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        <div class="letter-container">
+          <span class="letter">R</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        <div class="letter-container">
+          <span class="letter">E</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        <div class="letter-container">
+          <span class="letter">A</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        <div class="letter-container">
+          <span class="letter">K</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+        <div class="letter-container">
+          <span class="letter">S</span>
+          <div class="equalizer">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+        </div>
+      </div>
+      <div class="loading-subtitle">Modern</div>
+    </div>
+  </div>
+
   <header>
     <div class="header-inner">
       <div class="logo-wrapper">
@@ -2164,19 +2374,25 @@
 
         // Lance la vidéo
         setTimeout(() => {
-          // Cacher le loader dès le début (crossfade suffit)
+          // Desktop : cacher le loader immédiatement (miniature visible suffit)
+          // Mobile : le loader reste visible jusqu'au chargement (géré par CSS .loading)
           const loader = clone.querySelector('.video-loader');
-          if (loader) {
+          if (loader && !isMobile) {
             loader.style.display = 'none';
           }
-          clone.classList.remove('loading');
+
+          // Desktop : retirer loading immédiatement (pas de loader, juste miniature)
+          // Mobile : garder loading pour afficher le loader sur fond noir
+          if (!isMobile) {
+            clone.classList.remove('loading');
+          }
 
           // Mobile : muted=1 au début pour éviter popup "rétablir le son"
           // Desktop : muted=0 (son direct)
           const mutedParam = isMobile ? 1 : 0;
           cloneIframe.src = `https://player.vimeo.com/video/${videoId}?autoplay=1&quality=auto&muted=${mutedParam}&title=0&byline=0&portrait=0`;
 
-          // Crossfade thumbnail → video (pas de loader)
+          // Crossfade thumbnail → video (pas de loader sur desktop)
           const cloneThumbnail = clone.querySelector('.video-thumbnail, .music-thumbnail');
           cloneIframe.style.opacity = '0';
           cloneIframe.style.transition = 'opacity 0.4s ease-out';
@@ -2185,6 +2401,11 @@
             // Mobile : crossfade plus rapide (200ms)
             // Desktop : crossfade rapide (100ms)
             const crossfadeDelay = isMobile ? 200 : 100;
+
+            // Mobile : retirer loading pour cacher le loader
+            if (isMobile) {
+              clone.classList.remove('loading');
+            }
 
             setTimeout(() => {
               // Fade IN iframe
@@ -2270,9 +2491,9 @@
     // Fonction pour afficher le tooltip raccourcis clavier
     function showKeyboardHint() {
       const isMobile = window.innerWidth <= 768;
-      const hasSeenHint = localStorage.getItem('keyboardHintSeen');
+      const hasSeenHint = sessionStorage.getItem('keyboardHintSeen');
 
-      // Ne pas afficher sur mobile ou si déjà vu
+      // Ne pas afficher sur mobile ou si déjà vu cette session
       if (isMobile || hasSeenHint) return;
 
       // Retirer ancien tooltip s'il existe
@@ -2306,8 +2527,8 @@
         setTimeout(() => hint.remove(), 400);
       }, 5000);
 
-      // Marquer comme vu dans localStorage
-      localStorage.setItem('keyboardHintSeen', 'true');
+      // Marquer comme vu pour cette session (sessionStorage = reset à chaque visite)
+      sessionStorage.setItem('keyboardHintSeen', 'true');
     }
 
     function stopVideo(card) {
@@ -2669,6 +2890,21 @@
           }
         }
       }
+    });
+
+    // ====================== LOADING SCREEN ======================
+    window.addEventListener('load', function() {
+      const loadingScreen = document.getElementById('loading-screen');
+
+      // Attendre que toutes les animations de lettres soient terminées (0.6s + 0.6s délai)
+      setTimeout(() => {
+        loadingScreen.classList.add('loaded');
+
+        // Retirer complètement du DOM après la transition
+        setTimeout(() => {
+          loadingScreen.style.display = 'none';
+        }, 600);
+      }, 1200);
     });
   </script>
 </body>
