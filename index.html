@@ -1547,9 +1547,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 15px;
+      gap: 8px;
       opacity: 0;
-      animation: letterAppear 0.5s ease forwards;
+      animation: letterDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     }
 
     .letter-container:nth-child(1) { animation-delay: 0.1s; }
@@ -1559,14 +1559,18 @@
     .letter-container:nth-child(5) { animation-delay: 0.5s; }
     .letter-container:nth-child(6) { animation-delay: 0.6s; }
 
-    @keyframes letterAppear {
-      from {
+    @keyframes letterDrop {
+      0% {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(-80px) rotate(-15deg) scale(0.3);
       }
-      to {
+      60% {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(10px) rotate(5deg) scale(1.1);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg) scale(1);
       }
     }
 
@@ -1575,6 +1579,7 @@
       font-weight: 700;
       letter-spacing: -3.5px;
       text-transform: uppercase;
+      filter: drop-shadow(0 0 20px currentColor);
     }
 
     /* Couleurs du logo FREAKS */
@@ -1585,18 +1590,26 @@
     .letter-container:nth-child(5) .letter { color: #6DB5C4; } /* K - cyan */
     .letter-container:nth-child(6) .letter { color: #E3232C; } /* S - red */
 
+    /* Barres égaliseur héritent de la couleur de leur lettre */
+    .letter-container:nth-child(1) .bar { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); }
+    .letter-container:nth-child(2) .bar { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); }
+    .letter-container:nth-child(3) .bar { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); }
+    .letter-container:nth-child(4) .bar { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); }
+    .letter-container:nth-child(5) .bar { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); }
+    .letter-container:nth-child(6) .bar { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); }
+
     .equalizer {
       display: flex;
       align-items: flex-end;
-      gap: 4px;
-      height: 40px;
+      gap: 5px;
+      height: 50px;
     }
 
     .bar {
-      width: 6px;
-      background: linear-gradient(180deg, #4a90e2 0%, #667eea 100%);
-      border-radius: 3px;
-      animation: equalizerBounce 0.8s ease-in-out infinite;
+      width: 8px;
+      border-radius: 4px;
+      animation: equalizerBounce 0.6s ease-in-out infinite;
+      box-shadow: 0 0 10px currentColor;
     }
 
     .equalizer .bar:nth-child(1) {
@@ -1604,19 +1617,19 @@
     }
 
     .equalizer .bar:nth-child(2) {
-      animation-delay: 0.15s;
+      animation-delay: 0.1s;
     }
 
     .equalizer .bar:nth-child(3) {
-      animation-delay: 0.3s;
+      animation-delay: 0.2s;
     }
 
     @keyframes equalizerBounce {
       0%, 100% {
-        height: 10px;
+        height: 8px;
       }
       50% {
-        height: 35px;
+        height: 45px;
       }
     }
 
@@ -1644,7 +1657,11 @@
     /* Mobile adjustments */
     @media (max-width: 768px) {
       .freaks-letters {
-        gap: 8px;
+        gap: 6px;
+      }
+
+      .letter-container {
+        gap: 6px;
       }
 
       .letter {
@@ -1652,20 +1669,20 @@
       }
 
       .equalizer {
-        height: 30px;
-        gap: 3px;
+        height: 40px;
+        gap: 4px;
       }
 
       .bar {
-        width: 4px;
+        width: 6px;
       }
 
       @keyframes equalizerBounce {
         0%, 100% {
-          height: 8px;
+          height: 6px;
         }
         50% {
-          height: 25px;
+          height: 35px;
         }
       }
 
