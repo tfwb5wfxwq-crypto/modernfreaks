@@ -1539,39 +1539,8 @@
 
     .freaks-letters {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .letter-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      opacity: 0;
-      animation: letterDrop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    .letter-container:nth-child(1) { animation-delay: 0.1s; }
-    .letter-container:nth-child(2) { animation-delay: 0.2s; }
-    .letter-container:nth-child(3) { animation-delay: 0.3s; }
-    .letter-container:nth-child(4) { animation-delay: 0.4s; }
-    .letter-container:nth-child(5) { animation-delay: 0.5s; }
-    .letter-container:nth-child(6) { animation-delay: 0.6s; }
-
-    @keyframes letterDrop {
-      0% {
-        opacity: 0;
-        transform: translateY(-80px) rotate(-15deg) scale(0.3);
-      }
-      60% {
-        opacity: 1;
-        transform: translateY(10px) rotate(5deg) scale(1.1);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) rotate(0deg) scale(1);
-      }
+      gap: 0;
+      margin-bottom: 35px;
     }
 
     .letter {
@@ -1579,57 +1548,81 @@
       font-weight: 700;
       letter-spacing: -3.5px;
       text-transform: uppercase;
-      filter: drop-shadow(0 0 20px currentColor);
+      opacity: 0;
+      animation: letterExplode 0.7s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+      filter: drop-shadow(0 0 25px currentColor);
     }
 
-    /* Couleurs du logo FREAKS */
-    .letter-container:nth-child(1) .letter { color: #6DB5C4; } /* F - cyan */
-    .letter-container:nth-child(2) .letter { color: #2D3853; } /* R - navy */
-    .letter-container:nth-child(3) .letter { color: #E3232C; } /* E - red */
-    .letter-container:nth-child(4) .letter { color: #2D3853; } /* A - navy */
-    .letter-container:nth-child(5) .letter { color: #6DB5C4; } /* K - cyan */
-    .letter-container:nth-child(6) .letter { color: #E3232C; } /* S - red */
+    .letter-f { animation-delay: 0.05s; color: #6DB5C4; }
+    .letter-r { animation-delay: 0.1s; color: #2D3853; }
+    .letter-e { animation-delay: 0.15s; color: #E3232C; }
+    .letter-a { animation-delay: 0.2s; color: #2D3853; }
+    .letter-k { animation-delay: 0.25s; color: #6DB5C4; }
+    .letter-s { animation-delay: 0.3s; color: #E3232C; }
 
-    /* Barres égaliseur héritent de la couleur de leur lettre */
-    .letter-container:nth-child(1) .bar { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); }
-    .letter-container:nth-child(2) .bar { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); }
-    .letter-container:nth-child(3) .bar { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); }
-    .letter-container:nth-child(4) .bar { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); }
-    .letter-container:nth-child(5) .bar { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); }
-    .letter-container:nth-child(6) .bar { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); }
+    @keyframes letterExplode {
+      0% {
+        opacity: 0;
+        transform: scale(0) rotate(-180deg);
+        filter: drop-shadow(0 0 0px currentColor) blur(10px);
+      }
+      70% {
+        transform: scale(1.2) rotate(10deg);
+        filter: drop-shadow(0 0 35px currentColor) blur(0px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+        filter: drop-shadow(0 0 25px currentColor) blur(0px);
+      }
+    }
 
     .equalizer {
       display: flex;
       align-items: flex-end;
-      gap: 5px;
-      height: 50px;
+      justify-content: center;
+      gap: 6px;
+      height: 60px;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: equalizerFadeIn 0.5s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes equalizerFadeIn {
+      to {
+        opacity: 1;
+      }
     }
 
     .bar {
-      width: 8px;
-      border-radius: 4px;
-      animation: equalizerBounce 0.6s ease-in-out infinite;
-      box-shadow: 0 0 10px currentColor;
+      width: 5px;
+      border-radius: 3px;
+      animation: equalizerPulse 0.8s ease-in-out infinite;
+      box-shadow: 0 0 15px currentColor;
     }
 
-    .equalizer .bar:nth-child(1) {
-      animation-delay: 0s;
-    }
+    .equalizer .bar:nth-child(1) { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); animation-delay: 0s; }
+    .equalizer .bar:nth-child(2) { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); animation-delay: 0.1s; }
+    .equalizer .bar:nth-child(3) { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); animation-delay: 0.05s; }
+    .equalizer .bar:nth-child(4) { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); animation-delay: 0.15s; }
+    .equalizer .bar:nth-child(5) { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); animation-delay: 0.08s; }
+    .equalizer .bar:nth-child(6) { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); animation-delay: 0.12s; }
+    .equalizer .bar:nth-child(7) { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); animation-delay: 0.18s; }
+    .equalizer .bar:nth-child(8) { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); animation-delay: 0.03s; }
+    .equalizer .bar:nth-child(9) { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); animation-delay: 0.13s; }
+    .equalizer .bar:nth-child(10) { background: linear-gradient(180deg, #2D3853 0%, #1a2133 100%); animation-delay: 0.07s; }
+    .equalizer .bar:nth-child(11) { background: linear-gradient(180deg, #E3232C 0%, #b81c23 100%); animation-delay: 0.16s; }
+    .equalizer .bar:nth-child(12) { background: linear-gradient(180deg, #6DB5C4 0%, #4a9aa8 100%); animation-delay: 0.11s; }
 
-    .equalizer .bar:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .equalizer .bar:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-
-    @keyframes equalizerBounce {
+    @keyframes equalizerPulse {
       0%, 100% {
-        height: 8px;
+        height: 10px;
+        opacity: 0.5;
       }
       50% {
-        height: 45px;
+        height: 55px;
+        opacity: 1;
       }
     }
 
@@ -1656,33 +1649,27 @@
 
     /* Mobile adjustments */
     @media (max-width: 768px) {
-      .freaks-letters {
-        gap: 6px;
-      }
-
-      .letter-container {
-        gap: 6px;
-      }
-
       .letter {
         font-size: 42px;
       }
 
       .equalizer {
-        height: 40px;
+        height: 45px;
         gap: 4px;
       }
 
       .bar {
-        width: 6px;
+        width: 4px;
       }
 
-      @keyframes equalizerBounce {
+      @keyframes equalizerPulse {
         0%, 100% {
-          height: 6px;
+          height: 8px;
+          opacity: 0.5;
         }
         50% {
-          height: 35px;
+          height: 40px;
+          opacity: 1;
         }
       }
 
@@ -1697,54 +1684,26 @@
   <div id="loading-screen">
     <div class="loading-content">
       <div class="freaks-letters">
-        <div class="letter-container">
-          <span class="letter">F</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
-        <div class="letter-container">
-          <span class="letter">R</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
-        <div class="letter-container">
-          <span class="letter">E</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
-        <div class="letter-container">
-          <span class="letter">A</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
-        <div class="letter-container">
-          <span class="letter">K</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
-        <div class="letter-container">
-          <span class="letter">S</span>
-          <div class="equalizer">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-          </div>
-        </div>
+        <span class="letter letter-f">F</span>
+        <span class="letter letter-r">R</span>
+        <span class="letter letter-e">E</span>
+        <span class="letter letter-a">A</span>
+        <span class="letter letter-k">K</span>
+        <span class="letter letter-s">S</span>
+      </div>
+      <div class="equalizer">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
       </div>
       <div class="loading-subtitle">Modern</div>
     </div>
