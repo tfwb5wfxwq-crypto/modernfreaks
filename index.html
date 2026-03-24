@@ -1539,7 +1539,7 @@
 
     .freaks-letters {
       display: flex;
-      gap: 20px;
+      gap: 10px;
       margin-bottom: 20px;
     }
 
@@ -1571,11 +1571,19 @@
     }
 
     .letter {
-      font-size: 48px;
+      font-size: 56px;
       font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 2px;
+      letter-spacing: -3.5px;
+      text-transform: uppercase;
     }
+
+    /* Couleurs du logo FREAKS */
+    .letter-container:nth-child(1) .letter { color: #6DB5C4; } /* F - cyan */
+    .letter-container:nth-child(2) .letter { color: #2D3853; } /* R - navy */
+    .letter-container:nth-child(3) .letter { color: #E3232C; } /* E - red */
+    .letter-container:nth-child(4) .letter { color: #2D3853; } /* A - navy */
+    .letter-container:nth-child(5) .letter { color: #6DB5C4; } /* K - cyan */
+    .letter-container:nth-child(6) .letter { color: #E3232C; } /* S - red */
 
     .equalizer {
       display: flex;
@@ -1636,11 +1644,11 @@
     /* Mobile adjustments */
     @media (max-width: 768px) {
       .freaks-letters {
-        gap: 12px;
+        gap: 8px;
       }
 
       .letter {
-        font-size: 32px;
+        font-size: 42px;
       }
 
       .equalizer {
