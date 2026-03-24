@@ -1447,6 +1447,71 @@
         font-size: 16px;
       }
     }
+
+    /* Tooltip raccourcis clavier (desktop uniquement) - Style comme video-title-overlay */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px) scale(0.95);
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 100%);
+      backdrop-filter: blur(16px) saturate(1.3);
+      padding: 18px 32px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      z-index: 100001;
+      color: white;
+      font-size: 14px;
+      line-height: 1.6;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+      white-space: nowrap;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    .keyboard-hint.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .keyboard-hint-content {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .keyboard-hint-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .keyboard-hint-key {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .keyboard-hint-text {
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.95;
+      letter-spacing: 0.3px;
+    }
+
+    /* Masquer sur mobile */
+    @media (max-width: 768px) {
+      .keyboard-hint {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -2197,6 +2262,52 @@
       // Met à jour l'URL pour permettre le partage (format: #page/video-id)
       const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
       window.location.hash = `${currentPage}/${videoId}`;
+
+      // Afficher tooltip raccourcis clavier (desktop uniquement, une seule fois)
+      showKeyboardHint();
+    }
+
+    // Fonction pour afficher le tooltip raccourcis clavier
+    function showKeyboardHint() {
+      const isMobile = window.innerWidth <= 768;
+      const hasSeenHint = localStorage.getItem('keyboardHintSeen');
+
+      // Ne pas afficher sur mobile ou si déjà vu
+      if (isMobile || hasSeenHint) return;
+
+      // Retirer ancien tooltip s'il existe
+      document.querySelectorAll('.keyboard-hint').forEach(h => h.remove());
+
+      // Créer le tooltip
+      const hint = document.createElement('div');
+      hint.className = 'keyboard-hint';
+      hint.innerHTML = `
+        <div class="keyboard-hint-content">
+          <div class="keyboard-hint-item">
+            <span class="keyboard-hint-key">←</span>
+            <span class="keyboard-hint-key">→</span>
+            <span class="keyboard-hint-text">Naviguer</span>
+          </div>
+          <div class="keyboard-hint-item">
+            <span class="keyboard-hint-key">Esc</span>
+            <span class="keyboard-hint-text">Fermer</span>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(hint);
+
+      // Trigger animation
+      setTimeout(() => hint.classList.add('show'), 10);
+
+      // Auto-remove après 5 secondes
+      setTimeout(() => {
+        hint.classList.remove('show');
+        setTimeout(() => hint.remove(), 400);
+      }, 5000);
+
+      // Marquer comme vu dans localStorage
+      localStorage.setItem('keyboardHintSeen', 'true');
     }
 
     function stopVideo(card) {
@@ -2214,9 +2325,10 @@
       // Scroll vers la carte pour garantir qu'elle est visible (animation plus belle)
       card.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'nearest' });
 
-      // Récupérer position immédiatement après scroll instant
-      setTimeout(() => {
-        const targetRect = card.getBoundingClientRect();
+      // Double RAF pour garantir que le scroll instant est bien appliqué (même avec Echap)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const targetRect = card.getBoundingClientRect();
 
         document.body.classList.remove('video-playing');
         clone.classList.remove('playing', 'loaded', 'loading');
@@ -2276,20 +2388,21 @@
         clone.addEventListener('transitionend', onTransitionEnd);
 
         // Animation style iPhone: rapide, fluide, bounce satisfaisant
-        requestAnimationFrame(() => {
-          // Dezoom avec bounce iOS (courbe spring)
-          clone.style.transition = 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out 0.15s';
-          clone.style.left = targetRect.left + 'px';
-          clone.style.top = targetRect.top + 'px';
-          clone.style.width = targetRect.width + 'px';
-          clone.style.height = targetRect.height + 'px';
-          clone.style.opacity = '0';
-        });
+          requestAnimationFrame(() => {
+            // Dezoom avec bounce iOS (courbe spring)
+            clone.style.transition = 'all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease-out 0.15s';
+            clone.style.left = targetRect.left + 'px';
+            clone.style.top = targetRect.top + 'px';
+            clone.style.width = targetRect.width + 'px';
+            clone.style.height = targetRect.height + 'px';
+            clone.style.opacity = '0';
+          });
 
-        // Restaure le hash vers juste la page (enlève le /video-slug)
-        const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
-        window.location.hash = currentPage;
-      }, 100); // Attendre scroll smooth
+          // Restaure le hash vers juste la page (enlève le /video-slug)
+          const currentPage = document.querySelector('nav a.active')?.dataset.page || 'film';
+          window.location.hash = currentPage;
+        });
+      });
     }
 
     // Escape pour fermer la vidéo ou revenir à la home
