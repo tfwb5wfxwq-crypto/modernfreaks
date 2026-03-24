@@ -2212,9 +2212,9 @@
       clone.style.transform = ''; // Reset transform si utilisé
 
       // Scroll vers la carte pour garantir qu'elle est visible (animation plus belle)
-      card.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+      card.scrollIntoView({ behavior: 'instant', block: 'center', inline: 'nearest' });
 
-      // Attendre que le scroll smooth se termine (100ms)
+      // Récupérer position immédiatement après scroll instant
       setTimeout(() => {
         const targetRect = card.getBoundingClientRect();
 
